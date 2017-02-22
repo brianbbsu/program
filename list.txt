@@ -15,3 +15,6 @@ TIOJ 1449
 
 樹鍊剖分
 SPOJ http://www.spoj.com/problems/QTREE/
+
+Treap
+ZJ a063
