@@ -51,7 +51,7 @@ const ll INF=ll(1e15);
 #ifndef brian
 #include "lib1960.h"
 #else
-ll cnta=0;
+ll cnta=0,cntc=0;
 int p[MAXn];
 ll n;
 vector<string> v;
@@ -75,6 +75,7 @@ void compile_set()
 }
 int check_element(char *d)
 {
+    cntc++;
     string s(d);
     if(find(ALL(v),s)!=v.end())return 1;
     else return 0;
@@ -82,7 +83,7 @@ int check_element(char *d)
 #endif
 
 char d[MAXn];
-set<int> st[MAXlg][MAXn];
+vector<int> st[MAXlg][MAXn];
 void restore_permutation(int n,int w,int r,int *ans)
 {
     FILL(d,0);
@@ -104,22 +105,28 @@ void restore_permutation(int n,int w,int r,int *ans)
         }
     }
     compile_set();
+    REP(i,n)st[0][0].pb(i);
     for(int i=1;i<n;i*=2)
     {
-        ll l=n/i;
         ll lg=__lg(i);
         REP(j,i)
         {
-            REP(k,i)
+            REP(k,n)d[k]='1';
+            for(int tmp:st[lg][j])d[tmp]='0';
+            for(int tmp:st[lg][j])
             {
-                if(k!=j)
+                d[tmp]='1';
+                if(check_element(d))
                 {
-                    for(int tmp:st[lg][k])d[tmp]='1';
+                    st[lg+1][2*j].pb(tmp);
                 }
+                else st[lg+1][2*j+1].pb(tmp);
+                d[tmp]='0';
             }
-
         }
     }
+    //for(int i=1;i<=n;i*=2)REP(j,i)debug(i,__lg(i),j,st[__lg(i)][j]);
+    REP(i,n)ans[st[__lg(n)][i][0]]=i;
 }
 
 #ifdef brian
@@ -132,6 +139,8 @@ int main()
     int ans[n];
     REP(i,n)cin>>p[i];
     restore_permutation(n,896,896,ans);
-    debug(cnta);
+    debug(cnta,cntc);
+    _OUTC(cout,ans,ans+n);
+    cout<<endl;
 }
 #endif // brian
