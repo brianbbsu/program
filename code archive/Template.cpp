@@ -32,16 +32,16 @@ template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);c}
 #else
 #define debug(...)
-//#define endl '\n'
+#define endl '\n'
 #endif // brian
 //}
 
-const ll MAXn=1e5+5,MAXlg=__lg(10*MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(10*MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
-
 
 int main()
 {
