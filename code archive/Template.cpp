@@ -35,16 +35,20 @@ template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
+#define pary(...)
 #define endl '\n'
 #endif // brian
 //}
 
-const ll MAXn=2e5+5,MAXlg=__lg(10*MAXn)+2;
+
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+
 
 int main()
 {
     ios_base::sync_with_stdio(0);cin.tie(0);
 
 }
+
