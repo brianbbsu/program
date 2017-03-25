@@ -33,10 +33,12 @@ template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
+#define IOS()
 #else
 #define debug(...)
 #define pary(...)
 #define endl '\n'
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
@@ -48,6 +50,6 @@ const ll INF=ll(1e15);
 
 int main()
 {
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    
+    IOS();
+
 }

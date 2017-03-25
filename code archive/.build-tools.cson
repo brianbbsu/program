@@ -8,10 +8,11 @@ providers: [
           source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
           name: "make"
           command: "g++ \"%f\" -O2 -std=c++11 -Dbrian -o \"%e.exe\""
-          wd: "."
+          wd: "D:\\Brian\\program\\code archive\\"
           env: {}
           modifier:
             wildcards: {}
+            save_all: {}
           environment:
             name: "child_process"
             config:
@@ -19,17 +20,13 @@ providers: [
           stdout:
             pipeline: [
               {
-                name: "profile"
-                config:
-                  profile: "gcc_clang"
+                name: "all"
               }
             ]
           stderr:
             pipeline: [
               {
-                name: "profile"
-                config:
-                  profile: "gcc_clang"
+                name: "all"
               }
             ]
           output:
@@ -41,6 +38,85 @@ providers: [
             linter:
               no_trace: false
               immediate: false
+          version: 2
+        }
+        {
+          project: "D:\\Brian\\program\\code archive"
+          source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
+          name: "make and run"
+          command: "\"%e.exe\""
+          wd: "."
+          env: {}
+          modifier:
+            wildcards: {}
+            dependency:
+              list: [
+                [
+                  "0"
+                  "0"
+                  "make"
+                ]
+              ]
+              abort: true
+            save_all: {}
+          environment:
+            name: "child_process"
+            config:
+              stdoe: "both"
+          stdout:
+            pipeline: [
+              {
+                name: "all"
+              }
+            ]
+          stderr:
+            pipeline: [
+              {
+                name: "all"
+              }
+            ]
+          output:
+            console:
+              close_success: false
+              queue_in_buffer: true
+              colors: true
+              stdin: true
+            linter:
+              no_trace: false
+              immediate: false
+          version: 2
+        }
+        {
+          project: "D:\\Brian\\program\\code archive"
+          source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
+          name: "run"
+          command: "\"%e.exe\""
+          wd: "."
+          env: {}
+          modifier:
+            wildcards: {}
+          environment:
+            name: "child_process"
+            config:
+              stdoe: "both"
+          stdout:
+            pipeline: [
+              {
+                name: "all"
+              }
+            ]
+          stderr:
+            pipeline: [
+              {
+                name: "all"
+              }
+            ]
+          output:
+            console:
+              close_success: false
+              queue_in_buffer: true
+              colors: false
+              stdin: true
           version: 2
         }
       ]

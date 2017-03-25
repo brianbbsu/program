@@ -47,16 +47,15 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll n;
-string s;
+ll d[MAXn];
 int main()
 {
     IOS();
-    cin>>n;
-    REP(i,n)
-    {
-      cin>>s;
-      if(s.length()<=10)cout<<s<<endl;
-      else cout<<s[0]<<s.length()-2<<s[s.length()-1]<<endl;
-    }
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n)cin>>d[i];
+    k=d[k-1];
+    ll ans=0;
+    REP(i,n)if(d[i]>0&&d[i]>=k)ans++;
+    cout<<ans<<endl;
 }
