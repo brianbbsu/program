@@ -1,0 +1,48 @@
+providers: [
+  {
+    key: "bt"
+    config:
+      commands: [
+        {
+          project: "D:\\Brian\\program\\code archive"
+          source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
+          name: "make"
+          command: "g++ \"%f\" -O2 -std=c++11 -Dbrian -o \"%e.exe\""
+          wd: "."
+          env: {}
+          modifier:
+            wildcards: {}
+          environment:
+            name: "child_process"
+            config:
+              stdoe: "both"
+          stdout:
+            pipeline: [
+              {
+                name: "profile"
+                config:
+                  profile: "gcc_clang"
+              }
+            ]
+          stderr:
+            pipeline: [
+              {
+                name: "profile"
+                config:
+                  profile: "gcc_clang"
+              }
+            ]
+          output:
+            console:
+              close_success: true
+              queue_in_buffer: true
+              colors: false
+              stdin: false
+            linter:
+              no_trace: false
+              immediate: false
+          version: 2
+        }
+      ]
+  }
+]
