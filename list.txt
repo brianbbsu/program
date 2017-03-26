@@ -18,3 +18,6 @@ SPOJ http://www.spoj.com/problems/QTREE/
 
 Treap
 ZJ a063
+
+次小生成樹
+TIOJ 1445
