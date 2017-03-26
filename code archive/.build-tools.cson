@@ -7,7 +7,7 @@ providers: [
           project: "D:\\Brian\\program\\code archive"
           source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
           name: "make"
-          command: "g++ \"%f\" -O2 -std=c++11 -Dbrian -o \"%e.exe\""
+          command: "g++ \"%f\" -O2 -std=c++11 -Wall -fexceptions -Wshadow -Wextra -Dbrian -o \"%e.exe\""
           wd: "D:\\Brian\\program\\code archive\\"
           env: {}
           modifier:

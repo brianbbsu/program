@@ -43,21 +43,46 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+1;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 vector<ii> v[MAXn];
-ll n,m;
+int n,m;
 struct edge{
-  ll a,b,c;
-  edge(ll ai,ll bi,ll ci):a(ai),b(bi),c(ci){}
+  int a,b,c;
+  edge(int ai,int bi,int ci):a(ai),b(bi),c(ci){}
   bool operator < (const edge &b)const {return c<b.c;}
 };
 vector<edge> e,d;
-ll g[MAXn];
-ll fd(ll a){return g[a]=(a==g[a]?a:fd(g[a]));}
+int g[MAXn];
+int fd(ll a){return g[a]=(a==g[a]?a:fd(g[a]));}
 void mg(ll a,ll b){g[fd(a)]=fd(b);}
+
+int p[MAXn][MAXlg],ct[MAXn][MAXlg],dp[MAXn];
+
+void dfs(ll now,ll f,ll cti)
+{
+  p[now][0]=f;ct[now][0]=cti;
+  for(auto &k:v[now])if(k.X!=f)dp[k.X]=dp[now]+1,dfs(k.X,now,k.Y);
+}
+ii lca(ll a,ll b)
+{
+  int mn=0;
+  if(dp[a]<dp[b])swap(a,b);
+  for(int t=MAXlg-1;t>=0;t--)if(p[a][t]!=-1&&dp[p[a][t]]>=dp[b])mn=max(mn,ct[a][t]),a=p[a][t];
+  if(a==b)return ii(a,mn);
+  for(int t=MAXlg-1;t>=0;t--)
+  {
+    if(p[a][t]!=p[b][t])
+    {
+      mn=max({mn,ct[a][t],ct[b][t]});
+      a=p[a][t];
+      b=p[b][t];
+    }
+  }
+  return ii(p[a][0],max({mn,ct[a][0],ct[b][0]}));
+}
 
 ll sum=0;
 int main()
@@ -84,9 +109,19 @@ int main()
       }
       else d.pb(k);
     }
-    ll ct=0;
-    REP(i,n)if(g[i]==i)ct++;
-    if(ct>1){cout<<"-1 -1"<<endl;return 0;}
+    ll cnt=0;
+    REP(i,n)if(g[i]==i)cnt++;
+    if(cnt>1){cout<<"-1 -1"<<endl;return 0;}
     if(SZ(d)==0){cout<<sum<<" -1"<<endl;return 0;}
-    
+    dp[0]=1;
+    dfs(0,-1,0);
+    for(int j=1;j<MAXlg;j++)REP(i,n)if(p[i][j-1]!=-1){p[i][j]=p[p[i][j-1]][j-1];ct[i][j]=max(ct[i][j-1],ct[p[i][j-1]][j-1]);}
+    ll mn=INF;
+    for(auto &k:d)
+    {
+      ii tmp=lca(k.a,k.b);
+      debug(tmp);
+      mn=min(mn,k.c-tmp.Y);
+    }
+    cout<<sum<<" "<<sum+mn<<endl;
 }
