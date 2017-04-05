@@ -47,17 +47,14 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cnt[16]={1,0,0,0,1,0,1,0,2,1,1,2,0,1,0,0};
+ll n;
+ll d[10];
+ll mx=0;
 int main()
 {
     IOS();
     ll n;
-    ll ans=0;
     cin>>n;
-    if(n==0)cout<<1<<endl;
-    else
-    {
-      while(n>0)ans+=cnt[n%16],n/=16;
-      cout<<ans<<endl;
-    }
+    REP(i,n)cin>>d[i],mx=max(mx,d[i]);
+    cout<<(mx^d[n-1])<<endl;
 }
