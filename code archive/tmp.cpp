@@ -29,33 +29,13 @@ const int INF=2000000000;
 
 int main()
 {
-	//freopen("ans1.txt","w",stdout);
-	int t;
-	RI(t);
-	for(int I=1;I<=t;I++){
-		string s;
-		cin>>s;
-		int k;
-		RI(k);
-		printf("Case #%d: ",I);
-
-		int n=s.length();
-		int cnt=0;
-		bool a[1005];
-		REP(i,n) a[i]=s[i]=='+'?1:0;
-		for(int i=0;i<n;i++){
-			if(i==n-k+1) break;
-			if(!a[i]){
-				cnt++;
-				for(int j=i;j<i+k;j++) a[j]=!a[j];
-			}
-		}
-		bool flag=0;
-		for(int i=n-k+1;i<n;i++) if(!a[i]){
-			puts("IMPOSSIBLE");flag=1;break;
-		}
-		if(!flag) printf("%d\n",cnt);
+	//while(1)
+	while(1)
+	{
+		auto t=clock();
+		while((clock()-t)*1.0/CLOCKS_PER_SEC<=0.75);
+		cout<<"\a"<<endl;
 	}
-	//fclose(stdout);
-	return 0;
+
+
 }
