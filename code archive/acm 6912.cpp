@@ -43,33 +43,35 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+int mx=0;
+int d[4];
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    ll T,kz=0;
+    cin>>T;
+    ll n,m;
+    while(T--&&cin>>n>>m)
     {
-      m=s.length();
-      REP(i,m)
+      mx=0;
+      kz++;
+      cout<<"Case #"<<kz<<": ";
+      REP(i,m)cin>>d[i];
+      for(int i=1;i<(1<<m);i++)
       {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
+        int tmp=0;
+        for(int t=1;t<=n;t++)
+        {
+          bool b=0;
+          for(int k=0,I=1;k<m;k++,I<<=1)if((I&i)&&t%d[k]==0)b=!b;
+          tmp+=b;
+        }
+        mx=max(mx,tmp);
       }
-      n++;
-    }
-    REP(i,n)
-    {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
+      cout<<mx<<endl;
     }
 }

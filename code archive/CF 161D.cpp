@@ -43,33 +43,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+vector<ll> v[MAXn];
+ll dp[MAXn][505];
+ll ans=0;
+ll n,m;
+void dfs(ll now,ll f)
+{
+  dp[now][0]=1;
+  for(ll k:v[now])
+  {
+    if(k==f)continue;
+    dfs(k,now);
+    REP(i,m)ans+=dp[now][i]*dp[k][m-i-1];
+    REP(i,m)dp[now][i+1]+=dp[k][i];
+  }
+}
+
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    cin>>n>>m;
+    REP(i,n-1)
     {
-      m=s.length();
-      REP(i,m)
-      {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
-      }
-      n++;
+      ll a,b;
+      cin>>a>>b;
+      a--;b--;
+      v[a].pb(b);
+      v[b].pb(a);
     }
-    REP(i,n)
-    {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
-    }
+    dfs(0,-1);
+    cout<<ans<<endl;
 }

@@ -43,33 +43,89 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+struct node
+{
+  ll d,pri,_sz;
+  node *l,*r;
+  bool tg;
+  node(ll di):d(di),pri(rand()),_sz(1),l(0),r(0),tg(0){}
+};
+void push(node *a)
+{
+  if(!a||!a->tg)return;
+  a->tg=0;
+  swap(a->l,a->r);
+  if(a->l)a->l->tg^=1;
+  if(a->r)a->r->tg^=1;
+}
+ll sz(node *a){return (a?a->_sz:0);}
+void pull(node *a){if(a)a->_sz=sz(a->l)+sz(a->r)+1;}
+
+node *mg(node *a,node *b)
+{
+  if(!a||!b)return (a?a:b);
+  if(a->pri>b->pri)
+  {
+    push(a);
+    a->r=mg(a->r,b);
+    pull(a);
+    return a;
+  }
+  push(b);
+  b->l=mg(a,b->l);
+  pull(b);
+  return b;
+}
+void splt(node *a,node *&b,node *&c,ll k)
+{
+  if(!a)b=c=0;
+  else
+  {
+    push(a);
+    if(sz(a->l)>=k)
+    {
+      c=a;
+      splt(a->l,b,c->l,k);
+      pull(c);
+    }
+    else
+    {
+      b=a;
+      splt(a->r,b->r,c,k-sz(a->l)-1);
+      pull(b);
+    }
+  }
+}
+void dfs(node *a)
+{
+  push(a);
+  if(a->l)dfs(a->l);
+  cout<<a->d<<" ";
+  if(a->r)dfs(a->r);
+}
+node *rt=0;
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    srand(time(NULL));
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n)rt=mg(rt,new node(i+1));
+    REP(i,m)
     {
-      m=s.length();
-      REP(i,m)
-      {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
-      }
-      n++;
+      ll l,r;
+      cin>>l>>r;
+      node *a,*b,*c,*tmp;
+      splt(rt,a,tmp,l-1);
+      splt(tmp,b,c,r-l+1);
+      if(b)b->tg^=1;
+      tmp=mg(a,b);
+      rt=mg(tmp,c);
     }
-    REP(i,n)
-    {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
-    }
+    dfs(rt);
+    cout<<endl;
 }

@@ -43,33 +43,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+ll n,m,q;
+ll bit[MAXn];
+void ins(ll x,ll k)
+{
+  while(x<=n)
+  {
+    bit[x]+=k;
+    x+=-x;
+  }
+}
+ll qr(ll x)
+{
+  ll r=0;
+  while(x>0)
+  {
+    r+=bit[x];
+    x-=-x;
+  }
+  return r;
+}
+
+ll l[MAXn],r[MAXn],c[MAXn],nxt[MAXn];
+ll ans[MAXn];
+vector<ii> qr[MAXlg],tmpqr,tmpch;
+ll g[MAXn],lt[MAXn];
+
+void DnC(int lv,int li,int ri)
+{
+    if(li==ri-1)
+    {
+      for(ii &k:qr[lv])ans[k.Y]=ri;
+      return;
+    }
+
+}
+
+
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    cin>>n>>m>>q;
+    FILL(lt,-1);
+    FILL(nxt,-1);
+    for(int i=1;i<=m;i++)
     {
-      m=s.length();
-      REP(i,m)
-      {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
-      }
-      n++;
+      ll t;
+      cin>>t;
+      t--;
+      if(lt[t]!=-1)nxt[lt[t]]=i;
+      lt[t]=i;
+      qr[0].pb(ii(i,t));
     }
-    REP(i,n)
-    {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
-    }
+    REP(i,n)cin>>g[i];
+    REP(i,q)cin>>l[i]>>r[i]>>c[i];
+    DnC(0,0,q);
+
 }

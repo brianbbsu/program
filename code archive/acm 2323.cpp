@@ -43,33 +43,39 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+int a[MAXn],b[MAXn],c[MAXn];
+int d[MAXn];
+ll n,m,k;
+
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      m=s.length();
-      REP(i,m)
+      cin>>n;
+      REP(i,n)cin>>a[n-i-1];
+      cin>>m;
+      REP(i,m)cin>>b[m-i-1];
+      cin>>k;
+      REP(i,k)cin>>c[k-i-1];
+      FILL(d,0);
+      REP(i,n)REP(j,m)d[i+j]+=a[i]*b[j];
+      REP(i,n+m)d[i]%=2;
+      for(int i=n+m;i>=k-1;i--)
       {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
+        if(d[i]){REP(j,k)if(c[k-j-1])d[i-j]=!d[i-j];}
+        //else {REP(j,k)if(!c[k-j-1])d[i-j]=!d[i-j];}
       }
-      n++;
-    }
-    REP(i,n)
-    {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
+      ll mx=0;
+      REP(i,n+m)if(d[i])mx=i;
+      cout<<mx+1;
+      for(int i=mx;i>=0;i--)cout<<" "<<d[i];
+      cout<<endl;
     }
 }

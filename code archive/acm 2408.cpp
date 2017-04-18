@@ -43,33 +43,19 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+lf a,b,c,d;
 int main()
 {
-    IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
-    {
-      m=s.length();
-      REP(i,m)
-      {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
-      }
-      n++;
-    }
-    REP(i,n)
-    {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
-    }
+    //IOS();
+    while(cin>>a>>b>>c>>d){
+    const lf y=365.242199;
+    const lf stp=1152921504606846975;
+    a+=b/12+c/y+d*stp/60/60/24/y;
+    //a*=y;
+    printf("%0.1f\n",a);
+  }
 }

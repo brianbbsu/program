@@ -47,7 +47,7 @@ const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll sum[MAXn][MAXn];
+ll d[MAXn];
 ll dp[MAXn][MAXn];
 int main()
 {
@@ -57,6 +57,23 @@ int main()
     ll n;
     while(T--&&cin>>n)
     {
-      REP(i,n)cin>>sum[]
+      REP(i,n)cin>>d[i];
+      REP(i,n)REP(j,n)dp[i][j]=INF;
+      REP(i,n)
+      {
+        REP(j,n-i)
+        {
+          if(i==0)dp[j][j]=0;
+          else
+          {
+            ll t=0;
+            for(int k=j;k<=j+i;k++)t+=d[k];
+            for(int k=1;k<=i;k++)dp[j][j+i]=min(dp[j][j+i],dp[j][j+k-1]+dp[j+k][j+i]);
+            dp[j][j+i]+=t;
+          }
+        }
+      }
+      REP(i,n)for(int j=i;j<n;j++)debug(i,j,dp[i][j]);
+      cout<<dp[0][n-1]<<endl;
     }
 }

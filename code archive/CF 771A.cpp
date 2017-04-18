@@ -43,33 +43,43 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+vector<int> v[MAXn];
+bool vis[MAXn];
+int n,m,c,t;
+bool ans=1;
+void dfs(ll now)
+{
+  vis[now]=1;
+  t++;
+  if(c==-1)c=SZ(v[now]);
+  else if(c!=SZ(v[now]))ans=0;
+  for(int k:v[now])if(!vis[k])dfs(k);
+}
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    cin>>n>>m;
+    REP(i,m)
     {
-      m=s.length();
-      REP(i,m)
-      {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
-      }
-      n++;
+      ll a,b;
+      cin>>a>>b;
+      a--;b--;
+      v[a].pb(b);
+      v[b].pb(a);
     }
     REP(i,n)
     {
-      REP(j,m-1)
+      if(!vis[i])
       {
-        l[i][j][j+1]=d[0][i][j]
+        c=-1;t=0;
+        dfs(i);
+        if(t!=c)ans=0;
       }
     }
+    if(ans)puts("YES");
+    else puts("NO");
 }

@@ -4,7 +4,7 @@ using namespace std;
 typedef unsigned long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
-#define REP(i,n) for(ll i=0;i<n;i++)
+#define REP(i,n) for(int i=0;i<n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -43,24 +43,44 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+#ifndef brian
+#include "lib1965.h"
+#endif
+
 ll *d;
 int n;
+vector<int> lg;
+
 
 void init(int N,ll *C)
 {
   d=C;
   n=N;
+  lg.resize(n+1);
+  int k=-1,t=1;
+  for(int i=1;i<=n;i++)
+  {
+    if(i==t)t+=t,k++;
+    lg[i]=k;
+  }
+  //debug(lg);
 
 }
+ll RMQ(int a,int b)
+{
+  return 0;
+}
+
 
 #ifdef brian
 int main()
 {
     IOS();
-
+    ll *sq;
+    init(20,sq);
 }
 #endif

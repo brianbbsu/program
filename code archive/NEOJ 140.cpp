@@ -43,33 +43,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=1000007;//007;
 const ll INF=ll(1e15);
 
-bool d[2][MAXn][MAXn];
-string s;
-bool l[MAXn][MAXn][MAXn];
+void add(ll &a,ll b){a=(a+b)%MOD;}
+
+ll dp[MAXn][3][3];
 int main()
 {
     IOS();
-    int n=0,m=0;
-		while(getline(cin,s))
+    dp[1][1][1]=dp[1][0][0]=dp[1][2][2]=1;
+    for(int i=2;i<MAXn;i++)
     {
-      m=s.length();
-      REP(i,m)
+      REP(j,3)
       {
-        assert(s[i]==' '||s[i]=='+'||s[i]=='|'||s[i]=='-');
-        if(s[i]=='+'||s[i]=='-')d[0][n][i]=1;
-        if(s[i]=='+'||s[i]=='|')d[1][n][i]=1;
+        add(dp[i][j][0],dp[i-1][j][0]+dp[i-1][j][2]);
+        add(dp[i][j][1],dp[i-1][j][1]+dp[i-1][j][2]);
+        add(dp[i][j][2],dp[i][j][0]+dp[i-1][j][1]);
       }
-      n++;
     }
-    REP(i,n)
+    ll T;
+    ll n;
+    cin>>T;
+    while(T--&&cin>>n)
     {
-      REP(j,m-1)
-      {
-        l[i][j][j+1]=d[0][i][j]
-      }
+      ll k=0;
+      REP(i,3)REP(j,3)if(i+j!=1)add(k,dp[n][i][j]);
+      cout<<k<<endl;
     }
 }
