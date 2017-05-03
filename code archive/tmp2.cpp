@@ -43,20 +43,13 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+
 
 
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
-    {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
-    }
-    cout<<s<<endl;
 }

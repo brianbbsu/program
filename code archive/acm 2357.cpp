@@ -47,16 +47,34 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+ll dp[25];
+string it(ll k,ll sz)
+{
+  if(sz==0)return "";
+  string s="(";
+  ll c=0;
+  while(dp[c]*dp[sz-c-1]<=k)k-=dp[c]*dp[sz-c-1],c++;
+  s+=it(k/dp[sz-c-1],c);
+  s+="X";
+  s+=it(k%dp[sz-c-1],sz-c-1);
+  s+=")";
+  return s;
+}
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    dp[0]=1;
+    for(int i=1;i<=20;i++)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      REP(j,i)dp[i]+=dp[j]*dp[i-j-1];
+      debug(i,dp[i]);
     }
-    cout<<s<<endl;
+    ll n;
+    while(cin>>n&&n)
+    {
+      ll tmp=n,c=0;
+      while(dp[c]<=tmp)tmp-=dp[c++];
+      string s=it(tmp,c);
+      cout<<s.substr(1,s.length()-2)<<endl;
+    }
 }

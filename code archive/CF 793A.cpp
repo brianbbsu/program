@@ -47,16 +47,24 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
+ll n,k;
 
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    cin>>n>>k;
+    REP(i,n)cin>>d[i];
+    sort(d,d+n);
+    ll ans=0;
+    for(int i=1;i<n;i++)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      if((d[i]-d[i-1])%k!=0)
+      {
+        cout<<-1<<endl;
+        return 0;
+      }
+      ans+=(d[i]-d[i-1])/k*(n-i);
     }
-    cout<<s<<endl;
+    cout<<ans<<endl;
 }

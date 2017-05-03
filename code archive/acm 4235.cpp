@@ -43,20 +43,26 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll dp[MAXn];
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+
+    dp[0]=1;
+    for(int i=1;i<MAXn;i++)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      if(i%2==0)dp[i]+=dp[i/2];
+      for(int j=1;j<=i;j++)if((i-j)%2==0)dp[i]+=dp[(i-j)/2];
     }
-    cout<<s<<endl;
+
+    int n;
+    cin>>n;
+    ll t;
+    ll kz=0;
+    while(n--&&cin>>t&&++kz)cout<<kz<<" "<<dp[t]<<endl;;
 }

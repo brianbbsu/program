@@ -52,11 +52,19 @@ int main()
 {
     IOS();
     string s;
-    getline(cin,s);
-    REP(i,s.length())
+    cin>>s;
+    bool lt=!(s[0]-'0');
+    int cnt=0;
+    REP(i,SZ(s))
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      if(s[i]-'0'==lt)cnt++;
+      else
+      {
+        lt=!lt;
+        if(cnt>=7){puts("YES");return 0;}
+        cnt=1;
+      }
     }
-    cout<<s<<endl;
+    if(cnt>=7)puts("YES");
+    else puts("NO");
 }

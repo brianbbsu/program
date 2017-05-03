@@ -43,86 +43,85 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+1;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+1;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 vector<ii> v[MAXn];
-int n,m;
+int st[MAXn][MAXlg];
+ll mx[MAXn][MAXlg];
 struct edge{
-  int a,b,c;
-  bool t;
-  edge(int ai,int bi,int ci,bool ti):a(ai),b(bi),c(ci),t(ti){}
-  bool operator < (const edge &b)const {return make_pair(c,!t)<make_pair(b.c,!b.t);}
+  int a,b;
+  ll c;
+  bool fg;
+  edge(int ai,int bi,ll ci,bool fgi):a(ai),b(bi),c(ci),fg(fgi){}
+  bool operator < (const edge &t)const {return make_pair(c,!fg)<make_pair(t.c,!t.fg);}
 };
 vector<edge> e,d;
+
 int g[MAXn];
-int fd(ll a){return g[a]=(a==g[a]?a:fd(g[a]));}
-void mg(ll a,ll b){g[fd(a)]=fd(b);}
+int fd(int a){return g[a]=(g[a]==a?a:fd(g[a]));}
+void mg(int a,int b){g[fd(a)]=fd(b);}
 
-int p[MAXn][MAXlg],ct[MAXn][MAXlg],dp[MAXn];
-
-void dfs(ll now,ll f,ll cti)
+int dp[MAXn];
+void dfs(int now,int f,ll ct)
 {
-  p[now][0]=f;ct[now][0]=cti;
-  for(auto &k:v[now])if(k.X!=f)dp[k.X]=dp[now]+1,dfs(k.X,now,k.Y);
-}
-ii lca(ll a,ll b)
-{
-  int mn=0;
-  if(dp[a]<dp[b])swap(a,b);
-  for(int t=MAXlg-1;t>=0;t--)if(p[a][t]!=-1&&dp[p[a][t]]>=dp[b])mn=max(mn,ct[a][t]),a=p[a][t];
-  if(a==b)return ii(a,mn);
-  for(int t=MAXlg-1;t>=0;t--)
+  st[now][0]=f;mx[now][0]=ct;
+  for(ii &k:v[now])if(k.X!=f)
   {
-    if(p[a][t]!=p[b][t])
-    {
-      mn=max({mn,ct[a][t],ct[b][t]});
-      a=p[a][t];
-      b=p[b][t];
-    }
+    dp[k.X]=dp[now]+1;
+    dfs(k.X,now,k.Y);
   }
-  return ii(p[a][0],max({mn,ct[a][0],ct[b][0]}));
 }
 
-ll sum=0;
+ll lca(int a,int b)
+{
+  ll rt=0;
+  if(dp[a]<dp[b])swap(a,b);
+  for(int i=MAXlg-1;i>=0;i--)if(st[a][i]!=-1&&dp[st[a][i]]>=dp[b])rt=max(rt,mx[a][i]),a=st[a][i];
+  if(a==b)return rt;
+  for(int i=MAXlg-1;i>=0;i--)if(st[a][i]!=st[b][i])rt=max({rt,mx[a][i],mx[b][i]}),a=st[a][i],b=st[b][i];
+  return max({rt,mx[a][0],mx[b][0]});
+}
+
+ll n,m;
 int main()
 {
     IOS();
     cin>>n>>m;
     REP(i,m)
     {
-      ll a,b,c;
-      cin>>a>>b>>c;
+      int a,b,c;
+      bool fg;
+      cin>>a>>b>>c>>fg;
       a--;b--;
-      e.pb(edge(a,b,c));
+      e.pb(edge(a,b,c,fg));
     }
     sort(ALL(e));
     REP(i,n)g[i]=i;
-    for(auto &k:e)
+    bool getfg=0;
+    ll tt=0;
+    for(edge &k:e)
     {
       if(fd(k.a)!=fd(k.b))
       {
-        sum+=k.c;
         mg(k.a,k.b);
         v[k.a].pb(ii(k.b,k.c));
         v[k.b].pb(ii(k.a,k.c));
+        if(k.fg)getfg=1;
+        tt+=k.c;
       }
-      else d.pb(k);
+      else if(k.fg)d.pb(k);
     }
-    ll cnt=0;
-    REP(i,n)if(g[i]==i)cnt++;
-    if(cnt>1){cout<<"-1 -1"<<endl;return 0;}
-    if(SZ(d)==0){cout<<sum<<" -1"<<endl;return 0;}
+    if(getfg){cout<<tt<<endl;return 0;}
     dp[0]=1;
     dfs(0,-1,0);
-    for(int j=1;j<MAXlg;j++)REP(i,n)if(p[i][j-1]!=-1){p[i][j]=p[p[i][j-1]][j-1];ct[i][j]=max(ct[i][j-1],ct[p[i][j-1]][j-1]);}
+    for(int j=1;j<MAXlg;j++)REP(i,n)if(st[i][j-1]!=-1)st[i][j]=st[st[i][j-1]][j-1],mx[i][j]=max(mx[i][j-1],mx[st[i][j-1]][j-1]);
     ll mn=INF;
-    for(auto &k:d)
+    for(edge &k:d)
     {
-      ii tmp=lca(k.a,k.b);
-      debug(tmp);
-      mn=min(mn,k.c-tmp.Y);
+      ll tmp=lca(k.a,k.b);
+      mn=min(mn,k.c-tmp);
     }
-    cout<<sum<<" "<<sum+mn<<endl;
+    cout<<tt+mn<<endl;
 }

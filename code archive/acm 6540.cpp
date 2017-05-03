@@ -47,16 +47,56 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll g[MAXn],c;
+void reset(int n){REP(i,n)g[i]=i;c=n;}
+ll fd(int a){return g[a]=(g[a]==a?a:fd(g[a]));}
+void mg(int a,int b){g[fd(a)]=fd(b);}
 
+struct tg{
+  int a,b;
+  bool clr;
+  tg(ll ai,ll bi,bool clri):a(ai),b(bi),clr(clri){}
+  bool operator < (const tg &t)const{return clr;}
+};
+
+vector<tg> d;
+ll mak(ll n)
+{
+  reset(n);
+  ll rt=0;
+  for(tg &k:d)if(fd(k.a)!=fd(k.b)){mg(k.a,k.b);c--;if(k.clr)rt++;}
+  return rt;
+}
+vector<ll> f;
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    ll T;
+    cin>>T;
+    ll kz=0;
+    ll n,m;
+    f.pb(0);
+    f.pb(1);
+    while(f.back()<MAXn)f.pb(f.back()+f[SZ(f)-2]);
+    debug(f);
+    while(cin>>n>>m&&++kz)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      cout<<"Case #"<<kz<<": ";
+      d.clear();
+      REP(i,m)
+      {
+        int a,b;
+        bool clr;
+        cin>>a>>b>>clr;
+        a--;b--;
+        d.pb(tg(a,b,clr));
+      }
+      sort(ALL(d));
+      int mx=mak(n);
+      if(c!=1){puts("No");continue;}
+      reverse(ALL(d));
+      int mn=mak(n);
+      if(upper_bound(ALL(f),mx)-lower_bound(ALL(f),mn)>0)puts("Yes");
+      else puts("No");
     }
-    cout<<s<<endl;
 }

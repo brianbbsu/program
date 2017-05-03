@@ -47,16 +47,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+const lf EPS=1e-5;
 int main()
 {
-    IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    //IOS();
+    lf p,q,rr,s,t,u;
+    while(cin>>p>>q>>rr>>s>>t>>u)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      lf l=0.0,r=1.0;
+      for (int i = 0; i < 50; i++)
+      {
+        lf h=(l+r)/2;
+        lf tmp=p*exp(-h)+q*sin(h)+rr*cos(h)+s*tan(h)+t*h*h+u;
+        if(tmp>=0)l=h;
+        else r=h;
+        //printf("%0.5f\n",l);
+      }
+
+      lf tmp=p*exp(-l)+q*sin(l)+rr*cos(l)+s*tan(l)+t*l*l+u;
+      if(abs(tmp)<=EPS/100000.0)printf("%0.4f\n",l);
+      else puts("No solution");
     }
-    cout<<s<<endl;
 }

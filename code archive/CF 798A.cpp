@@ -48,15 +48,13 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+string a;
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
-    {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
-    }
-    cout<<s<<endl;
+    cin>>a;
+    int c=0;
+    REP(i,a.length()/2)if(a[i]!=a[a.length()-i-1])c++;
+    if(c==1||(c==0&&(a.length()%2)))cout<<"YES"<<endl;
+    else puts("NO");
 }

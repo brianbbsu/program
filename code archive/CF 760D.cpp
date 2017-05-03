@@ -47,16 +47,24 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll n;
+ll dp[MAXn];
+queue<ii> dq[2];
 
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    cin>>n;
+    dp[0]=0;
+    for(int i=1;i<=n;i++)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      ll k;
+      cin>>k;
+      dq[0].push(ii(k,i));
+      dq[1].push(ii(k,i));
+      while(k-dq[0].front().X>=90)dq[0].pop();
+      while(k-dq[1].front().X>=1440)dq[1].pop();
+      dp[i]=min({dp[i-1]+20,dp[dq[0].front().Y-1]+50,dp[dq[1].front().Y-1]+120});
+      cout<<dp[i]-dp[i-1]<<endl;
     }
-    cout<<s<<endl;
 }

@@ -51,12 +51,12 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    char c;
+    while(cin>>c)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      if(c<'a')c+=('a'-'A');
+      if(c=='a'||c=='e'||c=='i'||c=='o'||c=='u'||c=='y')continue;
+      cout<<"."<<c;
     }
-    cout<<s<<endl;
+    cout<<endl;
 }

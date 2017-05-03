@@ -47,16 +47,20 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+ll dp[MAXn];
 int main()
 {
     IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    ll t,k;
+    cin>>t>>k;
+    dp[0]=1;
+    for(int i=1;i<MAXn;i++)if(i>=k)dp[i]=(dp[i-1]+dp[i-k])%MOD;else dp[i]=dp[i-1];
+    for(int i=1;i<MAXn;i++)dp[i]=(dp[i]+dp[i-1])%MOD;
+    REP(i,t)
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      ll a,b;
+      cin>>a>>b;
+      a--;
+      cout<<(dp[b]-dp[a]+MOD)%MOD<<endl;
     }
-    cout<<s<<endl;
 }

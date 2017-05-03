@@ -47,16 +47,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+struct met{
+  lf a,b,c,d;
+  met(lf ai,lf bi,lf ci,lf di):a(ai),b(bi),c(ci),d(di){}
+  met operator * (const met t)const{
+    return met(a * t.a + b* t.c,a * t.b + b * t.d,c * t.a + d * t.c,c * t.b + d * t.d);
+  }
+};
+met mul(met a,ll x)
+{
+  if(x==0)return met(1,0,0,1);
+  met tmp=mul(a,x/2);
+  debug(a.a,a.b,a.c,a.d);
+  if(x%2==0)return tmp*tmp;
+  else return (tmp*tmp)*a;
+}
 int main()
 {
-    IOS();
-    string s;
-    getline(cin,s);
-    REP(i,s.length())
+    //IOS();
+    ll n;
+    cin>>n;
+    int f0,f1,k;
+    lf a,b;
+    while(n--&&scanf("%d %d %lf %lf %d",&f0,&f1,&a,&b,&k))
     {
-      if(s[i]>='A'&&s[i]<='Z')s[i]=(26-(s[i]-'A')-1)+'A';
-      else if(s[i]>='a'&&s[i]<='z')s[i]=(26-(s[i]-'a')-1)+'a';
+      met tmp=mul(met(0.0,1.0,b,a),k);
+      debug(tmp.a,tmp.b,tmp.c,tmp.d);
+      printf("%0.0f\n",tmp.a*f0+tmp.b*f1);
     }
-    cout<<s<<endl;
 }
