@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -43,23 +44,29 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
-ll ans[30];
+string s;
+ll dp[26][MAXn];
+ll d[MAXn];
 int main()
 {
     IOS();
-    ll a,b;
-    cin>>a>>b;
-    for(ll i=a;i<=b;i++)
+    ll n;
+    cin>>n>>s;
+    d[0]=1;
+    REP(i,SZ(s))
     {
-      for(ll j=0,I=i;I>0;I/=3,j++)ans[j]=(ans[j]+I%3)%3;
+      int t=s[i]-'a';
+      REP1(j,SZ(s))
+      {
+        d[j]=(d[j]-dp[t][j]+d[j-1]+MOD)%MOD;
+        dp[t][j]=d[j-1];
+      }
     }
-    pary(ans,ans+30);
-    ll t=0;
-    for(ll i=29;i>=0;i--)t=t*3+ans[i]%3;
-    cout<<t<<endl;
+    ll ans=0;
+    REP(i,26)ans=(ans+dp[i][SZ(s)])%MOD;
+    cout<<ans<<endl;
 }

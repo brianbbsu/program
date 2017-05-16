@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -43,13 +44,150 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=60+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+int n,m,a;
+ll c[MAXn][MAXn];
+ll d[MAXn][MAXn];
+ll s[MAXn][10][10],p[MAXn][10][10],cls[10][10];
+ll tmpans[MAXn][10][10];
+vector<ii> q;
+ll mn=INF;
 
+void cal()
+{
+  int ans=0;
+  REP1(i,n)
+  {
+    REP(x,6)
+    {
+      int f=-1,e=-1;
+      REP(y,7)
+      {
+        if(s[i][x][y])
+        {
+          if(f==-1)f=y;
+          e=y;
+        }
+      }
+      if(f!=-1)ans+=(3+e-f)*(3+e-f);
+    }
+  }
+  REP1(i,m)
+  {
+    REP(x,6)
+    {
+      int f=-1,e=-1;
+      REP(y,7)
+      {
+        if(p[i][x][y])
+        {
+          if(f==-1)f=y;
+          e=y;
+        }
+      }
+      if(f!=-1)ans+=(3+e-f)*(3+e-f);
+    }
+  }
+  if(ans<mn)
+  {
+    mn=ans;
+    REP1(i,n)REP(x,6)REP(y,7)tmpans[i][x][y]=s[i][x][y];
+  }
+}
 int main()
 {
     IOS();
+    srand(time(NULL));
+    cin>>n>>m>>a;
+    REP1(i,n)REP1(j,m)
+    {
+      cin>>c[i][j];
+      REP(k,c[i][j])q.pb(ii(i,j));
+    }
+    REP(T,100000)
+    {
+      FILL(s,0);FILL(p,0);FILL(cls,0);
 
+      for(ii &tmp:q)
+      {
+        while(1)
+        {
+          int t=rand()%42;
+          int x=t/7,y=t%7;
+          if(!s[tmp.X][x][y]&&!p[tmp.Y][x][y]&&cls[x][y]<a)
+          {
+            s[tmp.X][x][y]=tmp.Y;
+            p[tmp.Y][x][y]=tmp.X;
+            cls[x][y]++;
+            break;
+          }
+        }
+      }
+      cal();
+    }
+    FILL(s,0);FILL(p,0);FILL(cls,0);
+    multiset<ii> st;
+    for(ii &tmp:q)st.insert(tmp);
+
+    REP(x,6)
+    {
+      REP(y,7)
+      {
+        REP(t,a)
+        {
+          for(auto it=st.begin();it!=st.end();it++)
+          {
+            ii tmp=*it;
+            if(!s[tmp.X][x][y]&&!p[tmp.Y][x][y])
+            {
+              s[tmp.X][x][y]=tmp.Y;
+              p[tmp.Y][x][y]=tmp.X;
+              st.erase(it);
+              break;
+            }
+          }
+        }
+      }
+    }
+    if(!SZ(st))cal();
+
+    FILL(s,0);FILL(p,0);FILL(cls,0);
+    st.clear();
+    for(ii &tmp:q)st.insert(ii(tmp.Y,tmp.X));
+
+    REP(x,6)
+    {
+      REP(y,7)
+      {
+        REP(t,a)
+        {
+          for(auto it=st.begin();it!=st.end();it++)
+          {
+            ii tmp=*it;
+            if(!s[tmp.Y][x][y]&&!p[tmp.X][x][y])
+            {
+              s[tmp.Y][x][y]=tmp.X;
+              p[tmp.X][x][y]=tmp.Y;
+              st.erase(it);
+              break;
+            }
+          }
+        }
+      }
+    }
+    if(!SZ(st))cal();
+
+    cout<<mn<<endl;
+    REP1(i,n)
+    {
+      cout<<endl;
+      REP(y,7)
+      {
+        REP(x,6)cout<<(x==0?"":" ")<<tmpans[i][x][y];
+        cout<<endl;
+      }
+    }
 }

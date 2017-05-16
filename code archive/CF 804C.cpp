@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -47,19 +48,54 @@ const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> v[MAXn];
+ll n,m;
+vector<ll> d[MAXn];
+ll ans[MAXn];
+ll mx=1;
+bool c[MAXn];
 
-ll ans[30];
+void dfs(ll now,ll f)
+{
+  for(ll k:d[now])if(ans[k])c[ans[k]]=1;
+  ll it=0;
+  for(ll k:d[now])
+  {
+    if(!ans[k])
+    {
+      while(++it&&c[it]);
+      ans[k]=it;
+    }
+  }
+  mx=max(mx,it);
+  for(ll k:d[now])c[ans[k]]=0;
+  for(ll k:v[now])if(k!=f)dfs(k,now);
+}
+
 int main()
 {
     IOS();
-    ll a,b;
-    cin>>a>>b;
-    for(ll i=a;i<=b;i++)
+    cin>>n>>m;
+    REP(i,n)
     {
-      for(ll j=0,I=i;I>0;I/=3,j++)ans[j]=(ans[j]+I%3)%3;
+      ll s;
+      cin>>s;
+      REP(j,s)
+      {
+        ll tmp;
+        cin>>tmp;
+        d[i].pb(tmp-1);
+      }
     }
-    pary(ans,ans+30);
-    ll t=0;
-    for(ll i=29;i>=0;i--)t=t*3+ans[i]%3;
-    cout<<t<<endl;
+    REP(i,n-1)
+    {
+      ll a,b;
+      cin>>a>>b;
+      a--;b--;
+      v[a].pb(b);
+      v[b].pb(a);
+    }
+    dfs(0,-1);
+    cout<<mx<<endl;
+    REP(i,m)cout<<(ans[i]?ans[i]:1)<<" ";
 }

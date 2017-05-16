@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -43,23 +44,21 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+string a,b,c;
 
-ll ans[30];
 int main()
 {
     IOS();
-    ll a,b;
     cin>>a>>b;
-    for(ll i=a;i<=b;i++)
+    c=a;
+    REP(i,SZ(a))
     {
-      for(ll j=0,I=i;I>0;I/=3,j++)ans[j]=(ans[j]+I%3)%3;
+      if(b[i]>a[i]){cout<<-1<<endl;return 0;}
+      else c[i]=b[i];
     }
-    pary(ans,ans+30);
-    ll t=0;
-    for(ll i=29;i>=0;i--)t=t*3+ans[i]%3;
-    cout<<t<<endl;
+    cout<<c<<endl;
 }

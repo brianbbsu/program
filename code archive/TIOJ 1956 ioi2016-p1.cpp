@@ -32,34 +32,66 @@ template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
-#define IOS()
+template<typename _t>
+struct ary
+{
+    _t _a,_b;
+    ary(_t _ai,_t _bi):_a(_ai),_b(_bi){}
+};
 #else
 #define debug(...)
-#define pary(...)
-#define endl '\n'
-#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
+//#define endl '\n'
 #endif // brian
 //}
 
-
-const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(10*MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+#ifndef brian
+//#include "lib1956.h"
+#endif
+ii d[MAXn];
+vector<int> ans;
+vector<int> find_subset(int l,int u,vector<int> w)
+{
 
-ll ans[30];
+    int n=w.size();
+    REP(i,n)d[i].X=w[i],d[i].Y=i;
+    sort(d,d+n);
+    ll s=0;
+    ll itl=0,itr=0;
+    s=0;
+    ans.clear();
+    while((s<l||s>u))
+    {
+        if(s<l)
+        {
+            if(itr<n)s+=d[itr++].X;
+            else return ans;
+        }
+        else s-=d[itl++].X;
+        debug(s);
+    }
+    ll t=0;
+    for(;itl!=itr;itl++)ans.pb(d[itl].Y);
+    return ans;
+}
+
+#ifdef brian
+
+
 int main()
 {
-    IOS();
-    ll a,b;
-    cin>>a>>b;
-    for(ll i=a;i<=b;i++)
-    {
-      for(ll j=0,I=i;I>0;I/=3,j++)ans[j]=(ans[j]+I%3)%3;
-    }
-    pary(ans,ans+30);
-    ll t=0;
-    for(ll i=29;i>=0;i--)t=t*3+ans[i]%3;
-    cout<<t<<endl;
+    ios_base::sync_with_stdio(0);cin.tie(0);
+    int l,u,n;
+    cin>>l>>u>>n;
+    int d[n];
+    int r[n];
+    REP(i,n)cin>>d[i];
+    ll k=find_subset(l,u,d,n,r);
+    debug(k);
+    _OUTC(cout,r,r+k);
+    cout<<endl;
 }
+#endif // brian
