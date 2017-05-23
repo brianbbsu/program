@@ -1,5 +1,15 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
 using namespace std;
 typedef long long ll;
 typedef double lf;
@@ -44,88 +54,13 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-vector<ii> v[MAXn];
-vector<ii> e;
-ll d[MAXn*MAXn];
-ll it[MAXn];
-
-ll dg[MAXn];
-
-bool vis[MAXn];
-vector<ll> od;
-
-
-void dfs(ll now)
-{
-
-  vis[now]=1;
-  if(dg[now]%2==1)od.pb(now);
-  for(auto &k:v[now])if(!vis[k.X])dfs(k.X);
-}
-
-void build(ll now)
-{
-  while(1){
-  while(it[now]<SZ(v[now])&&d[v[now][it[now]].Y]!=-1)it[now]++;
-  if(it[now]==SZ(v[now]))return;
-  auto &k=v[now][it[now]];
-  d[k.Y]=(now==e[k.Y].X?0:1);
-  build(k.X);
-  }
-}
-
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
-    while(T--&&cin>>n>>m)
-    {
-      REP1(i,n)v[i].clear();
-      e.clear();
-      FILL(d,-1);
-      FILL(it,0);
-      FILL(vis,0);
-      ll ans=n;
 
-      REP(i,m)
-      {
-        ll a,b;
-        cin>>a>>b;
-        e.pb(ii(a,b));
-        v[a].pb(ii(b,i));
-        v[b].pb(ii(a,i));
-      }
-      //e.pb(ii(-1,-1));
-      REP1(i,n)dg[i]=SZ(v[i]);
-      REP1(i,n)if(!vis[i])
-      {
-        od.clear();
-        dfs(i);
-        for(int j=0;j<SZ(od);j+=2)
-        {
-          e.pb(ii(od[j],od[j+1]));
-          v[od[j]].pb(ii(od[j+1],SZ(e)-1));
-          v[od[j+1]].pb(ii(od[j],SZ(e)-1));
-          d[SZ(e)-1]=-1;
-        }
-        ans-=SZ(od);
-        debug(i,od);
-        build(i);
-      }
-
-      cout<<ans<<endl;
-      REP(i,m)
-      {
-        if(d[i]==0)cout<<e[i].X<<" "<<e[i].Y<<endl;
-        else       cout<<e[i].Y<<" "<<e[i].X<<endl;
-      }
-
-    }
 }

@@ -44,88 +44,49 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll n,r;
+ll l[MAXn],t[MAXn];
+vector<ll> dt;
+ll ans=0;
 
-vector<ii> v[MAXn];
-vector<ii> e;
-ll d[MAXn*MAXn];
-ll it[MAXn];
-
-ll dg[MAXn];
-
-bool vis[MAXn];
-vector<ll> od;
-
-
-void dfs(ll now)
-{
-
-  vis[now]=1;
-  if(dg[now]%2==1)od.pb(now);
-  for(auto &k:v[now])if(!vis[k.X])dfs(k.X);
-}
-
-void build(ll now)
-{
-  while(1){
-  while(it[now]<SZ(v[now])&&d[v[now][it[now]].Y]!=-1)it[now]++;
-  if(it[now]==SZ(v[now]))return;
-  auto &k=v[now][it[now]];
-  d[k.Y]=(now==e[k.Y].X?0:1);
-  build(k.X);
-  }
-}
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
-    while(T--&&cin>>n>>m)
+    cin>>n>>r;
+    REP(i,n)cin>>l[i];
+    REP(i,n)
     {
-      REP1(i,n)v[i].clear();
-      e.clear();
-      FILL(d,-1);
-      FILL(it,0);
-      FILL(vis,0);
-      ll ans=n;
-
-      REP(i,m)
-      {
-        ll a,b;
-        cin>>a>>b;
-        e.pb(ii(a,b));
-        v[a].pb(ii(b,i));
-        v[b].pb(ii(a,i));
-      }
-      //e.pb(ii(-1,-1));
-      REP1(i,n)dg[i]=SZ(v[i]);
-      REP1(i,n)if(!vis[i])
-      {
-        od.clear();
-        dfs(i);
-        for(int j=0;j<SZ(od);j+=2)
-        {
-          e.pb(ii(od[j],od[j+1]));
-          v[od[j]].pb(ii(od[j+1],SZ(e)-1));
-          v[od[j+1]].pb(ii(od[j],SZ(e)-1));
-          d[SZ(e)-1]=-1;
-        }
-        ans-=SZ(od);
-        debug(i,od);
-        build(i);
-      }
-
-      cout<<ans<<endl;
-      REP(i,m)
-      {
-        if(d[i]==0)cout<<e[i].X<<" "<<e[i].Y<<endl;
-        else       cout<<e[i].Y<<" "<<e[i].X<<endl;
-      }
-
+      cin>>t[i];
+      if(t[i]<l[i]){cout<<-1<<endl;return 0;}
     }
+
+    ll mx=0,lt=0;
+    REP(i,n)
+    {
+      if(mx-lt>=l[i])lt+=l[i],mx=max(mx,lt);
+      else if(2*(l[i]-(mx-lt))+mx-lt<=t[i])lt+=2*(l[i]-(mx-lt))+mx-lt,mx=lt;
+      else
+      {
+        ll tmpl=l[i]-(mx-lt),tmpt=t[i]-(mx-lt);
+        lt=mx;
+        ll x=2*tmpl-tmpt;
+        if(x>0)
+        {
+          ll c=(x-1)/r+1;
+          ans+=(x-1)/r+1;
+          lt+=tmpt;
+          mx=lt-x+c*r;
+          if(ans<=100000)for(ll a=lt-x;a<lt;a+=r)dt.pb(a);
+        }
+      }
+    }
+    debug(mx,lt);
+    cout<<ans<<endl;
+    if(ans<=100000)for(ll k:dt)cout<<k<<" ";
+    cout<<endl;
 }

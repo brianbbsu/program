@@ -44,88 +44,51 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+bool d[MAXn][MAXn];
+ll pre[MAXn][MAXn];
+bool dp[MAXlg][MAXn][MAXn];
+ll r,c;
 
-vector<ii> v[MAXn];
-vector<ii> e;
-ll d[MAXn*MAXn];
-ll it[MAXn];
-
-ll dg[MAXn];
-
-bool vis[MAXn];
-vector<ll> od;
-
-
-void dfs(ll now)
+bool cal(ll a,ll b,ll c,ll d)
 {
-
-  vis[now]=1;
-  if(dg[now]%2==1)od.pb(now);
-  for(auto &k:v[now])if(!vis[k.X])dfs(k.X);
+  a++;b++;c++;d++;
+  return pre[c][d]-pre[a-1][d]-pre[c][b-1]+pre[a-1][b-1]==(c-a+1)*(d-b+1);
 }
-
-void build(ll now)
-{
-  while(1){
-  while(it[now]<SZ(v[now])&&d[v[now][it[now]].Y]!=-1)it[now]++;
-  if(it[now]==SZ(v[now]))return;
-  auto &k=v[now][it[now]];
-  d[k.Y]=(now==e[k.Y].X?0:1);
-  build(k.X);
-  }
-}
-
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
-    while(T--&&cin>>n>>m)
+    cin>>r>>c;
+    REP(i,r)
     {
-      REP1(i,n)v[i].clear();
-      e.clear();
-      FILL(d,-1);
-      FILL(it,0);
-      FILL(vis,0);
-      ll ans=n;
-
-      REP(i,m)
-      {
-        ll a,b;
-        cin>>a>>b;
-        e.pb(ii(a,b));
-        v[a].pb(ii(b,i));
-        v[b].pb(ii(a,i));
-      }
-      //e.pb(ii(-1,-1));
-      REP1(i,n)dg[i]=SZ(v[i]);
-      REP1(i,n)if(!vis[i])
-      {
-        od.clear();
-        dfs(i);
-        for(int j=0;j<SZ(od);j+=2)
-        {
-          e.pb(ii(od[j],od[j+1]));
-          v[od[j]].pb(ii(od[j+1],SZ(e)-1));
-          v[od[j+1]].pb(ii(od[j],SZ(e)-1));
-          d[SZ(e)-1]=-1;
-        }
-        ans-=SZ(od);
-        debug(i,od);
-        build(i);
-      }
-
-      cout<<ans<<endl;
-      REP(i,m)
-      {
-        if(d[i]==0)cout<<e[i].X<<" "<<e[i].Y<<endl;
-        else       cout<<e[i].Y<<" "<<e[i].X<<endl;
-      }
-
+      string s;
+      cin>>s;
+      REP(j,c)d[i][j]=(s[j]=='*'),pre[i+1][j+1]=d[i][j];
     }
+    REP1(i,r)REP1(j,c)pre[i][j]+=pre[i-1][j]+pre[i][j-1]-pre[i-1][j-1];
+
+    ll ans=0;
+
+    REP(I,16)
+    {
+      REP(i,r)REP(j,c)dp[0][i][j]=!d[i][j];
+      for(int it=1,l=2,h=1;l<=min(r,c);l<<=1,it++,h<<=1)
+      {
+        REP(i,r-l+1)REP(j,c-l+1)
+        {
+          ll a[4]={i,i+h,i+h,i},b[4]={j,j,j+h,j+h};
+          dp[it][i][j]=((I&1)?cal(a[0],b[0],a[0]+h-1,b[0]+h-1):dp[it-1][a[0]][b[0]])&&
+                    ((I&2)?cal(a[1],b[1],a[1]+h-1,b[1]+h-1):dp[it-1][a[1]][b[1]])&&
+                    ((I&4)?cal(a[2],b[2],a[2]+h-1,b[2]+h-1):dp[it-1][a[2]][b[2]])&&
+                    ((I&8)?cal(a[3],b[3],a[3]+h-1,b[3]+h-1):dp[it-1][a[3]][b[3]]);
+          if(it>1&&dp[it][i][j])debug(it,i,j,I);
+          if(it>1)ans+=dp[it][i][j];
+        }
+      }
+    }
+    cout<<ans<<endl;
+
 }

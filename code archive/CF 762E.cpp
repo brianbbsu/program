@@ -44,88 +44,69 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-vector<ii> v[MAXn];
-vector<ii> e;
-ll d[MAXn*MAXn];
-ll it[MAXn];
-
-ll dg[MAXn];
-
-bool vis[MAXn];
-vector<ll> od;
-
-
-void dfs(ll now)
+struct node
 {
-
-  vis[now]=1;
-  if(dg[now]%2==1)od.pb(now);
-  for(auto &k:v[now])if(!vis[k.X])dfs(k.X);
-}
-
-void build(ll now)
-{
-  while(1){
-  while(it[now]<SZ(v[now])&&d[v[now][it[now]].Y]!=-1)it[now]++;
-  if(it[now]==SZ(v[now]))return;
-  auto &k=v[now][it[now]];
-  d[k.Y]=(now==e[k.Y].X?0:1);
-  build(k.X);
+  ll l,r;
+  node *lc,*rc;
+  ll d;
+  node (ll li,ll ri):l(li),r(ri),lc(0),rc(0),d(0){}
+  void ins(int x)
+  {
+    if(l==r-1)d++;
+    else
+    {
+      if(x<(l+r)/2)
+      {
+        if(!lc)lc=new node(l,(l+r)/2);
+        lc->ins(x);
+      }
+      else
+      {
+        if(!rc)rc=new node((l+r)/2,r);
+        rc->ins(x);
+      }
+      d=(lc?lc->d:0)+(rc?rc->d:0);
+    }
+    //debug(l,r,x,d);
   }
-}
+  ll qr(ll li,ll ri)
+  {
+    debug(l,r,li,ri,d);
+    if(li>=r||ri<=l)return 0;
+    else if(li<=l&&ri>=r)return d;
+    else
+    {
+      ll t=0;
+      if(lc)t+=lc->qr(li,ri);
+      if(rc)t+=rc->qr(li,ri);
+      return t;
+    }
+  }
+};
 
+const ll MAXf=1e4+5,MAXc=1e9+5;
+node *rt[MAXf];
+ll p[MAXn],r[MAXn],f[MAXn];
+ll d[MAXn];
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
-    while(T--&&cin>>n>>m)
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n)cin>>p[i]>>r[i]>>f[i];
+    REP(i,n)d[i]=i;
+    sort(d,d+n,[](int a,int b){return r[a]>r[b];});
+    REP(i,MAXf)rt[i]=new node(0,MAXc);
+    ll ans=0;
+    REP(i,n)
     {
-      REP1(i,n)v[i].clear();
-      e.clear();
-      FILL(d,-1);
-      FILL(it,0);
-      FILL(vis,0);
-      ll ans=n;
-
-      REP(i,m)
-      {
-        ll a,b;
-        cin>>a>>b;
-        e.pb(ii(a,b));
-        v[a].pb(ii(b,i));
-        v[b].pb(ii(a,i));
-      }
-      //e.pb(ii(-1,-1));
-      REP1(i,n)dg[i]=SZ(v[i]);
-      REP1(i,n)if(!vis[i])
-      {
-        od.clear();
-        dfs(i);
-        for(int j=0;j<SZ(od);j+=2)
-        {
-          e.pb(ii(od[j],od[j+1]));
-          v[od[j]].pb(ii(od[j+1],SZ(e)-1));
-          v[od[j+1]].pb(ii(od[j],SZ(e)-1));
-          d[SZ(e)-1]=-1;
-        }
-        ans-=SZ(od);
-        debug(i,od);
-        build(i);
-      }
-
-      cout<<ans<<endl;
-      REP(i,m)
-      {
-        if(d[i]==0)cout<<e[i].X<<" "<<e[i].Y<<endl;
-        else       cout<<e[i].Y<<" "<<e[i].X<<endl;
-      }
-
+      for(int t=max(1LL,f[d[i]]-k);t<=f[d[i]]+k&&t<MAXf;t++)ans+=rt[t]->qr(max(0LL,p[d[i]]-r[d[i]]),min(MAXc,p[d[i]]+r[d[i]]+1));
+      rt[f[d[i]]]->ins(p[d[i]]);
     }
+    cout<<ans<<endl;
 }

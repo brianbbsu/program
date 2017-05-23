@@ -44,88 +44,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+string nm[MAXn];
+map<string,int> mp;
 
-vector<ii> v[MAXn];
-vector<ii> e;
-ll d[MAXn*MAXn];
-ll it[MAXn];
+bool f[MAXn];
+vector<ll> v[MAXn];
 
-ll dg[MAXn];
-
-bool vis[MAXn];
-vector<ll> od;
-
-
-void dfs(ll now)
-{
-
-  vis[now]=1;
-  if(dg[now]%2==1)od.pb(now);
-  for(auto &k:v[now])if(!vis[k.X])dfs(k.X);
-}
-
-void build(ll now)
-{
-  while(1){
-  while(it[now]<SZ(v[now])&&d[v[now][it[now]].Y]!=-1)it[now]++;
-  if(it[now]==SZ(v[now]))return;
-  auto &k=v[now][it[now]];
-  d[k.Y]=(now==e[k.Y].X?0:1);
-  build(k.X);
-  }
-}
-
+ll n=0,m;
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
-    while(T--&&cin>>n>>m)
+    cin>>m;
+    REP(i,m)
     {
-      REP1(i,n)v[i].clear();
-      e.clear();
-      FILL(d,-1);
-      FILL(it,0);
-      FILL(vis,0);
-      ll ans=n;
-
-      REP(i,m)
+      string a,b;
+      cin>>a>>b;
+      if(!mp.count(a))nm[n]=a,mp[a]=n++;
+      if(!mp.count(b))nm[n]=b,mp[b]=n++;
+      v[mp[a]].pb(mp[b]);
+      v[mp[b]].pb(mp[a]);
+    }
+    cout<<n<<endl;
+    REP(i,n)
+    {
+      cout<<nm[i]<<" ";
+      for(ll k:v[i])f[k]=1;
+      ll mx=0,p=0;
+      REP(j,n)
       {
-        ll a,b;
-        cin>>a>>b;
-        e.pb(ii(a,b));
-        v[a].pb(ii(b,i));
-        v[b].pb(ii(a,i));
+        if(j==i||f[j])continue;
+        ll c=0;
+        for(ll k:v[j])if(f[k])c++;
+        if(c==mx)p++;
+        else if(c>mx)mx=c,p=1;
       }
-      //e.pb(ii(-1,-1));
-      REP1(i,n)dg[i]=SZ(v[i]);
-      REP1(i,n)if(!vis[i])
-      {
-        od.clear();
-        dfs(i);
-        for(int j=0;j<SZ(od);j+=2)
-        {
-          e.pb(ii(od[j],od[j+1]));
-          v[od[j]].pb(ii(od[j+1],SZ(e)-1));
-          v[od[j+1]].pb(ii(od[j],SZ(e)-1));
-          d[SZ(e)-1]=-1;
-        }
-        ans-=SZ(od);
-        debug(i,od);
-        build(i);
-      }
-
-      cout<<ans<<endl;
-      REP(i,m)
-      {
-        if(d[i]==0)cout<<e[i].X<<" "<<e[i].Y<<endl;
-        else       cout<<e[i].Y<<" "<<e[i].X<<endl;
-      }
-
+      cout<<p<<endl;
+      for(ll k:v[i])f[k]=0;
     }
 }

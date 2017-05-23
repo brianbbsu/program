@@ -55,4 +55,6 @@ int main()
     cin>>s;
     for(int i=0;i<SZ(s);i+=2)d.pb(s[i]);
     sort(ALL(d));
+    for(int i=0;i<SZ(s);i+=2)s[i]=d[i/2];
+    cout<<s<<endl;
 }

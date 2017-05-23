@@ -49,17 +49,19 @@ const ll INF=ll(1e15);
 
 vector<ll> v[MAXn];
 ll d[MAXn];
-priority_queue<ii> pq;
 ll n;
 
-ll ans=-INF;
-void ad(ll x)
+map<ll,ll> mp;
+
+void ad(int k)
 {
-  if(d[x]!=-INF)
-  {
-    d[x]++;
-    pq.push(ii(d[x],x));
-  }
+  if(!mp.count(k))mp[k]=1;
+  else mp[k]++;
+}
+void rm(int k)
+{
+  if(mp[k]==1)mp.erase(k);
+  else mp[k]--;
 }
 int main()
 {
@@ -74,23 +76,27 @@ int main()
       v[a].pb(b);
       v[b].pb(a);
     }
-    ll mx=-INF,id=-1;
-    REP(i,n)if(d[i]>mx)mx=d[i],id=i;
-    pq.push(ii(mx,id));
-    while(SZ(pq))
+    REP(i,n)ad(d[i]);
+
+    ll ans=INF;
+    REP(i,n)
     {
-      while(SZ(pq)&&d[pq.top().Y]==-INF)pq.pop();
-      if(!SZ(pq))break;
-      ll x=pq.top().Y;
-      pq.pop();
-      ans=max(ans,d[x]);
-      d[x]=-INF;
-      for(ll k:v[x])
+      ll tmp=d[i];
+      rm(d[i]);
+      for(ll k:v[i])
       {
-        if(d[k]==-INF)continue;
-        ad(k);
-        for(ll t:v[k])ad(t);
+        tmp=max(tmp,d[k]+1);
+        rm(d[k]);
       }
+      if(SZ(mp))
+      {
+        auto it=mp.end();
+        it--;
+        tmp=max(tmp,(*it).X+2);
+      }
+      for(ll k:v[i])ad(d[k]);
+      ad(d[i]);
+      ans=min(ans,tmp);
     }
     cout<<ans<<endl;
 }

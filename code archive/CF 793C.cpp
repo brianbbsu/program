@@ -44,88 +44,61 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+lf u,d,l,r;
+lf vx[MAXn],vy[MAXn];
+lf px[MAXn],py[MAXn];
+ll n;
 
-vector<ii> v[MAXn];
-vector<ii> e;
-ll d[MAXn*MAXn];
-ll it[MAXn];
+lf mn[MAXn],mx[MAXn];
 
-ll dg[MAXn];
-
-bool vis[MAXn];
-vector<ll> od;
-
-
-void dfs(ll now)
+pair<lf,lf> cal(int i,lf t)
 {
-
-  vis[now]=1;
-  if(dg[now]%2==1)od.pb(now);
-  for(auto &k:v[now])if(!vis[k.X])dfs(k.X);
+  return make_pair(px[i]+vx[i]*t,py[i]+vy[i]*t);
 }
-
-void build(ll now)
+lf calx(int i,lf x)
 {
-  while(1){
-  while(it[now]<SZ(v[now])&&d[v[now][it[now]].Y]!=-1)it[now]++;
-  if(it[now]==SZ(v[now]))return;
-  auto &k=v[now][it[now]];
-  d[k.Y]=(now==e[k.Y].X?0:1);
-  build(k.X);
-  }
+  return (x-px[i])/vx[i];
 }
-
+lf caly(int i,lf y)
+{
+  return (y-py[i])/vy[i];
+}
+void qt()
+{
+  cout<<-1<<endl;
+  exit(0);
+}
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
-    while(T--&&cin>>n>>m)
+    cin>>n;
+    cin>>l>>d>>r>>u;
+    REP(i,n)cin>>px[i]>>py[i]>>vx[i]>>vy[i];
+    REP(i,n)
     {
-      REP1(i,n)v[i].clear();
-      e.clear();
-      FILL(d,-1);
-      FILL(it,0);
-      FILL(vis,0);
-      ll ans=n;
-
-      REP(i,m)
-      {
-        ll a,b;
-        cin>>a>>b;
-        e.pb(ii(a,b));
-        v[a].pb(ii(b,i));
-        v[b].pb(ii(a,i));
-      }
-      //e.pb(ii(-1,-1));
-      REP1(i,n)dg[i]=SZ(v[i]);
-      REP1(i,n)if(!vis[i])
-      {
-        od.clear();
-        dfs(i);
-        for(int j=0;j<SZ(od);j+=2)
-        {
-          e.pb(ii(od[j],od[j+1]));
-          v[od[j]].pb(ii(od[j+1],SZ(e)-1));
-          v[od[j+1]].pb(ii(od[j],SZ(e)-1));
-          d[SZ(e)-1]=-1;
-        }
-        ans-=SZ(od);
-        debug(i,od);
-        build(i);
-      }
-
-      cout<<ans<<endl;
-      REP(i,m)
-      {
-        if(d[i]==0)cout<<e[i].X<<" "<<e[i].Y<<endl;
-        else       cout<<e[i].Y<<" "<<e[i].X<<endl;
-      }
-
+      lf t;
+      t=max(min(calx(i,l),calx(i,r)),min(caly(i,d),caly(i,u)));
+      mn[i]=t;
+      t=min(max(calx(i,l),calx(i,r)),max(caly(i,d),caly(i,u)));
+      mx[i]=t;
+      //debug(i,mx[i],mn[i]);
+      if(mx[i]<mn[i]-1e-7)qt();
     }
+    lf ans=mn[0];
+    REP(i,n)ans=max(ans,mn[0]);
+    ans=max(ans,0.0);
+    REP(i,n)if(ans>mx[i]+1e-7)qt();
+
+    //cout<<123<<endl;
+    REP(i,n)
+    {
+      lf x=px[i]+vx[i]*ans;
+      lf y=py[i]+vy[i]*ans;
+      if(!(x<=r+1e-7&&x>=l-1e-7&&y>=d-1e-7&&y<=u+1e-7))qt();
+    }
+    cout<<fixed<<setprecision(10)<<ans<<endl;
 }
