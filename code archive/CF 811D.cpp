@@ -38,64 +38,114 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-#define endl '\n'
+//#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e1+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-ll dt[MAXn][MAXn];
-ll cnt;
-void et(ll a){cout<<a<<endl;exit(0);}
+ll d[MAXn][MAXn];
+ll f[MAXn][MAXn];
+queue<ii> q;
+ll n,m;
+
+vector<ll> st;
+ii e;
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    ll n,m;
+    FILL(f,-1);
+    FILL(d,0);
     cin>>n>>m;
     REP(i,n)
     {
       string s;
       cin>>s;
-      REP(j,m)dt[i+1][j+1]=(s[j]=='*');
-    }
-    cnt=n*m-1;
-    if((n==2&&m==2)||(n==1&&m==1))
-    {
-      ll c;
-      cin>>c;
-      if(c==-1)et(1);
-      else et(0);
-    }
-
-    ll t;
-    cin>>t;
-    if(t==-1)et(0);
-    REP(i,t)
-    {
-      ll a,b,c,d;
-      cin>>a>>b>>c>>d;
-      if((a==c&&abs(b-d)==1)||(b==d&&abs(a-c)==1))
+      REP(j,m)
       {
-        if(dt[a][b]+dt[c][d]!=1)et(0);
-        else swap(dt[a][b],dt[c][d]);
+        if(s[j]=='.')d[i+1][j+1]=1;
+        else if(s[j]=='F')d[i+1][j+1]=2,e=ii(i+1,j+1);
       }
-      else if((a==c&&abs(b-d)==2)||(b==d&&abs(a-c)==2))
-      {
-        if(!(dt[(a+c)/2][(b+d)/2]==1&&dt[a][b]+dt[c][d]==1))et(0);
-        cnt--;
-        swap(dt[a][b],dt[c][d]);
-        dt[(a+c)/2][(b+d)/2]=0;
-      }
-      else et(0);
     }
-    if(cnt!=1)et(0);
-    et(1);
-
+    q.push(ii(1,1));
+    f[1][1]=0;
+    debug(2);
+    while(SZ(q))
+    {
+      debug(1);
+      if(!SZ(q))break;
+      ll x=q.front().X;
+      ll y=q.front().Y;
+      q.pop();
+      if(d[x][y]==2)break;
+      ll dx[4]={1,-1,0,0};
+      ll dy[4]={0,0,1,-1};
+      REP(i,4)
+      {
+        if(d[x+dx[i]][y+dy[i]]&&f[x+dx[i]][y+dy[i]]==-1)
+        {
+          f[x+dx[i]][y+dy[i]]=i;
+          q.push(ii(x+dx[i],y+dy[i]));
+        }
+      }
+    }
+    debug(3);
+    ll dx[4]={-1,1,0,0},dy[4]={0,0,-1,1};
+    ll x=e.X,y=e.Y;
+    while(ii(x,y)!=ii(1,1))
+    {
+      debug(x,y);
+      st.pb(f[x][y]);
+      ll t=f[x][y];
+      x=x+dx[t];
+      y=y+dy[t];
+    }
+    reverse(ALL(st));
+    debug(st);
+    ll a=-1,b=-1;
+    x=1,y=1;
+    for(ll k:st)
+    {
+      ll c,d;
+      if(k==0||k==1)
+      {
+        if(a==-1)
+        {
+          cout<<'D'<<endl;
+          cin>>c>>d;
+          if(x!=c||y!=d)
+          {
+            x=c;y=d;
+            a=0;
+            continue;
+          }
+          else a=1;
+        }
+        if(a==0)cout<<(k==0?'D':'U')<<endl;
+        else cout<<(k==1?'D':'U')<<endl;
+      }
+      else
+      {
+        if(b==-1)
+        {
+          cout<<'R'<<endl;
+          cin>>c>>d;
+          if(x!=c||y!=d)
+          {
+            x=c;y=d;
+            b=0;
+            continue;
+          }
+          else b=1;
+        }
+        if(b==0)cout<<(k==2?'R':'L')<<endl;
+        else cout<<(k==3?'R':'L')<<endl;
+      }
+      cin>>x>>y;
+    }
 }

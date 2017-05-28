@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -33,29 +34,41 @@ template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
+#define IOS()
 #else
 #define debug(...)
 #define pary(...)
 #define endl '\n'
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+1;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll n;
-string s;
+ll d[12][MAXn];
+ll n,m;
+bool ct[12][12][MAXn][MAXlg][2];
 int main()
 {
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    cin>>n;
-    REP(i,n)
+    IOS();
+    cin>>n>>m;
+    REP(i,n)REP(j,m)cin>>d[i][j];
+    REP(k,m)
     {
-      cin>>s;
-      if(s.length()<=10)cout<<s<<endl;
-      else cout<<s[0]<<s.length()-2<<s[s.length()-1]<<endl;
-
+      REP(i,n)for(int j=i;j<n;j++)REP(b,2)
+      {
+        if(i==j)ct[i][j][k][0][b]=1;
+        else ct[i][j][k][b]=ct[i][j-1][k][b]&&(d[j-1][k]==d[j][k]);
+      }
+    }
+    REP1(l,MAXlg-1)for(int k=0;k+(1<<l)<=n;k++)
+    {
+        REP(i,n)for(int j=i;j<n;j++)
+        {
+          ct[i][j][k][l][0]=ct[i][j][k][l-1][0]||()
+        }
     }
 }

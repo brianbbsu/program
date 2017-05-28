@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -33,10 +34,12 @@ template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
+#define IOS()
 #else
 #define debug(...)
 #define pary(...)
 #define endl '\n'
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
@@ -45,17 +48,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll n;
-string s;
+
 int main()
 {
-    ios_base::sync_with_stdio(0);cin.tie(0);
+    IOS();
+    ll n;
+    ll a=0,b=0;
     cin>>n;
+    n/=2;
     REP(i,n)
     {
-      cin>>s;
-      if(s.length()<=10)cout<<s<<endl;
-      else cout<<s[0]<<s.length()-2<<s[s.length()-1]<<endl;
-
+      ll t;
+      cin>>t;
+      a+=t;
     }
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      b+=t;
+    }
+    cout<<abs(a-b)<<endl;
 }

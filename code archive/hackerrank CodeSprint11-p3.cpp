@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -33,10 +34,12 @@ template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
+#define IOS()
 #else
 #define debug(...)
 #define pary(...)
 #define endl '\n'
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
@@ -45,17 +48,83 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll n;
-string s;
+map<string,set<int> > mp;
+typedef pair<string,int> si;
+map<string,si > dt;
+
+
+void ad(string &a)
+{
+  auto t=mp.find(a);
+  if(t==mp.end())
+  {
+    mp[a].insert(1);
+    cout<<a<<endl;
+    dt[a]=si(a,0);
+  }
+  else
+  {
+    set<int> &st=(*t).Y;
+    int tmp=*st.begin();
+    st.erase(tmp);
+    if(tmp==0)
+    {
+      cout<<a<<endl;
+      dt[a]=si(a,0);
+    }
+    else
+    {
+      stringstream ss;
+      ss<<a<<"("<<tmp<<")";
+      string b;
+      ss>>b;
+      cout<<b<<endl;
+      dt[b]=si(a,tmp);
+    }
+    if(st.empty())st.insert(tmp+1);
+  }
+}
+void del(string &a)
+{
+  auto it=dt.find(a);
+  string b=(*it).Y.X;
+  int tmp=(*it).Y.Y;
+  dt.erase(it);
+  mp[b].insert(tmp);
+  cout<<a;
+}
 int main()
 {
-    ios_base::sync_with_stdio(0);cin.tie(0);
-    cin>>n;
-    REP(i,n)
+    IOS();
+    ll q;
+    cin>>q;
+    REP(i,q)
     {
-      cin>>s;
-      if(s.length()<=10)cout<<s<<endl;
-      else cout<<s[0]<<s.length()-2<<s[s.length()-1]<<endl;
-
+      string t;
+      cin>>t;
+      if(t[0]=='c')
+      {
+        string a;
+        cin>>a;
+        cout<<"+ ";
+        ad(a);
+      }
+      else if(t[0]=='d')
+      {
+        string a;
+        cin>>a;
+        cout<<"- ";
+        del(a);
+        cout<<endl;
+      }
+      else
+      {
+        string a,b;
+        cin>>a>>b;
+        cout<<"r ";
+        del(a);
+        cout<<" -> ";
+        ad(b);
+      }
     }
 }

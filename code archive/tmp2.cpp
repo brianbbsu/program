@@ -1,65 +1,92 @@
-//{
-#include<bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+
+
 using namespace std;
-typedef long long ll;
-typedef double lf;
-typedef pair<ll,ll> ii;
-#define REP(i,n) for(ll i=0;i<n;i++)
-#define FILL(i,n) memset(i,n,sizeof i)
-#define X first
-#define Y second
-#define SZ(_a) (int)_a.size()
-#define ALL(_a) _a.begin(),_a.end()
-#define pb push_back
-#ifdef brian
-#define debug(...) do{\
-    fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
-    _do(__VA_ARGS__);\
-}while(0)
-template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
-template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
-template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
-template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
-{
-    _s<<"{";
-    for(It _it=_ita;_it!=_itb;_it++)
-    {
-        _s<<(_it==_ita?"":",")<<*_it;
-    }
-    _s<<"}";
-    return _s;
+
+int getNum(string &inp,int pos){
+	if(pos>inp.length())return 0;
+	int len = inp.length();
+	stringstream ss;
+	ss<<inp[len-pos];
+	int out;
+	ss>>out;
+	return out;
 }
-template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
-#define IOS()
-#else
-#define debug(...)
-#define pary(...)
-#define endl '\n'
-#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
-#endif // brian
-//}
+string addBigNum(string &a,string &b){
+	int add=0;
+	int digi=1;
+	string c="";
+	while(digi<=a.length()||digi<=b.length()||add>0){
+		int ad = getNum(a,digi);
+		int bd = getNum(b,digi);
+		int sum = ad + bd + add;
 
 
-const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
-const ll INF=ll(1e15);
+		stringstream ss;
+		ss<<sum%10;
+		string tmpString;
+		ss>>tmpString;
+
+		c = tmpString + c;
+
+		add = sum/10;
+
+		digi++;
+	}
+	return c;
+}
+string timeBigNum(string a,string b){
+	string op;
+	op = "0";
+	for(int i=1;i<=b.length();i++){
+		int bSub = getNum(b,i);
+		string total = "";
+
+		int digi=1;
+		int add=0;
+		while(digi<=a.length()||add>0){
+			int aSub = getNum(a,digi);
+			int cal = aSub * bSub + add;
+			add = cal/10;
+
+			string tmpStr;
+
+			stringstream ss;
+			ss<<cal%10;
+			ss>>tmpStr;
+
+			total= tmpStr+total;
 
 
-ll ans[30];
-int main()
-{
-    IOS();
-    ll a,b;
-    cin>>a>>b;
-    for(ll i=a;i<=b;i++)
-    {
-      for(ll j=0,I=i;I>0;I/=3,j++)ans[j]=(ans[j]+I%3)%3;
-    }
-    pary(ans,ans+30);
-    ll t=0;
-    for(ll i=29;i>=0;i--)t=t*3+ans[i]%3;
-    cout<<t<<endl;
+			digi++;
+		}
+
+		for(int j=1;j<i;j++){
+			total+= "0";
+		}
+
+		op= addBigNum(op,total);
+	}
+	return op;
+}
+int main(){
+	int x;
+	cin>>x;
+
+	string out="1";
+	for(int i=2;i<=x;i++){
+		stringstream ss;
+		ss<<i;
+		string tempStr;
+		ss>>tempStr;
+		out = timeBigNum(out,tempStr);
+	}
+
+	cout<<out<<endl;
+
+
+
+	//cout<<addBigNum(a,b)<<endl;
 }
