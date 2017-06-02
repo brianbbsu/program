@@ -48,12 +48,56 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> v[MAXn];
 
+map<ll,ll> cnt;
+bool h[MAXn];
+ll d[MAXn];
+ll c=0;
+ll tt=0;
+void dfs(ll now,ll f)
+{
+  for(ll k:v[now])
+  {
+    if(k==f)continue;
+    dfs(k,now);
+    if(!h[k])h[now]=1;
+  }
+  if(!h[now])
+  {
+    c++;
+    if(cnt.count(d[now]))cnt[d[now]]++;
+    else cnt[d[now]]=1;
+    tt^=d[now];
+  }
+}
 
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    REP1(i,n-1)
+    {
+      ll a;
+      cin>>a;
+      a--;
+      v[a].pb(i);
+    }
+    dfs(0,-1);
+    ll ans=0;
+    REP(i,n)
+    {
+      if(!h[i])
+      {
+        //if(tt==0)ans+=c-1;
+      }
+      else
+      {
+        if(cnt.count(tt^d[i]))ans+=cnt[tt^d[i]];
+      }
+    }
+    if(tt==0)ans+=c*(c-1)/2+(n-c)*(n-c-1)/2;
+    cout<<ans<<endl;
 }

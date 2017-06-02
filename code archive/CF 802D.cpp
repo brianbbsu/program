@@ -44,16 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+int d[MAXn];
 
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    ll T;
+    cin>>T;
+
+    while(T--)
+    {
+
+      REP(i,250)cin>>d[i];
+      int s=0;
+      REP(i,250)s+=d[i];
+      double P=s/250.0;
+      double t=0;
+      REP(i,250)t+=(P-d[i])*(P-d[i]);
+      debug(t,s);
+      t/=250.0;
+      if(t<P*2)puts("poisson");
+      else puts("uniform");
+    }
 }

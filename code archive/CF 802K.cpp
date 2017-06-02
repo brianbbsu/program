@@ -48,12 +48,41 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll dp[MAXn][2];
+vector<ii> v[MAXn];
+ll n,k;
 
+vector<ii> dt[MAXn];
 
+void dfs(ll now,ll f)
+{
+  for(ii t:v[now])
+  {
+    if(t.X==f)continue;
+    dfs(t.X,now);
+    dt[now].pb(ii(dp[t.X][0]+t.Y,dp[t.X][1]+t.Y));
+  }
+  sort(ALL(dt[now]),greater<ii>() );
+  REP(i,min(k-1,ll(SZ(dt[now]))))dp[now][0]+=dt[now][i].X;
+  if(SZ(dt[now])<=k-1)REP(i,SZ(dt[now]))dp[now][1]=max(dp[now][1],dp[now][0]-dt[now][i].X+dt[now][i].Y);
+  else
+  {
+    REP(i,SZ(dt[now]))if(i<k-1)dp[now][1]=max(dp[now][1],dp[now][0]-dt[now][i].X+dt[now][i].Y+dt[now][k-1].X);
+                      else     dp[now][1]=max(dp[now][1],dp[now][0]+dt[now][i].Y);
+  }
+}
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    cin>>n>>k;
+    REP(i,n-1)
+    {
+      ll a,b,c;
+      cin>>a>>b>>c;
+      v[a].pb(ii(b,c));
+      v[b].pb(ii(a,c));
+    }
+    dfs(0,-1);
+    REP(i,n)debug(i,dp[i][0],dp[i][1]);
+    cout<<dp[0][1]<<endl;
 }

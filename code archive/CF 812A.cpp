@@ -48,12 +48,21 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
-
+bool d[4],p[4];
+ll dt[3][4]={{3,0,1,2},{2,3,0,1},{1,2,3,0}};
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    REP(i,4)
+    {
+      bool t;
+      REP(j,3)
+      {
+        cin>>t;
+        if(t)d[i]=d[dt[j][i]]=1;
+      }
+      cin>>p[i];
+    }
+    REP(i,4)if(p[i]&&d[i]){puts("YES");return 0;}
+    puts("NO");
 }

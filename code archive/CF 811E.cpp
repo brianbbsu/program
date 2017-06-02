@@ -44,31 +44,120 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+1;
+const ll MAXn=12,MAXm=1e5+5,MAXc=1e6+5,MAXlg=__lg(MAXm)+1;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[12][MAXn];
 ll n,m;
-bool ct[12][12][MAXn][MAXlg][2];
+ll d[MAXn][MAXm];
+
+struct tg{
+  ll id,clr;
+  tg(ll idi=0,ll clri=0):id(idi),clr(clri){}
+};
+
+ll g[MAXn*MAXm];
+
+int fd(ll a){return g[a]=(g[a]==a?a:fd(g[a]));}
+inline void mg(ll a,ll b){g[fd(a)]=fd(b);}
+
+int mg(tg *la,tg *ra,tg *lb,tg *rb,tg *l,tg *r)
+{
+  int rt=0;
+
+  REP(i,n)g[la[i].id]=la[i].id,g[lb[i].id]=lb[i].id,g[ra[i].id]=ra[i].id,g[rb[i].id]=rb[i].id;
+
+
+  REP(i,n)
+  {
+    if(ra[i].clr==lb[i].clr)
+    {
+        if(fd(ra[i].id)!=fd(lb[i].id))
+        {
+          mg(ra[i].id,lb[i].id);
+          rt--;
+        }
+    }
+  }
+  REP(i,n)
+  {
+    l[i]=tg(fd(la[i].id),la[i].clr);
+    r[i]=tg(fd(rb[i].id),rb[i].clr);
+  }
+
+  return rt;
+}
+ll idit=0,ans;
+struct node{
+  ll l,r;
+  node *lc,*rc;
+  ll cnt;
+  tg ld[MAXn],rd[MAXn],rld[MAXn],rrd[MAXn];
+  node(ll li,ll ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci),cnt(0)
+  {
+    if(l==r-1)
+    {
+      REP(i,n)
+      {
+        if(i==0||d[i][l]!=d[i-1][l])ld[i]=rd[i]=tg(idit++,d[i][l]),cnt++;
+        else ld[i]=rd[i]=tg(ld[i-1].id,d[i][l]);
+      }
+    }
+    else
+    {
+      cnt=lc->cnt+rc->cnt+mg(lc->ld,lc->rd,rc->ld,rc->rd,ld,rd);
+    }
+    //debug(li,ri,cnt);
+    //REP(i,n)debug(i,ld[i].id,rd[i].id);
+  }
+  pair<tg*,tg*> qr(ll li,ll ri,ll lv)
+  {
+    debug(l,r,li,ri);
+    ll h=(l+r)/2;
+    if(li<=l&&ri>=r)
+    {
+      ans+=cnt;
+
+      return make_pair(ld,rd);
+    }
+    else if(li>=h)return rc->qr(li,ri,lv+1);
+    else if(ri<=h)return lc->qr(li,ri,lv+1);
+    else
+    {
+      auto a=lc->qr(li,ri,lv+1);
+      auto b=rc->qr(li,ri,lv+1);
+
+      pair<tg*,tg*> tmp=make_pair(rld,rrd);
+      ans+=mg(a.X,a.Y,b.X,b.Y,tmp.X,tmp.Y);
+      return tmp;
+    }
+  }
+};
+
+
+node *build(ll l,ll r)
+{
+  if(l==r-1)return new node(l,r);
+  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
+}
+node *rt=0;
 int main()
 {
     IOS();
-    cin>>n>>m;
+    ll q;
+    cin>>n>>m>>q;
     REP(i,n)REP(j,m)cin>>d[i][j];
-    REP(k,m)
+    rt=build(0,m);
+
+
+    REP(i,q)
     {
-      REP(i,n)for(int j=i;j<n;j++)REP(b,2)
-      {
-        if(i==j)ct[i][j][k][0][b]=1;
-        else ct[i][j][k][b]=ct[i][j-1][k][b]&&(d[j-1][k]==d[j][k]);
-      }
-    }
-    REP1(l,MAXlg-1)for(int k=0;k+(1<<l)<=n;k++)
-    {
-        REP(i,n)for(int j=i;j<n;j++)
-        {
-          ct[i][j][k][l][0]=ct[i][j][k][l-1][0]||()
-        }
+      ll l,r;
+      cin>>l>>r;
+      l--;
+      ans=0;
+      debug("qr",l,r);
+      rt->qr(l,r,0);
+      cout<<ans<<endl;
     }
 }

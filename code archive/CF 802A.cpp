@@ -48,12 +48,29 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+ll n,k;
+ll d[MAXn];
+set<ll> st,tmpst;
 
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    cin>>n>>k;
+    REP(i,n)cin>>d[i];
+    ll ans=0;
+    REP(i,n)
+    {
+      if(st.count(d[i]))continue;
+      if(SZ(st)<k)st.insert(d[i]),ans++;
+      else
+      {
+        tmpst=st;
+        for(int j=i+1;j<n&&SZ(tmpst)>1;j++)if(tmpst.count(d[j]))tmpst.erase(d[j]);
+        st.erase(*tmpst.begin());
+        st.insert(d[i]);
+        ans++;
+      }
+    }
+    cout<<ans<<endl;
+
 }

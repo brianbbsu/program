@@ -44,16 +44,42 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+bool d[MAXn][MAXn];
+ll dp[MAXn][2];
 
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    ll n,m;
+    cin>>n>>m;
+    ll mx=-1;
+    for(int i=n;i>0;i--)
+    {
+      string s;
+      cin>>s;
+      REP(j,m+2)d[i][j]=s[j]-'0';
+      REP(j,m+2)if(d[i][j]&&mx==-1)mx=i;
+    }
+    n=mx;
+    dp[0][1]=INF;
+    REP1(i,n)
+    {
+      ll l=0;
+      while(l<m+2&&!d[i][l])l++;
+      debug(i,1,l);
+      if(l==m+2){dp[i][0]=dp[i-1][0];dp[i][1]=dp[i-1][1];continue;}
+      if(i!=n)dp[i][1]=min(dp[i-1][0]+m+1,dp[i-1][1]+(m+1-l)*2);
+      else dp[i][1]=dp[i-1][1]+(m+1-l);
+      l=m+2-1;
+      while(l>=0&&!d[i][l])l--;
+      debug(i,2,l);
+      if(i!=n)dp[i][0]=min(dp[i-1][1]+m+1,dp[i-1][0]+l*2);
+      else dp[i][0]=dp[i-1][0]+l;
+    }
+    REP1(i,n)debug(i,dp[i][0],dp[i][1]);
+    cout<<min(dp[n][0],dp[n][1])+max(n-1,0LL)<<endl;
 }

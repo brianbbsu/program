@@ -49,11 +49,14 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    string a;
+    cin>>a;
+    string b="heidi";
+    ll t=0;
+    REP(i,SZ(a))if(t<5&&a[i]==b[t])t++;
+    if(t==5)puts("YES");
+    else puts("NO");
 }

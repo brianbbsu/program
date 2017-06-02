@@ -49,11 +49,8 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+
 }

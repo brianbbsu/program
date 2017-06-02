@@ -48,12 +48,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+ll d[MAXn];
+vector<ll> dt;
 
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n)cin>>d[i];
+    ll l=0,r=n+1;
+    while(l!=r-1)
+    {
+      ll h=(l+r)/2;
+      dt.clear();
+      REP(i,n)dt.pb(d[i]+(i+1)*h);
+      sort(ALL(dt));
+      ll s=0;
+      REP(i,h)s+=dt[i];
+      if(s>k)r=h;
+      else l=h;
+    }
+    dt.clear();
+    REP(i,n)dt.pb(d[i]+(i+1)*l);
+    sort(ALL(dt));
+    ll s=0;
+    REP(i,l)s+=dt[i];
+    cout<<l<<" "<<s<<endl;
+
 }

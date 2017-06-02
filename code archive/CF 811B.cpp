@@ -48,23 +48,23 @@ const ll MAXn=1e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],dt[MAXn];
+ll d[MAXn];
 
 int main()
 {
     IOS();
     ll n,m;
     cin>>n>>m;
-    REP(i,n)cin>>d[i],dt[i]=d[i];
+    REP(i,n)cin>>d[i];
     REP(i,m)
     {
       ll l,r;
       ll x;
       cin>>l>>r>>x;
       l--;r--;x--;
-      for(int j=l;j<=r;j++)dt[j]=d[j];
-      nth_element(dt+l,dt+x,dt+r+1);
-      if(dt[x]==d[x])cout<<"Yes"<<endl;
+      ll t=0;
+      for(ll i=l;i<=r;i++)if(d[i]<d[x])t++;
+      if(t==x-l)cout<<"Yes"<<endl;
       else cout<<"No"<<endl;
     }
 }

@@ -49,11 +49,23 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-
 int main()
 {
     IOS();
-		cout<<100000<<" "<<10000<<endl;
-    REP(i,100000)cout<<(i==0?"":" ")<<100000;
-    cout<<endl;
+    ll l=-1,r=ll(1e9);
+    ll n,k,s=0;
+    cin>>n>>k;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      s+=t;
+    }
+    while(l!=r-1)
+    {
+      ll h=(l+r)/2;
+      if(2*(s+h*k)>=(2*k-1)*(h+n))r=h;
+      else l=h;
+    }
+    cout<<r<<endl;
 }
