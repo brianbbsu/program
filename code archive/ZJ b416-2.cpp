@@ -49,16 +49,59 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll n,q;
+ll bit[MAXn];
+void add(int x,int k)
+{
+  while(x<=n)bit[x]+=k,x+=x&-x;
+}
+ll qr(ll x)
+{
+  ll rt=0;
+  while(x>0)rt+=bit[x],x-=x&-x;
+  return rt;
+}
+vector<ii> dt;
+struct tg{
+  ll  l,r,id,x,t;
+  tg(ll li,ll ri,ll idi,ll xi,ll ti):l(li),r(ri),id(idi),x(xi),t(ti){};
+};
+vector<tg> qrs;
+vector<ll> qrid;
+ll ans[MAXn*10];
+
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    cin>>n>>q;
+    REP(i,n)
     {
-      ans+=i*double(exp(1));
+      ll t;
+      cin>>t;
+      dt.pb(ii(t,i+1));
     }
-    cout<<ans<<endl;
+    sort(ALL(dt));
+    REP(i,q)
+    {
+      ll l,r,a,b;
+      cin>>l>>r>>a>>b;
+      qrs.pb(tg(l-1,r,i,a-1,-1));
+      qrs.pb(tg(l-1,r,i,b,1));
+      qrid.pb(2*i);
+      qrid.pb(2*i+1);
+    }
+    sort(ALL(qrid),[](int a,int b){return qrs[a].x<qrs[b].x;});
+    ll dit=0,qrit=0;
+    REP(i,n+1)
+    {
+      while(dit<n&&dt[dit].X<=i)add(dt[dit++].Y,1);
+      while(qrit<SZ(qrs)&&qrs[qrid[qrit]].x<=i)
+      {
+        ans[qrs[qrid[qrit]].id]+=qrs[qrid[qrit]].t*(qr(qrs[qrid[qrit]].r)-qr(qrs[qrid[qrit]].l));
+        qrit++;
+      }
+      debug(123);
+    }
+    REP(i,q)cout<<ans[i]<<endl;
+
 }

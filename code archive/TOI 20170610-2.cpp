@@ -48,17 +48,55 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll n,m;
+
+vector<ii> cst(vector<ii> &d)
+{
+  vector<ii> r;
+  for(ii &tmp:d)
+  {
+    if(tmp.Y==0)continue;
+    if(SZ(r)&&tmp.X==r.back().X)r.back().Y+=tmp.Y;
+    else
+    {
+      if(SZ(r)&&r.back().Y>=m)r.pop_back();
+      if(SZ(r)&&tmp.X==r.back().X)r.back().Y+=tmp.Y;
+      else r.pb(tmp);
+    }
+  }
+  if(SZ(r)&&r.back().Y>=m)r.pop_back();
+  return r;
+}
+
+ll cal(vector<ii> dt)
+{
+  if(!SZ(dt))return 0;
+  ll mn=INF;
+  REP(i,SZ(dt))
+  {
+    dt[i].Y--;
+    mn=min(mn,1+cal(cst(dt)));
+    dt[i].Y++;
+  }
+  return mn;
+}
 
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    cin>>n>>m;
+    string s;
+    cin>>s;
+    vector<ii> tmp;
+    char lt=0;
+    REP(i,n)
     {
-      ans+=i*double(exp(1));
+      if(s[i]==lt)tmp.back().Y++;
+      else
+      {
+        lt=s[i];
+        tmp.pb(ii(s[i],1));
+      }
     }
-    cout<<ans<<endl;
+    cout<<cal(tmp)<<endl;
 }

@@ -49,16 +49,21 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+set<ll> st;
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
+
     ll n;
     cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    ll t;
+    REP(i,n)cin>>t,st.insert(t);
+    ll q;
+    cin>>q;
+    REP(i,q)
     {
-      ans+=i*double(exp(1));
+      cin>>t;
+      cout<<st.count(t)<<endl;
     }
-    cout<<ans<<endl;
+
 }

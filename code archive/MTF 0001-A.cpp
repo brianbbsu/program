@@ -48,17 +48,28 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+ll d[10];
+void ok(bool b)
+{
+  if(b)puts("Possible");
+  else puts("Impossible");
+  exit(0);
+}
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
-    {
-      ans+=i*double(exp(1));
-    }
-    cout<<ans<<endl;
+    REP(i,7)cin>>d[i];
+    ll mx=0;
+    REP(i,7)mx=max(mx,d[i]);
+    if(mx>31)ok(0);
+    bool b=1;
+    for(int i=1;i<7;i++)if(d[i]!=d[i-1]+1)b=0;
+    if(b)ok(1);
+    if(mx<28)ok(0);
+    b=1;
+    REP(i,7)if(d[i]<10)d[i]+=mx;
+    b=1;
+    for(int i=1;i<7;i++)if(d[i]!=d[i-1]+1)b=0;
+    if(b)ok(1);
+    else ok(0);
 }

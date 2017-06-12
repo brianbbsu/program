@@ -48,17 +48,22 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll n,m;
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    cin>>n>>m;
+    if(m>=2){puts("Yes");return 0;}
+
+    REP(i,n)cin>>d[i];
+    REP(i,n)if(d[i]==0)cin>>d[i];
+    ll lt=-1;
+    REP(i,n)
     {
-      ans+=i*double(exp(1));
+      if(d[i]<lt){cout<<"Yes"<<endl;return 0;}
+      lt=d[i];
     }
-    cout<<ans<<endl;
+    cout<<"No"<<endl;
 }

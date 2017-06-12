@@ -48,17 +48,30 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+vector<ll> tmp;
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    ll T,n;
+    cin>>T;
+    while(T--&&cin>>n)
     {
-      ans+=i*double(exp(1));
+      ll t,r=0,c=0,s=0;
+      tmp.clear();
+      REP(i,n)
+      {
+        cin>>t;
+        if(t<0)tmp.pb(t);
+        else s+=t,c++;
+      }
+      sort(ALL(tmp),greater<ll>());
+      ll k=0;
+      for(;k<SZ(tmp);k++)
+      {
+        if((tmp[k]+s)*(c+1)>=s*c)s+=tmp[k],c++;
+        else break;
+      }
+      for(;k<SZ(tmp);k++)r+=tmp[k];
+      cout<<r+s*c<<endl;
     }
-    cout<<ans<<endl;
 }

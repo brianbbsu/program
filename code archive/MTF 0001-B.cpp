@@ -48,17 +48,16 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
+ll d[MAXn];
+ll n,k;
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
-    {
-      ans+=i*double(exp(1));
-    }
-    cout<<ans<<endl;
+    cin>>n>>k;
+    REP(i,n)cin>>d[i];
+    sort(d,d+n,greater<ll>());
+    ll s=0,t=k;
+    REP(i,n){s+=t;t-=d[i];debug(s,t);}
+    cout<<s<<endl;
+
 }

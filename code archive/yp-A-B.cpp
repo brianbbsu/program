@@ -49,16 +49,38 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+
+ll cal(ll l,ll r)
+{
+    ll s=0,f;
+    ll tl=l,tr=r;
+    for(ll i=0,I=1;I<=r;i++,I*=10)
+    {
+      ll tmp=0;
+      tmp=(r/I-l/I)/10*I;
+      ll lc=tl%10,rc=tr%10;
+      if(rc<lc)rc+=10;
+      if(lc<=7&&rc>7)tmp+=I;
+      if(tl%10==7)tmp-=l%I;
+      if(tr%10==7)tmp+=r%I+1;
+      tl/=10;
+      tr/=10;
+      if(i==0)f=tmp;
+      s+=tmp;
+      debug(tmp);
+    }
+    return f*100/s;
+}
+
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
     ll n;
     cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    ll l,r;
+    REP(i,n)
     {
-      ans+=i*double(exp(1));
+      cin>>l>>r;
+      cout<<cal(l,r)<<endl;
     }
-    cout<<ans<<endl;
 }

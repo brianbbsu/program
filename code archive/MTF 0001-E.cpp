@@ -44,21 +44,82 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+
+ll d[MAXn][MAXn];
+vector<ii> v[MAXn][MAXn];
+ll n,k;
+ll mx;
+bool vis[MAXn][MAXn];
+
+
+void dfs(ii now,ll c)
+{
+  vis[now.X][now.Y]=1;
+  bool b=1;
+  for(ii &tmp:v[now.X][now.Y])if(d[tmp.X][tmp.Y]==c){b=0;break;}
+  if(b)d[now.X][now.Y]=c,mx=c;
+  for(ii &tmp:v[now.X][now.Y])if(!vis[tmp.X][tmp.Y])dfs(tmp,c);
+}
+
 int main()
 {
-    IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    //IOS();
+    ll T;
+    cin>>T;
+    //cin>>n>>k;
+    while(T--&&cin>>n>>k)
     {
-      ans+=i*double(exp(1));
+      REP(i,n)REP(j,n)v[i][j].clear();
+      ll tmpcnt=0;
+      REP(i,n)
+      {
+        string s;
+        cin>>s;
+        REP(j,n)d[i][j]=(s[j]=='#'?0:-1),tmpcnt+=d[i][j]+1;
+      }
+      if(tmpcnt<k){cout<<"Impossible"<<endl;continue;}
+
+
+      REP(i,n)REP(j,n)if(d[i][j]==0)for(ll dx=-1;dx<=1;dx++)for(ll dy=-1;dy<=1;dy++)
+      {
+          if(!(dx==0&&dy==0)&&i+dx>=0&&i+dx<n&&j+dy>=0&&j+dy<n&&d[i+dx][j+dy]==0)v[i][j].pb(ii(i+dx,j+dy));
+      }
+      mx=0;
+      for(int t=1;t<=k;t++)
+      {
+
+        REP(i,n)REP(j,n)if(d[i][j]==0)
+        {
+          bool b=1;
+          for(ii &tmp:v[i][j])if(d[tmp.X][tmp.Y]==t){b=0;break;}
+          if(b)d[i][j]=t,mx=t;
+        }
+
+
+      }
+      bool b=0;
+      debug(mx);
+      REP(i,n)REP(j,n)
+      {
+        if(d[i][j]==0)b=1;
+        else if(d[i][j]!=-1&&mx<k)d[i][j]=++mx;
+      }
+      if(b)cout<<"Impossible"<<endl;
+      else
+      {
+        cout<<"Possible"<<endl;
+        REP(i,n)
+        {
+          REP(j,n)if(d[i][j]==-1)cout<<'.';
+                  else cout<<d[i][j];
+          cout<<endl;
+        }
+      }
+      //REP(i,n)REP(j,n)debug(i,j,v[i][j]);
     }
-    cout<<ans<<endl;
 }

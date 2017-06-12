@@ -49,16 +49,48 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll a[MAXn],b[MAXn],c[MAXn];
+ll p,q,r;
+ll prec[MAXn],cb[MAXn],suby[MAXn],ss[MAXn];
+
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    ll T;
+    cin>>T;
+    while(T--&&cin>>p>>q>>r)
     {
-      ans+=i*double(exp(1));
+      REP(i,p)cin>>a[i];
+      REP(i,q)cin>>b[i];
+      REP(i,r)cin>>c[i];
+      FILL(prec,0);
+      FILL(cb,0);
+      FILL(suby,0);
+      FILL(ss,0);
+
+      sort(a,a+p);
+      sort(b,b+q);
+      sort(c,c+r);
+      prec[0]=c[0];
+      REP1(i,r-1)prec[i]=(prec[i-1]+c[i])%MOD;
+      for(int i=q-1;i>=0;i--)
+      {
+        cb[i]=(upper_bound(c,c+r,b[i])-c);
+        if(cb[i]>0)ss[i]=(b[i]*cb[i]+prec[cb[i]-1])%MOD;
+        suby[i]=(ss[i]*b[i]+suby[i+1])%MOD;
+        cb[i]=(cb[i]+cb[i+1])%MOD;
+        ss[i]=(ss[i]+ss[i+1])%MOD;
+      }
+      ll ans=0;
+      REP(i,p)
+      {
+        ll t=lower_bound(b,b+q,a[i])-b;
+        ans=(ans+suby[t]+a[i]%MOD*ss[t])%MOD;
+        debug(ans);
+      }
+      pary(cb,cb+q);
+      pary(suby,suby+q);
+      pary(ss,ss+q);
+      cout<<ans<<endl;
     }
-    cout<<ans<<endl;
 }

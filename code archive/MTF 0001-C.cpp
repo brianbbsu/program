@@ -52,13 +52,5 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
-    {
-      ans+=i*double(exp(1));
-    }
-    cout<<ans<<endl;
+
 }

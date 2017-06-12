@@ -44,21 +44,89 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXc=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> pm;
+ll ispm[MAXc];
+vector<ii> dt;
+
+struct tg{
+  ll l,r,x,id,t;
+};
+tg qrs[MAXn];
+vector<ll> qr;
+ll ans[MAXn];
+
+ll bit[MAXn];
+ll n;
+void ad(int x)
+{
+    while(x<=n)bit[x]++,x+=x&-x;
+}
+ll qra(ll x)
+{
+  ll rt=0;
+  while(x>0)rt+=bit[x],x-=x&-x;
+  return rt;
+}
 
 int main()
 {
     IOS();
-    //cout<<fixed<<floor(1000000000*exp(1));
-    ll n;
-    cin>>n;
-    ll ans=0;
-    REP1(i,n)
+    for(int i=2;i<MAXc;i++)
     {
-      ans+=i*double(exp(1));
+      if(!ispm[i])pm.pb(i),ispm[i]=SZ(pm);
+      for(int j=0;i*pm[j]<MAXc;j++)
+      {
+        ispm[i*pm[j]]=j+1;
+        if(i%pm[j]==0)break;
+      }
     }
-    cout<<ans<<endl;
+    //REP1(i,20)debug(i,ispm[i]);
+    cin>>n;
+
+    REP(k,n)
+    {
+      ll t;
+      cin>>t;
+      while(t>1)
+      {
+          dt.pb(ii(ispm[t]-1,k));
+          t/=pm[ispm[t]-1];
+      }
+    }
+
+
+    sort(ALL(dt));
+    ll q;
+    cin>>q;
+    ll qrit=0;
+    REP(i,q)
+    {
+      ll l,r,x,y;
+      cin>>l>>r>>x>>y;
+      l--;
+      qrs[qrit].l=qrs[qrit+1].l=l;
+      qrs[qrit].r=qrs[qrit+1].r=r;
+      qrs[qrit].id=qrs[qrit+1].id=i;
+      qrs[qrit].x=lower_bound(ALL(pm),x)-pm.begin();
+      qrs[qrit+1].x=upper_bound(ALL(pm),y)-pm.begin();
+      qrs[qrit].t=-1;
+      qrs[qrit+1].t=1;
+      qrit+=2;
+    }
+    REP(i,qrit)qr.pb(i);
+    sort(ALL(qr),[](int a,int b){return qrs[a].x<qrs[b].x;});
+
+    ll it=0;
+    REP(i,qrit)
+    {
+      auto &t=qrs[qr[i]];
+      while(it<SZ(dt)&&dt[it].X<t.x)ad(dt[it++].Y+1);
+      ans[t.id]+=(qra(t.r)-qra(t.l))*t.t;
+    }
+    REP(i,q)cout<<ans[i]<<endl;
+    
 }
