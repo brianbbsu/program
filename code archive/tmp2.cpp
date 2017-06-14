@@ -1,17 +1,15 @@
 #include<iostream>
 using namespace std;
 
-long long a,b,c,d; // 宣告上述cA=dB的四個變數abcd
+long long a,b;
 int main(){
   cin>>a>>b;
-  for(c=1; ;c++) // 試著讓c從最小的正整數開始往上數
+  long long _a=a,_b=b;//把a和b的值存一份起來
+  while(b>0)
   {
-    if((a*c)%b==0)//判斷d=cA/B有無正整數解(能否整除)
-    {
-      //有解
-      d=a*c/b;
-      break;//因為要最小解，故找到第一個就行了
-    }
+    long long c=a%b;
+    a=b;
+    b=c;
   }
-  cout<<c<<" "<<d<<endl;//輸出
+  cout<<_b/a<<" "<<_a/a<<endl;// #14
 }

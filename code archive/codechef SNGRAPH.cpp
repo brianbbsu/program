@@ -44,15 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll dg[MAXn];
+ii e[MAXn];
+ll d[MAXn],dt[MAXn];
+
+ll g[MAXn];
+ll fd(ll a){return g[a]=(g[a]==a?a:fd(g[a]));}
+void mg(ll a,ll b){g[fd(a)]=fd(b);}
+ll ans[MAXn];
 int main()
 {
     IOS();
-    int64 a;
-    cin>a;
-    cout<<(a+1)*a/2<<endl;
+    ll T;
+    ll n,m;
+    cin>>T;
+    while(T--&&cin>>n>>m)
+    {
+      FILL(dg,0);
+      REP(i,m)
+      {
+        ll a,b;
+        cin>>a>>b;
+        a--;b--;
+        dg[a]++;dg[b]++;
+        d[i]=i;
+        e[i].X=a,e[i].Y=b;
+      }
+      REP(i,m)dt[i]=min(dg[e[i].X],dg[e[i].Y]);
+      sort(d,d+m,[](int a,int b){return dt[a]>dt[b];});
+      REP(i,n)g[i]=i;
+      ll gcnt=n,it=0;
+      for(int i=n-1;i>=0;i--)
+      {
+        while(it<m&&dt[d[it]]>i)
+        {
+          ll a=e[d[it]].X,b=e[d[it]].Y;
+          if(fd(a)!=fd(b))
+          {
+            mg(a,b);
+            gcnt--;
+          }
+          it++;
+        }
+        ans[i]=gcnt;
+      }
+      REP(i,n)cout<<(i?" ":"")<<ans[i]-1;
+      cout<<endl;
+
+    }
 }

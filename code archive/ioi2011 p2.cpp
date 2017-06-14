@@ -44,7 +44,7 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
@@ -52,7 +52,5 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    int64 a;
-    cin>a;
-    cout<<(a+1)*a/2<<endl;
+
 }

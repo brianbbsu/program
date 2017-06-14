@@ -49,10 +49,27 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll r[MAXn],x[MAXn],y[MAXn];
+ll d[MAXn],p[MAXn];
 int main()
 {
     IOS();
-    int64 a;
-    cin>a;
-    cout<<(a+1)*a/2<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)d[i]=i;
+    REP(i,n)cin>>x[i]>>y[i]>>r[i];
+    sort(d,d+n,[](int a,int b){return r[a]<r[b];});
+    ll a=0;
+    for(int I=0;I<n;I++)
+    {
+      int i=d[I];
+      int b=0;
+      for(int J=I+1;J<n;J++)
+      {
+        int j=d[J];
+        if((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j])<(r[i]+r[j])*(r[i]+r[j]))b=!b,p[j]+=r[i]*r[i]-p[i];
+      }
+      a+=(b+1)*(r[i]*r[i]-p[i]);
+    }
+    cout<<fixed<<setprecision(12)<<double(a)*acos(-1)<<endl;
 }

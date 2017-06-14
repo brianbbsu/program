@@ -38,21 +38,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-#define endl '\n'
+//#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+bool ask(ll x,ll y)
+{
+  cout<<1<<" "<<x<<" "<<y<<endl;
+  string s;
+  cin>>s;
+  return s=="TAK";
+}
+
+ll cal(ll l,ll r)
+{
+  while(l<r)
+  {
+    ll h=(l+r)/2;
+    if(ask(h,h+1))r=h;
+    else l=h+1;
+  }
+  return l;
+}
+
 int main()
 {
     IOS();
-    int64 a;
-    cin>a;
-    cout<<(a+1)*a/2<<endl;
+    ll n,k;
+    cin>>n>>k;
+    ll t=cal(1,n);
+    ll x=-1;
+    if(t>1)x=cal(1,t-1);
+    if(x==-1||!ask(x,t))x=cal(t+1,n);
+    cout<<2<<" "<<t<<" "<<x<<endl;
+
 }
