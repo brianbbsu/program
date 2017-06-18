@@ -44,43 +44,46 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
 
+template<typename T>
+struct ans{
+  T dt[MAXn];
+};
+
+template<typename T>
+void dfs(ll now,ll cnt,ll n,ll m,vector<pair<T,int> > &dt,ans<T> &a)
+{
+  if(now>=SZ(dt))return;
+  REP(i,dt[now].Y+1)
+  {
+    if(i>0)a.dt[cnt+i-1]=dt[now].X;
+    if(cnt+i==m)answer(a,m);
+    else dfs(now+1,cnt+i,n,m,dt,a);
+  }
+}
+
+template<typename T>
+void your_function(T s[],int n,int m){
+  sort(s,s+n);
+  vector<pair<T,int> > dt;
+  REP(i,n)
+  {
+    if(!SZ(dt)||s[i]!=dt.back().X)dt.pb(make_pair(s[i],1));
+    else dt.back().Y++;
+  }
+  ans<T> a;
+  dfs(0,0,n,m,dt,a);
+
+}
+
+#ifdef brian
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
-    {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
-    }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
-    {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
-    }
 
 }
+#endif

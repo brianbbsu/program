@@ -44,43 +44,59 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
+
+ll sz[MAXn],d[2][MAXn];
+vector<ll> v[MAXn];
+
+ll dp[2][MAXn][MAXn];// c? subtree cnt
+
+void minfy(ll &a,ll b){a=min(a,b);}
+ll n;
+void dfs(ll now)
+{
+  dp[0][now][0]=0;
+  dp[1][now][0]=0;
+  for(ll k:v[now])
+  {
+    dfs(k);
+    for(ll f=sz[k]+sz[now];f>=0;f--)for(int i=max(1LL,f-sz[now]);i<=sz[k]&&i<=f&&f-i<=sz[now];i++)minfy(dp[0][now][f],dp[0][k][i]+dp[0][now][f-i]),
+                                  minfy(dp[1][now][f],min(dp[1][k][i],dp[0][k][i])+min(dp[1][now][f-i],dp[0][now][f-i]));
+    sz[now]+=sz[k];
+  }
+  for(int i=sz[now];i>=0;i--)minfy(dp[0][now][i+1],dp[0][now][i]+d[0][now]);
+  for(int i=sz[now];i>=0;i--)dp[1][now][i+1]=dp[1][now][i]+d[1][now];
+  dp[1][now][0]=INF;
+  sz[now]++;
+  debug(now);
+  pary(dp[0][now],dp[0][now]+n+1);
+  pary(dp[1][now],dp[1][now]+n+1);
+}
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
-    {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
-    }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
+    ll m;
+    cin>>n>>m;
+    REP(i,MAXn)REP(j,MAXn)dp[0][i][j]=dp[1][i][j]=INF;
     REP(i,n)
     {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
+      cin>>d[0][i]>>d[1][i],d[1][i]=d[0][i]-d[1][i];
+      ll t;
+      if(i)
+      {
+        cin>>t;
+        t--;
+        v[t].pb(i);
+      }
     }
+    pary(d[0],d[0]+n);
+    pary(d[1],d[1]+n);
 
+    dfs(0);
+    dp[1][0][0]=0;
+    cout<<max(upper_bound(dp[0][0],dp[0][0]+n+1,m)-dp[0][0],upper_bound(dp[1][0],dp[1][0]+n+1,m)-dp[1][0])-1<<endl;
 }

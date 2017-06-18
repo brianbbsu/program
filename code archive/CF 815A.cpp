@@ -48,39 +48,83 @@ const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+
 ll d[MAXn][MAXn];
-ll cnt[MAXn];
+
+ll mn[2][MAXn];
+
+vector<ii> ans;
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
+    ll r,c;
+    cin>>r>>c;
+    REP(i,r)REP(j,c)cin>>d[i][j];
+    REP(i,r)
     {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
+      mn[0][i]=d[i][0];
+      REP(j,c)mn[0][i]=min(mn[0][i],d[i][j]);
     }
-    /*
-    REP1(i,n)
+    REP(j,c)
     {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
+      mn[1][j]=d[0][j];
+      REP(i,r)mn[1][j]=min(mn[1][j],d[i][j]);
+    }
+
+    while(1)
     {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
+      bool b=0;
+      if(c>=r)
+      {
+        REP(i,r)if(mn[0][i]>0)
+        {
+          b=1;
+          REP(j,c)d[i][j]-=mn[0][i],mn[1][j]=min(mn[1][j],d[i][j]);
+          REP(k,mn[0][i])ans.pb(ii(0,i+1));
+          mn[0][i]=0;
+
+        }
+        if(b)continue;
+        REP(j,c)if(mn[1][j]>0)
+        {
+          b=1;
+          REP(k,mn[1][j])ans.pb(ii(1,j+1));
+          REP(i,r)d[i][j]-=mn[1][j],mn[0][i]=min(mn[0][i],d[i][j]);
+          mn[1][j]=0;
+        }
+      }
+      else
+      {
+        REP(j,c)if(mn[1][j]>0)
+        {
+          b=1;
+          REP(k,mn[1][j])ans.pb(ii(1,j+1));
+          REP(i,r)d[i][j]-=mn[1][j],mn[0][i]=min(mn[0][i],d[i][j]);
+          mn[1][j]=0;
+        }
+        if(b)continue;
+        REP(i,r)if(mn[0][i]>0)
+        {
+          b=1;
+          REP(j,c)d[i][j]-=mn[0][i],mn[1][j]=min(mn[1][j],d[i][j]);
+          REP(k,mn[0][i])ans.pb(ii(0,i+1));
+          mn[0][i]=0;
+        }
+      }
+
+
+      if(!b)break;
+    }
+    debug(ans);
+    REP(i,r)REP(j,c)if(d[i][j]){cout<<-1<<endl;return 0;}
+
+    cout<<SZ(ans)<<endl;
+    for(ii k:ans)
+    {
+      if(k.X==0)cout<<"row ";
+      else cout<<"col ";
+      cout<<k.Y<<endl;
     }
 
 }

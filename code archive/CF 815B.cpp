@@ -44,43 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
+
+ll c[100][100][100];
+
+ll d[MAXn];
+ll a[4],b[4];
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
+    //ll n=6;
+    //cin>>n;
+    //REP1(n,20){
+    for(int n=4;n<=20;n+=4){
+    REP(i,n)c[0][i][i]=1;
+    bool b=1;
+    REP1(i,n-1)
     {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
+      REP(j,n-i)
       {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
+        if(b)
+        {
+          REP(k,n)c[i][j][k]=c[i-1][j][k]+c[i-1][j+1][k];
+        }
+        else REP(k,n)c[i][j][k]=c[i-1][j][k]-c[i-1][j+1][k];
+        b=!b;
       }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
     }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
-    {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
-    }
+    //for(int i=0;i<n;i+=2)cout<<c[n-1][0][i]<<" ";
+    //cout<<" , ";
+    //for(int i=1;i<n;i+=2)cout<<c[n-1][0][i]<<" ";
 
+    REP(i,n)cout<<c[n-1][0][i]<<" ";
+    cout<<endl;
+    /*
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    for(int i=n-1;i>=0;i--)
+    {
+      REP(k,min(4,i+1))
+      {
+
+      }
+    }
+    */
+  }
 }

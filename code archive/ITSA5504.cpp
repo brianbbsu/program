@@ -48,39 +48,36 @@ const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
+
+ii d[MAXn];
+string nm[MAXn];
+
+vector<string> ans;
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
+    ll T;
+    ll n;
+    cin>>T;
+    while(T--&&cin>>n)
     {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
+        REP(i,n)cin>>nm[i]>>d[i].X,d[i].Y=i;
+        sort(d,d+n);
+        ans.clear();
+        REP(i,n)for(int j=i+1;j<n;j++)for(int k=j+1;k<n;k++)
+        {
+          if(d[i].X+d[j].X>d[k].X)
+          {
+            vector<string> tmp;
+            tmp.pb(nm[d[i].Y]);
+            tmp.pb(nm[d[j].Y]);
+            tmp.pb(nm[d[k].Y]);
+            sort(ALL(tmp));
+            ans.pb(tmp[0]+" "+tmp[1]+" "+tmp[2]);
+          }
+        }
+        sort(ALL(ans));
+        for(string &t:ans)cout<<t<<endl;
     }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
-    {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
-    }
-
 }

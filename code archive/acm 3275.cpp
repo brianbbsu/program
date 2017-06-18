@@ -44,43 +44,98 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
+string s,sr;
+bool operator == (const string &a,const string &b)
+{
+  REP(i,SZ(a))
+  {
+    if(a[i]!=(b[i]^2))return 0;
+  }
+  return 1;
+}
+
+bool chk_f()
+{
+
+  sr=s;
+  reverse(ALL(sr));
+  for(int i=1;i*2<SZ(s);i++)
+  {
+    ll t=SZ(s)/2-i;
+    if(s.substr(0,i)==sr.substr(t,i)&&s.substr(i,t)==sr.substr(0,t))return 1;
+  }
+  return 0;
+}
+
+bool chk_s()
+{
+
+  sr=s;
+  reverse(ALL(sr));
+  for(int i=1;i<SZ(s);i++)
+  {
+    for(int j=1;SZ(s)/2-i-j>0;j++)
+    {
+      ll t=SZ(s)/2-i-j;
+      //debug(s.substr(0,i)==sr.substr(t+j,i),s.substr(i,j)==sr.substr(t,j),s.substr(i+j,t)==sr.substr(0,t));
+      if(s.substr(0,i)==sr.substr(t+j,i)&&s.substr(i,j)==sr.substr(t,j)&&s.substr(i+j,t)==sr.substr(0,t))return 1;
+    }
+  }
+  return 0;
+}
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
+    srand(time(NULL));
+
+    ll n,kz=0;
+    while(cin>>n&&n)
     {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
+      s="";
+      kz++;
+      REP(i,n)
       {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
+        char c;
+        ll t;
+        cin>>c>>t;
+
+        REP(j,t)
+        {
+          s+=" ";
+          if(c=='N')s[SZ(s)-1]=0;
+          else if(c=='E')s[SZ(s)-1]=1;
+          else if(c=='S')s[SZ(s)-1]=2;
+          else s[SZ(s)-1]=3;
+        }
       }
-      REP1(k,j-1)
+      //debug(SZ(s));
+      bool b=0;
+      REP(i,SZ(s))
       {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
+        b|=chk_f();
+        rotate(s.begin(),s.begin()+1,s.end());
       }
-      d[i][j]=it;
+      debug(b);
+      REP(i,SZ(s))
+      {
+        b|=chk_s();
+
+        rotate(s.begin(),s.begin()+1,s.end());
+      }
+      debug(b);
+
+      cout<<"Polygon "<<kz<<": ";
+      if(b)cout<<"Possible"<<endl;
+      else cout<<"Impossible"<<endl;
+
+
+
     }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
-    {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
-    }
+
 
 }

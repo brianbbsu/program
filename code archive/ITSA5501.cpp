@@ -44,43 +44,35 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
-
+ll n;
+vector<string> dt;
+set<string> st;
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
-    {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
-    }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
+    cin>>n;
+    cin.ignore(1);
+    string s;
     REP(i,n)
     {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
+      dt.clear();st.clear();
+      getline(cin,s);
+      stringstream ss(s);
+      string t;
+      while(ss>>t)
+      {
+        for(char &c:t)c=tolower(c);
+        if(!st.count(t))
+        {
+          dt.pb(t);
+          st.insert(t);
+        }
+      }
+      REP(j,SZ(dt))cout<<(j==0?"":" ")<<dt[j];
       cout<<endl;
     }
-
 }

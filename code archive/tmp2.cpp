@@ -1,15 +1,15 @@
 #include<iostream>
 using namespace std;
 
-long long a,b;
-int main(){
-  cin>>a>>b;
-  long long _a=a,_b=b;//把a和b的值存一份起來
-  while(b>0)
-  {
-    long long c=a%b;
-    a=b;
-    b=c;
-  }
-  cout<<_b/a<<" "<<_a/a<<endl;// #14
+
+int main()
+{
+    int n,k;
+    cin>>n>>k;
+    for(int i=0;i<n;i++){
+      for(int j=0;j<n;j++){
+        cout<<( j + i/k + n/k*(i%n) )%n+1<<" ";//好好研究一下
+      }
+      cout<<endl;
+    }
 }

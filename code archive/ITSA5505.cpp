@@ -48,39 +48,60 @@ const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
+vector<ii> v[MAXn];
+map<string,ll> mp;
+ll n;
+vector<ll> dt;
+bool vis[MAXn];
+
+ll dg[MAXn];
+ll dp[MAXn];
+
+void dfs(ll now)
+{
+  vis[now]=1;
+  for(ii &k:v[now])if(!vis[k.X])dfs(k.X);
+  dt.pb(now);
+}
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
-    }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
-    {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
-    }
+        REP(i,100)v[i].clear();
+        FILL(vis,0);
+        FILL(dg,0);
+        dt.clear();
+        mp.clear();
+        n=0;
+        string a,b;
+        cin>>a;
+        ll l;
+        while(cin>>a)
+        {
+          if(a=="end")break;
 
+          cin>>b>>l;
+          if(!mp.count(a))mp[a]=n++;
+          if(!mp.count(b))mp[b]=n++;
+          ll p=mp[a];
+          ll q=mp[b];
+          v[p].pb(ii(q,l));
+          dg[q]++;
+        }
+        REP(i,n)if(dg[i]==0&&!vis[i])dfs(i);
+        reverse(ALL(dt));
+        FILL(dp,0);
+        debug(dt,n);
+        REP(i,n)
+        {
+          ll t=dt[i];
+          for(ii &k:v[t])dp[k.X]=max(dp[k.X],dp[t]+k.Y);
+        }
+        cout<<*max_element(dp,dp+n)<<endl;
+
+    }
 }

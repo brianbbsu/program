@@ -44,43 +44,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][MAXn];
-ll cnt[MAXn];
+lf d[MAXn],s[MAXn];
 
 int main()
 {
     IOS();
-    ll n=55;
-    REP1(i,n)REP1(j,n)
+    ll n;
+    lf t;
+    cin>>n>>t;
+    lf l=-1e9,r=1e9;
+    REP(i,n)cin>>d[i]>>s[i],l=max(l,-s[i]);
+    REP(k,100)
     {
-      FILL(cnt,0);
-      ll it=1;
-      REP1(k,i-1)
-      {
-        cnt[d[k][j]]=1;
-        while(cnt[it])it++;
-      }
-      REP1(k,j-1)
-      {
-        cnt[d[i][k]]=1;
-        while(cnt[it])it++;
-      }
-      d[i][j]=it;
+      lf h=(l+r)/2;
+      lf tmp=0;
+      REP(i,n)tmp+=d[i]/(s[i]+h);
+      if(tmp<t)r=h;
+      else l=h;
     }
-    /*
-    REP1(i,n)
-    {
-      REP1(j,n)cout<<setw(4)<<d[i][j];
-      cout<<endl;
-    }*/
-    REP(i,n)
-    {
-      REP(j,n)cout<<setw(4)<<((i^j)+1);
-      cout<<endl;
-    }
-
+    cout<<fixed<<setprecision(12)<<l<<endl;
 }
