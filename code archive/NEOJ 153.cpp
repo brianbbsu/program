@@ -49,64 +49,12 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-#ifdef brian
-template<typename Jinkela>
-void answer(const Jinkela &s,int m){
-	for(int i=0;i<m;++i){
-		if(i)cout<<' ';
-		cout<<s[i];
-	}
-	cout<<'\n';
-}
-#endif
-
-template<typename T>
-struct ans{
-  T dt[MAXn];
-};
-
-template<typename T>
-void dfs(ll now,ll cnt,ll n,ll m,vector<pair<T,int> > &dt,ans<T> &a)
+int main()
 {
-  if(now>=SZ(dt))return;
-  for(int i=dt[now].Y;i>0;i--)a.dt[cnt+i-1]=dt[now].X;
-  for(int i=dt[now].Y;i>=0;i--)
-  {
-    if(i>0)a.dt[cnt+i-1]=dt[now].X;
-    if(cnt+i==m)answer(a.dt,m);
-    else dfs(now+1,cnt+i,n,m,dt,a);
-  }
+    IOS();
+    string s;
+    cin>>s;
+    do{
+      cout<<s<<endl;
+    }while(next_permutation(ALL(s)));
 }
-
-template<typename T>
-void your_function(T s[],int n,int m){
-  sort(s,s+n);
-  vector<pair<T,int> > dt;
-  REP(i,n)
-  {
-    if(!SZ(dt)||s[i]!=dt.back().X)dt.pb(make_pair(s[i],1));
-    else dt.back().Y++;
-  }
-  ans<T> a;
-  dfs(0,0,n,m,dt,a);
-
-}
-
-#ifdef brian
-template<typename Jinkela>
-void solve(){
-	int n,m;
-	cin>>n>>m;
-	Jinkela *s=new Jinkela[n];
-	for(int i=0;i<n;++i)cin>>s[i];
-	your_function(s,n,m);
-	delete []s;
-}
-int main(){
-	solve<int>();
-	solve<long long>();
-	solve<string>();
-	solve<double>();
-	return 0;
-}
-#endif

@@ -49,18 +49,30 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+
+ll pw(ll x,ll k)
+{
+  if(k==0)return 1;
+  ll t=pw(x,k/2);
+  if(k%2==0)return t*t%MOD;
+  else return t*t%MOD*x%MOD;
+}
+
 ll c[100][100][100];
 
-ll d[MAXn];
-ll a[4],b[4];
+ll d[MAXn],p[MAXn];
+
+void add(ll &a,ll b)
+{
+  a+=b;
+  a=(a%MOD+MOD)%MOD;
+}
 
 int main()
 {
     IOS();
-    //ll n=6;
-    //cin>>n;
-    //REP1(n,20){
-    for(int n=4;n<=20;n+=4){
+    /*
+    for(int n=3;n<=20;n+=4){
     REP(i,n)c[0][i][i]=1;
     bool b=1;
     REP1(i,n-1)
@@ -81,16 +93,61 @@ int main()
 
     REP(i,n)cout<<c[n-1][0][i]<<" ";
     cout<<endl;
-    /*
-    cin>>n;
-    REP(i,n)cin>>d[i];
-    for(int i=n-1;i>=0;i--)
-    {
-      REP(k,min(4,i+1))
-      {
-
-      }
-    }
-    */
   }
+  */
+
+  p[0]=1;
+  REP1(i,MAXn-1)p[i]=p[i-1]*i%MOD;
+
+
+  ll n;
+
+  cin>>n;
+  REP(i,n)cin>>d[i];
+
+  ll ans=0;
+
+  if(n%4==1)
+  {
+    ll t=n/2;
+    REP(i,n)
+    {
+        if(i%2==0)add(ans,p[t]*pw(p[i/2],MOD-2)%MOD*pw(p[t-i/2],MOD-2)%MOD*d[i]);
+        debug(ans);
+    }
+  }
+  else if(n%4==2)
+  {
+    ll t=(n-1)/2;
+    REP(i,n)
+    {
+        add(ans,p[t]*pw(p[i/2],MOD-2)%MOD*pw(p[t-i/2],MOD-2)%MOD*d[i]);
+    }
+  }
+  else if(n%4==3)
+  {
+    ll t=(n/2)-1;
+    ll lt=0;
+    REP(i,n-1)
+    {
+      if(i%2==0)
+      {
+        ll tmp=(p[t]*pw(p[i/2],MOD-2)%MOD*pw(p[t-i/2],MOD-2)%MOD);
+        add(ans,(tmp-lt)*d[i]);
+        lt=tmp;
+      }
+      else add(ans,p[t]*pw(p[i/2],MOD-2)%MOD*pw(p[t-i/2],MOD-2)%MOD*d[i]*2);
+    }
+    add(ans,d[n-1]*-1);
+  }
+  else
+  {
+    ll t=(n-1)/2;
+    REP(i,n)
+    {
+        add(ans,p[t]*pw(p[i/2],MOD-2)%MOD*pw(p[t-i/2],MOD-2)%MOD*d[i]*(i%2==0?1:-1));
+
+    }
+  }
+  cout<<ans<<endl;
 }
