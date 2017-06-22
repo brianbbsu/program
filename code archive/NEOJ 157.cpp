@@ -44,12 +44,12 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int dp[2][MAXn];
-int w[105],c[105];
+ll dp[MAXn];
+ll w[105],c[105];
 bool fg=0;
 int main()
 {
@@ -59,19 +59,19 @@ int main()
     ll n,m;
     while(T--&&cin>>n>>m)
     {
-      fg=0;
-      FILL(dp,0);
+      REP(i,MAXn)dp[i]=INF;
+      dp[0]=0;
+
       REP(i,n)cin>>w[i]>>c[i];
-      for(int i=w[0];i<=m;i++)dp[0][i]=c[0];
-      REP1(i,n-1)
+
+      REP(i,n)
       {
-        fg=!fg;
-        REP(j,m+1)
+        for(int j=MAXn-2;j>0;j--)
         {
-          dp[fg][j]=dp[!fg][j];
-          if(j>=w[i])dp[fg][j]=max(dp[fg][j],dp[!fg][j-w[i]]+c[i]);
+          dp[j]=min(dp[j],dp[j+1]);
+          if(j>=c[i])dp[j]=min(dp[j],dp[j-c[i]]+w[i]);
         }
       }
-      cout<<dp[fg][m]<<endl;
+      cout<<upper_bound(dp,dp+MAXn,m)-dp-1<<endl;
     }
 }
