@@ -1,4 +1,6 @@
+//#pragma comment(linker , "/STACK:102400000 , 102400000")
 //{
+//#undef brian
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -44,28 +46,103 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cnt=0;
-bool cmp(ll a,ll b)
+
+vector<ll> v[MAXn];
+ll d[MAXn],dp[2][MAXn];
+bool ring[MAXn],vis[MAXn];
+
+vector<ll> dt;
+
+
+ll predfs(ll now,ll f)
 {
-  cnt++;
-  debug("CMP:",a,b);
-  return a<b;
+  vis[now]=1;
+  //debug(now,f);
+  for(ll k:v[now])
+  {
+    debug(k);
+    if(k==f)continue;
+
+    if(vis[k]){dt.pb(now);ring[now]=1;return k;}
+    ll t=predfs(k,now);
+    //debug(t);
+    if(t==-2)return -2;
+    if(t!=-1)
+    {
+      ring[now]=1;
+      dt.pb(now);
+      if(t==now)return -2;
+      else return t;
+    }
+  }
+  return -1;
 }
-ll d[MAXn];
+
+void dfs(ll now,ll f)
+{
+  dp[0][now]=0;
+  dp[1][now]=d[now];
+  for(ll k:v[now])
+  {
+    if(ring[k]||k==f)continue;
+    dfs(k,now);
+    if(dp[1][k]>0)dp[1][now]+=dp[1][k];
+    dp[0][now]=max({dp[0][now],dp[1][k],dp[0][k]});
+  }
+}
 
 int main()
 {
     IOS();
     ll n;
-    cin>>n;
-    REP(i,n)d[i]=i;
-    srand(time(0));
-    random_shuffule(d,d+n);
-    cout<<"Init : ";
-    pary(d,d+n);
-    
+    while(cin>>n&&n)
+    {
+      REP(i,n)v[i].clear();
+      REP(i,n)cin>>d[i];
+      dt.clear();
+      REP(i,n)
+      {
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+        //assert(a>=0&&a<n&&b>=0&&b<n);
+      }
+
+      FILL(ring,0);
+      FILL(vis,0);
+
+      predfs(0,-1);
+      pary(ring,ring+n);
+      debug(dt);
+      FILL(dp,0);
+      REP(i,n)if(ring[i])dfs(i,-1);
+
+      ll mx=0,t=0,s=0;
+      for(ll k:dt)
+      {
+        t+=dp[1][k];
+        s+=dp[1][k];
+        if(t<0)t=0;
+        else mx=max(mx,t);
+        mx=max(mx,dp[0][k]);
+      }
+
+      ll mn=0;
+      t=0;
+
+      for(ll k:dt)
+      {
+        t+=dp[1][k];
+
+        if(t>0)t=0;
+        else mn=min(mn,t);
+      }
+
+      cout<<max(mx,s-mn)<<endl;
+    }
 }

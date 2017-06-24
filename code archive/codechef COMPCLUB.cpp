@@ -44,28 +44,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cnt=0;
-bool cmp(ll a,ll b)
+map<ii,ll> mp[MAXn];
+vector<ll> v[MAXn];
+ll ans[MAXn],c[MAXn],d[MAXn];
+vector<ll> tmpv;
+
+void dfs(ll now)
 {
-  cnt++;
-  debug("CMP:",a,b);
-  return a<b;
+  debug(now);
+  mp[now].clear();
+  for(ll k:v[now])
+  {
+    dfs(k);
+  }
+  tmpv.clear();
+  for(ll k:v[now])tmpv.pb(k);
+  sort(ALL(tmpv),[](ll a,ll b){return SZ(mp[a])>SZ(mp[b]);});
+  debug(tmpv);
+  for(ll k:tmpv)
+  {
+    if(!SZ(mp[now])){mp[now].swap(mp[k]);continue;}
+    for(auto &tmp:mp[k])
+    {
+      auto it=mp[now].insert(tmp);
+      if(!it.Y)it.X->Y=(it.X->Y+tmp.Y)%MOD;
+    }
+    mp[k].clear();
+  }
+  auto it=mp[now].find(ii(c[now],d[now]-1));
+  ll t;
+  if(it!=mp[now].end())t=it->Y;
+  else if(d[now]==0)t=1;
+  else t=0;
+  auto it2=mp[now].insert(make_pair(ii(c[now],d[now]),t));
+  if(!it2.Y)it2.X->Y=(it2.X->Y+t)%MOD;
+  ans[now]=t;
 }
-ll d[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)d[i]=i;
-    srand(time(0));
-    random_shuffule(d,d+n);
-    cout<<"Init : ";
-    pary(d,d+n);
-    
+    ll T,n,x;
+    cin>>T;
+    while(T--&&cin>>n>>x)
+    {
+      REP(i,n)mp[i].clear(),v[i].clear();
+      REP1(i,n-1)
+      {
+        ll t;
+        cin>>t;
+        v[t].pb(i);
+      }
+      REP(i,n)cin>>c[i];
+      REP(i,n)cin>>d[i];
+      dfs(0);
+      REP(i,n)cout<<ans[i]<<endl;
+    }
 }

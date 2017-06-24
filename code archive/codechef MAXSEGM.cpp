@@ -44,28 +44,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cnt=0;
-bool cmp(ll a,ll b)
-{
-  cnt++;
-  debug("CMP:",a,b);
-  return a<b;
-}
-ll d[MAXn];
+ll d[MAXn],w[MAXn];
+
+ll ct[MAXn];
 
 int main()
 {
     IOS();
+    ll T;
     ll n;
-    cin>>n;
-    REP(i,n)d[i]=i;
-    srand(time(0));
-    random_shuffule(d,d+n);
-    cout<<"Init : ";
-    pary(d,d+n);
-    
+    cin>>T;
+    while(T--&&cin>>n)
+    {
+      REP1(i,n)cin>>d[i];
+      REP1(i,n)cin>>w[i];
+      partial_sum(w,w+n+1,w);
+      REP(i,n)ct[i]=0;
+      ll l=1,a=0;
+      REP1(i,n)
+      {
+        ct[d[i]]++;
+        while(ct[d[i]]==2)
+        {
+          ct[d[l]]--;
+          l++;
+        }
+        a=max(a,w[i]-w[l-1]);
+
+      }
+      cout<<a<<endl;
+    }
 }

@@ -44,28 +44,86 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cnt=0;
-bool cmp(ll a,ll b)
+ll z[MAXn*2];
+void makz(string s,ll n)
 {
-  cnt++;
-  debug("CMP:",a,b);
-  return a<b;
+  z[0]=0;
+  ll l=0,r=0;
+  REP1(i,n-1)
+  {
+    if(i>r)z[i]=0;
+    else
+    {
+      ll t=i-l;
+      if(i+z[t]-1<r)z[i]=z[t];
+      else z[i]=r-i+1;
+    }
+    while(i+z[i]<n&&s[i+z[i]]==s[z[i]])z[i]++;
+    if(i+z[i]-1>r)
+    {
+      r=i+z[i]-1;
+      l=i;
+    }
+  }
 }
-ll d[MAXn];
 
+ll  n,m,q;
+string s,t;
+ll dp[MAXn];
+
+struct node{
+  ll l,r;
+  node *lc,*rc;
+  ll d;
+  node(ll li,ll ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci),d(0){}
+  void ins(ll x,ll k)
+  {
+    if(l==r-1)d=k;
+    else
+    {
+      if(x<(l+r)/2)lc->ins(x,k);
+      else rc->ins(x,k);
+      d=max(lc->d,rc->d);
+    }
+  }
+  ll qr(ll li,ll ri)
+  {
+    if(li>=r||ri<=l)return 0;
+    else if(li<=l&&ri>=r)return d;
+    else return max(lc->qr(li,ri),rc->qr(li,ri));
+  }
+};
+node *build(ll l,ll r)
+{
+  if(l==r-1)return new node(l,r);
+  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
+}
+node *rt=0;
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)d[i]=i;
-    srand(time(0));
-    random_shuffule(d,d+n);
-    cout<<"Init : ";
-    pary(d,d+n);
-    
+    cin>>s>>t>>q;
+    n=SZ(s);
+    m=SZ(t);
+    makz(s+t,n+m);
+    auto d=z+n;
+    REP(i,m)d[i]=min(d[i],n);
+    pary(d,d+m);
+    rt=build(0,m+1);
+    for(int i=m-1;i>=0;i--)
+    {
+      dp[i]=max(d[i],rt->qr(i+1,i+d[i]+1)-i);
+      rt->ins(i,dp[i]+i);
+    }
+    REP(i,q)
+    {
+      ll l,r;
+      cin>>l>>r;
+      if(dp[l-1]>=r-l+1)cout<<"YES"<<endl;
+      else cout<<"NO"<<endl;
+    }
 }

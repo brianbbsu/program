@@ -48,24 +48,17 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cnt=0;
-bool cmp(ll a,ll b)
-{
-  cnt++;
-  debug("CMP:",a,b);
-  return a<b;
-}
-ll d[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)d[i]=i;
-    srand(time(0));
-    random_shuffule(d,d+n);
-    cout<<"Init : ";
-    pary(d,d+n);
-    
+    ll T;
+    cin>>T;
+    ll a,b,n;
+
+    while(T--&&cin>>a>>b>>n)
+    {
+      if(n%2==1)a*=2;
+      cout<<max(a,b)/min(a,b)<<endl;
+    }
 }
