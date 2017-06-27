@@ -92,7 +92,6 @@ struct node{
           rc->ins(li,ri,k,t);
         }
 
-        d[0]=gd(lc,0)+gd(rc,0);
         d[1]=gd(lc,1)+gd(rc,1);
       }
 

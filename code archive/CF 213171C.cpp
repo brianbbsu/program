@@ -44,18 +44,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn][MAXn];
+
+ll dp[MAXn][MAXn];
+
+vector<ii> dt;
+vector<ll> uni;
 
 int main()
 {
     IOS();
-    REP(i,400)
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
     {
-      REP(j,400)cout<<(j + i/20 + i%20*20)%400+1<<" \n"[j==399];
+      ll x,y;
+      cin>>x>>y;
+      dt.pb(ii(x,y));
     }
+    REP(i,m)
+    {
+      if(dt[i].X!=1)uni.pb(dt[i].X-1);
+      uni.pb(dt[i].X);
+    }
+    sort(ALL(uni));
+    uni.resize(unique(ALL(uni))-uni.begin());
+    REP(i,m)dt[i].X=lower_bound(ALL(uni),dt[i].X)-uni.begin()+1;
+    ll r=SZ(uni);
+    debug(uni);
 
+    uni.clear();
 
+    REP(i,m)
+    {
+      if(dt[i].Y!=1)uni.pb(dt[i].Y-1);
+      uni.pb(dt[i].Y);
+    }
+    sort(ALL(uni));
+    uni.resize(unique(ALL(uni))-uni.begin());
+    REP(i,m)dt[i].Y=lower_bound(ALL(uni),dt[i].Y)-uni.begin()+1;
+    ll c=SZ(uni);
+    debug(uni);
+    
+    debug(dt,r,c);
+
+    REP(i,m)d[dt[i].X][dt[i].Y]=1;
+
+    dp[0][1]=1;
+    ll ans=(n-r)*(n-c);
+
+    REP1(i,r)REP1(j,c)
+    {
+      if(d[i][j])continue;
+      dp[i][j]=dp[i-1][j]|dp[i][j-1];
+      ans+=dp[i][j];
+    }
+    cout<<ans<<endl;
 }

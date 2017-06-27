@@ -44,18 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+struct mut{
+  vector<vector<ll> > dt;
+  ll n,m;
+  mut(ll ni,ll mi):n(ni),m(mi){dt.resize(n,vector<ll>(m,0));}
+};
+mut operator * (const mut &a,const mut &b)
+{
+  ll n=a.n,m=b.m;
+  mut rt(n,m);
 
+  REP(i,n)REP(j,m)
+  {
+    REP(k,a.m)rt.dt[i][j]=(rt.dt[i][j]+a.dt[i][k]*b.dt[k][j])%MOD;
+  }
+  return rt;
+}
+
+mut pw(mut &x,ll k)
+{
+  if(k==0)
+  {
+    mut rt(x.n,x.n);
+    REP(i,x.n)rt.dt[i][i]=1;
+    return rt;
+  }
+  mut a=pw(x,k/2);
+  if(k&1)return a*a*x;
+  else return a*a;
+}
 int main()
 {
     IOS();
-    REP(i,400)
+    ll n,k;
+    cin>>n>>k;
+    mut dt(16,1);
+    dt.dt[0][0]=1;
+    REP(T,n)
     {
-      REP(j,400)cout<<(j + i/20 + i%20*20)%400+1<<" \n"[j==399];
+      ll l,r,c;
+      cin>>l>>r>>c;
+      r=min(r,k);
+      mut tr(16,16);
+      REP(i,16)REP(j,16)
+      {
+        if(i<=c&&j<=c&&abs(j-i)<=1)tr.dt[i][j]=1;
+      }
+      dt=dt*pw(tr,r-l);
     }
-
-
+    cout<<dt.dt[0][0]<<endl;
 }
