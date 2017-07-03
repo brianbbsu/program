@@ -44,18 +44,48 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn][4];
+
+ll dt[4][MAXn];// l,r,d,u
 
 int main()
 {
     IOS();
-    ll n=100000;
-    cout<<n<<" "<<n-1<<endl;
-    REP1(i,n-1)cout<<(i==1?"":" ")<<i;
-    cout<<" "<<n-1<<endl;
+    ll n;
+    cin>>n;
+    ll r,c;
+    cin>>r>>c;
+    REP(i,n)
+    {
+      cin>>d[i][0]>>d[i][2]>>d[i][1]>>d[i][3];
+      if(d[i][0]>d[i][1])swap(d[i][0],d[i][1]);
+      if(d[i][2]>d[i][3])swap(d[i][2],d[i][3]);
+      REP(j,4)dt[j][d[i][j]]++;
+    }
+    REP1(i,MAXn-1)dt[0][i]+=dt[0][i-1],dt[2][i]+=dt[2][i-1];
+    for(int i=MAXn-2;i>=0;i--)dt[1][i]+=dt[1][i+1],dt[3][i]+=dt[3][i+1];
 
+    ll g[4];
+    REP(i,4)cin>>g[i];
 
+    REP(i,n)
+    {
+      ll t[4];
+      t[0]=dt[0][d[i][1]-1];
+      t[1]=dt[1][d[i][0]+1];
+      t[2]=dt[2][d[i][3]-1];
+      t[3]=dt[3][d[i][2]+1];
+
+      if(d[i][1]!=d[i][0])t[0]--,t[1]--;
+      else t[2]--,t[3]--;
+      pary(t,t+4);
+      bool b=1;
+      REP(j,4)if(t[j]!=g[j])b=0;
+      if(b){cout<<i+1<<endl;return 0;}
+    }
+    cout<<-1<<endl;
 }

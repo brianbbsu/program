@@ -44,18 +44,46 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll c[MAXn],d[MAXn],mn[MAXn];
+
+struct tg{
+  ll x,id,tp;
+  tg(ll xi,ll idi,ll tpi):x(xi),id(idi),tp(tpi){}
+  bool operator < (const tg &b){return ii(x,tp)<ii(b.x,b.tp);}
+};
+vector<tg> dt;
 
 int main()
 {
     IOS();
-    ll n=100000;
-    cout<<n<<" "<<n-1<<endl;
-    REP1(i,n-1)cout<<(i==1?"":" ")<<i;
-    cout<<" "<<n-1<<endl;
-
-
+    REP(i,MAXn)mn[i]=INF;
+    ll ans=INF;
+    ll n,x;
+    cin>>n>>x;
+    REP(i,n)
+    {
+      ll l,r;
+      cin>>l>>r>>c[i];
+      dt.pb(tg(l,i,-1));
+      dt.pb(tg(r,i,1));
+      d[i]=r-l+1;
+    }
+    sort(ALL(dt));
+    for(tg &tmp:dt)
+    {
+      if(tmp.tp==-1)
+      {
+        if(d[tmp.id]<=x)ans=min(ans,c[tmp.id]+mn[x-d[tmp.id]]);
+      }
+      else
+      {
+        if(d[tmp.id]<=x)mn[d[tmp.id]]=min(mn[d[tmp.id]],c[tmp.id]);
+      }
+    }
+    if(ans==INF)cout<<-1<<endl;
+    else cout<<ans<<endl;
 }

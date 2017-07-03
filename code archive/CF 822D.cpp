@@ -44,18 +44,40 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> pm;
+bool b[MAXn];
+ll d[MAXn],dp[MAXn];
 
 int main()
 {
     IOS();
-    ll n=100000;
-    cout<<n<<" "<<n-1<<endl;
-    REP1(i,n-1)cout<<(i==1?"":" ")<<i;
-    cout<<" "<<n-1<<endl;
-
-
+    for(int i=2;i<MAXn;i++)
+    {
+      if(!b[i])pm.pb(i);
+      for(int j=0;i*pm[j]<MAXn;j++)
+      {
+        b[pm[j]*i]=1;
+        d[pm[j]*i]=pm[j];
+        if(i%pm[j]==0)break;
+      }
+    }
+    for(ll i=2;i<MAXn;i++)
+    {
+      if(!b[i])dp[i]=i*(i-1)/2%MOD;
+      else dp[i]=(dp[i/d[i]]+d[i]*(d[i]-1)/2%MOD*(i/d[i]))%MOD;
+    }
+    ll t,l,r;
+    cin>>t>>l>>r;
+    ll a=0,tmp=1;
+    for(ll i=l;i<=r;i++)
+    {
+      debug(dp[i]);
+      a=(a+tmp*dp[i])%MOD;
+      tmp=tmp*t%MOD;
+    }
+    cout<<a<<endl;
 }

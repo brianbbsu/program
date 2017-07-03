@@ -46,32 +46,49 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e9);
 
-lf u,d,l,r;
-lf vx[MAXn],vy[MAXn];
-lf px[MAXn],py[MAXn];
+struct frc{
+  ll a,b;
+  frc(ll ai=1,ll bi=1)
+  {
+    if(bi<0)a=-ai,b=-bi;
+    else a=ai,b=bi;
+  }
+  bool operator < (const frc &t){return a*t.b<b*t.a;}
+  bool operator <= (const frc &t){return a*t.b<=b*t.a;}
+  frc operator + (const frc &t){return frc(a*t.b+b*t.a,b*t.b);}
+  frc operator * (const frc &t){return frc(a*t.a,b*t.b);}
+};
+
+
+ll u,d,l,r;
+ll vx[MAXn],vy[MAXn];
+ll px[MAXn],py[MAXn];
 ll n;
 
-lf mn[MAXn],mx[MAXn];
+frc mn[MAXn],mx[MAXn];
+
 
 pair<lf,lf> cal(int i,lf t)
 {
   return make_pair(px[i]+vx[i]*t,py[i]+vy[i]*t);
 }
-lf calx(int i,lf x)
+frc calx(int i,ll x)
 {
-  return (x-px[i])/vx[i];
+  return frc((x-px[i]),vx[i]);
 }
-lf caly(int i,lf y)
+frc caly(int i,ll y)
 {
-  return (y-py[i])/vy[i];
+  return frc((y-py[i]),vy[i]);
 }
 void qt()
 {
   cout<<-1<<endl;
   exit(0);
 }
+#define min(_a,_b) ((_a)<(_b)?(_a):(_b))
+#define max(_a,_b) ((_a)<(_b)?(_b):(_a))
 int main()
 {
     IOS();
@@ -80,25 +97,33 @@ int main()
     REP(i,n)cin>>px[i]>>py[i]>>vx[i]>>vy[i];
     REP(i,n)
     {
-      lf t;
-      t=max(min(calx(i,l),calx(i,r)),min(caly(i,d),caly(i,u)));
-      mn[i]=t;
-      t=min(max(calx(i,l),calx(i,r)),max(caly(i,d),caly(i,u)));
-      mx[i]=t;
-      //debug(i,mx[i],mn[i]);
-      if(mx[i]<mn[i]-1e-7)qt();
-    }
-    lf ans=mn[0];
-    REP(i,n)ans=max(ans,mn[0]);
-    ans=max(ans,0.0);
-    REP(i,n)if(ans>mx[i]+1e-7)qt();
+      mn[i]=frc(-INF,1);
+      mx[i]=frc(INF,1);
 
-    //cout<<123<<endl;
-    REP(i,n)
-    {
-      lf x=px[i]+vx[i]*ans;
-      lf y=py[i]+vy[i]*ans;
-      if(!(x<=r+1e-7&&x>=l-1e-7&&y>=d-1e-7&&y<=u+1e-7))qt();
+      if(vx[i]==0)
+      {
+        if(!(px[i]>l&&px[i]<r))qt();
+      }
+      else mn[i]=min(calx(i,l),calx(i,r)),mx[i]=max(calx(i,l),calx(i,r));
+      if(vy[i]==0)
+      {
+        if(!(py[i]>d&&py[i]<u))qt();
+      }
+      else mn[i]=max(mn[i],min(caly(i,d),caly(i,u))),mx[i]=min(mx[i],max(caly(i,d),caly(i,u)));
+      if(!(mn[i]<mx[i]))qt();
     }
-    cout<<fixed<<setprecision(10)<<ans<<endl;
+    frc ans=mn[0],mans=mx[0];
+    REP(i,n)ans=max(ans,mn[i]),mans=min(mans,mx[i]);
+    ans=max(ans,frc(0,1));
+    debug(123,ans.a,ans.b);
+    //cout<<123<<endl;
+    /*REP(i,n)
+    {
+      frc x=frc(px[i],1)+frc(vx[i],1)*ans;
+      frc y=frc(py[i],1)+frc(vy[i],1)*ans;
+      if(!(x<frc(r,1)&&frc(l,1)<x&&frc(d,1)<y&&y<frc(u,1)))qt();
+    }*/
+
+    if(ans<mans)cout<<fixed<<setprecision(12)<<lf(ans.a)/lf(ans.b)<<endl;
+    else qt();
 }

@@ -44,18 +44,50 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll n,t;
+string s;
 int main()
 {
     IOS();
-    ll n=100000;
-    cout<<n<<" "<<n-1<<endl;
-    REP1(i,n-1)cout<<(i==1?"":" ")<<i;
-    cout<<" "<<n-1<<endl;
+    cin>>n>>t;
+    cin>>s;
+    ll cr=0,mx=n,fg=0;
 
+    REP(i,n)
+    {
+      if(s[i]=='.')fg=1;
+      else if(fg&&s[i]>='5'){mx=i+1;break;}
+    }
 
+    fg=0;
+    for(int i=mx-1;i>=0;i--)
+    {
+      if(s[i]=='.'){fg=1;continue;}
+      if(cr&&s[i]=='9')s[i]='0',cr=1;
+      else if(cr&&fg)s[i]++,cr=0;
+      else if(fg)break;
+      else
+      {
+        if(cr)s[i]++,cr=0;
+        if(s[i]>='5'&&t>0)
+        {
+          t--;
+          cr=1;
+          mx=i;
+        }
+      }
+    }
+    if(cr)s="1"+s,mx++;
+    ll tmp=0;
+    REP(i,mx)
+    {
+      if(s[i]=='.')tmp=i-1;
+      else if(s[i]!='0')tmp=i;
+    }
+    cout<<s.substr(0,tmp+1)<<endl;
 }
