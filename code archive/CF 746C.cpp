@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -47,12 +48,26 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[]={1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8092, 16184, 32368, 64736, 129472, 258944, 517888, 1035776, 2071552, 4143104, 8286208, 16572416, 33144832, 66289664, 132579328, 265158656, 530317312, 1060634624, 2121269248, 4242538496, 8485076992, 16970153984, 33940307968};
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    cout<<d[n]<<endl;
+    ll s,x1,x2,t1,t2;
+    cin>>s>>x1>>x2>>t1>>t2;
+    ll p,d;
+    cin>>p>>d;
+    ll ans=abs(x1-x2)*t2;
+    if(x1<x2)
+    {
+      if(d==-1)ans=min(ans,(p+x2)*t1);
+      else if(p<=x1)ans=min(ans,(x2-p)*t1);
+      else ans=min(ans,(s-p+s+x2)*t1);
+    }
+    else
+    {
+      if(d==1)ans=min(ans,(s-p+s-x2)*t1);
+      else if(p>=x1)ans=min(ans,(p-x2)*t1);
+      else ans=min(ans,(p+s+s-x2)*t1);
+    }
+    cout<<ans<<endl;
 }

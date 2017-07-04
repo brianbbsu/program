@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -47,12 +48,35 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[]={1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8092, 16184, 32368, 64736, 129472, 258944, 517888, 1035776, 2071552, 4143104, 8286208, 16572416, 33144832, 66289664, 132579328, 265158656, 530317312, 1060634624, 2121269248, 4242538496, 8485076992, 16970153984, 33940307968};
+ll d[MAXn],cnt[MAXn];
+
+set<ll> p;
+
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    cout<<d[n]<<endl;
+    ll n,m;
+    cin>>n>>m;
+    ll t=n/m;
+
+    REP(i,n)
+    {
+      cin>>d[i];
+      if(d[i]>m||cnt[d[i]]==t)p.insert(i);
+      else cnt[d[i]]++;
+    }
+    ll a=0;
+    ll it=1;
+    while(it<=m)
+    {
+      while(it<=m&&cnt[it]==t)it++;
+      if(it>m)break;
+      cnt[it]++;
+      d[*p.begin()]=it;
+      p.erase(p.begin());
+      a++;
+    }
+    cout<<t<<" "<<a<<endl;
+    REP(i,n)cout<<d[i]<<" ";
 }
