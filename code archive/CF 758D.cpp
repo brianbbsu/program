@@ -44,61 +44,67 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(3e18);
 
-struct node{
-  ll l,r;
-  node *lc,*rc;
-  ll d;
-  node(ll li,ll ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci),d(0){}
-  void ins(ll x,ll k)
-  {
-    if(l==r-1)d=k;
-    else
-    {
-      if(x<(l+r)/2)lc->ins(x,k);
-      else rc->ins(x,k);
-      d=max(lc->d,rc->d);
-    }
-  }
-  ll qr(ll li,ll ri)
-  {
-    if(li>=r||ri<=l)return 0;
-    else if(li<=l&&ri>=r)return d;
-    else return max(lc->qr(li,ri),rc->qr(li,ri));
-  }
-};
-node *build(ll l,ll r)
+vector<ll> dp[MAXn];
+
+ll sti(string s)
 {
-  if(l==r-1)return new node(l,r);
-  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
+  stringstream ss(s);
+  ll t;
+  ss>>t;
+  return t;
 }
-node *rt=0;
-
+bool cmp(vector<ll> &a,vector<ll> &b)
+{
+  for(int i=SZ(a)-1;i>=0;i--)
+  {
+    if(a[i]<b[i])return 1;
+    else if(a[i]>b[i])return 0;
+  }
+  return 0;
+}
 int main()
 {
     IOS();
     ll n;
-    cin>>n;
-    rt=build(0,n);
-    ll t;
-    while(cin>>t)
+    string s;
+    cin>>n>>s;
+    REP(i,100)REP(j,65)dp[i].pb(0);
+    dp[0].clear();
+    REP1(i,SZ(s))
     {
-      if(t==1)
+      if(s[SZ(s)-i]=='0')
       {
-        ll x,k;
-        cin>>x>>k;
-        rt->ins(x,k);
+        dp[i]=dp[i-1];
+        dp[i].pb(0);
+        continue;
       }
-      else
+      for(int j=1;j<=i;j++)
       {
-        ll l,r;
-        cin>>l>>r;
-        cout<<rt->qr(l,r+1)<<endl;
+        ll t=sti(s.substr(SZ(s)-i,j));
+        if(t>=n)break;
+        else if(SZ(dp[i-j])+1<SZ(dp[i]))
+        {
+          dp[i]=dp[i-j];
+          dp[i].pb(t);
+        }
+        else if(SZ(dp[i-j])+1==SZ(dp[i]))
+        {
+          vector<ll> tmp=dp[i-j];
+          tmp.pb(t);
+          if(cmp(tmp,dp[i]))dp[i]=tmp;
+        }
       }
     }
-
-
+    REP(i,SZ(s)+1)debug(dp[i]);
+    ll a=0,t=1;
+    for(ll k:dp[SZ(s)])
+    {
+      a+=k*t;
+      t*=n;
+    }
+    cout<<a<<endl;
 }

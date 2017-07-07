@@ -44,61 +44,50 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct node{
-  ll l,r;
-  node *lc,*rc;
-  ll d;
-  node(ll li,ll ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci),d(0){}
-  void ins(ll x,ll k)
-  {
-    if(l==r-1)d=k;
-    else
-    {
-      if(x<(l+r)/2)lc->ins(x,k);
-      else rc->ins(x,k);
-      d=max(lc->d,rc->d);
-    }
-  }
-  ll qr(ll li,ll ri)
-  {
-    if(li>=r||ri<=l)return 0;
-    else if(li<=l&&ri>=r)return d;
-    else return max(lc->qr(li,ri),rc->qr(li,ri));
-  }
-};
-node *build(ll l,ll r)
+
+ll x[MAXn],y[MAXn];
+ll dx[4]={1,-1,0,0},dy[4]={0,0,1,-1};
+vector<ll> v[MAXn];
+
+void dfs(ll now,ll f,ll t,ll lv)
 {
-  if(l==r-1)return new node(l,r);
-  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
+  ll it=0;
+  for(ll k:v[now])
+  {
+    if(k==f)continue;
+    if(t!=-1&&it==(t^1))it++;
+    x[k]=x[now]+(1LL<<lv)*dx[it];
+    y[k]=y[now]+(1LL<<lv)*dy[it];
+    dfs(k,now,it,lv-1);
+    it++;
+  }
 }
-node *rt=0;
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    rt=build(0,n);
-    ll t;
-    while(cin>>t)
+    REP(i,n-1)
     {
-      if(t==1)
-      {
-        ll x,k;
-        cin>>x>>k;
-        rt->ins(x,k);
-      }
-      else
-      {
-        ll l,r;
-        cin>>l>>r;
-        cout<<rt->qr(l,r+1)<<endl;
-      }
+      ll a,b;
+      cin>>a>>b;
+      a--;b--;
+      v[a].pb(b);
+      v[b].pb(a);
     }
 
+    REP(i,n)if(SZ(v[i])>4){cout<<"NO"<<endl;return 0;}
 
+    x[0]=y[0]=0;
+    dfs(0,-1,-1,40);
+    cout<<"YES"<<endl;
+    REP(i,n)
+    {
+      cout<<x[i]<<" "<<y[i]<<endl;
+    }
 }

@@ -4,7 +4,7 @@ using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
-#define REP(i,n) for(ll i=0;i<n;i++)
+#define REP(i,n) for(int i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
@@ -44,61 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=752,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct node{
-  ll l,r;
-  node *lc,*rc;
-  ll d;
-  node(ll li,ll ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci),d(0){}
-  void ins(ll x,ll k)
-  {
-    if(l==r-1)d=k;
-    else
-    {
-      if(x<(l+r)/2)lc->ins(x,k);
-      else rc->ins(x,k);
-      d=max(lc->d,rc->d);
-    }
-  }
-  ll qr(ll li,ll ri)
-  {
-    if(li>=r||ri<=l)return 0;
-    else if(li<=l&&ri>=r)return d;
-    else return max(lc->qr(li,ri),rc->qr(li,ri));
-  }
-};
-node *build(ll l,ll r)
-{
-  if(l==r-1)return new node(l,r);
-  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
-}
-node *rt=0;
+int d[MAXn][MAXn];
+int tmpct[MAXn][MAXn],td[MAXn];
+ll ct[MAXn][MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    rt=build(0,n);
-    ll t;
-    while(cin>>t)
+    int n,m;
+    cin>>n>>m;
+    REP(i,n)
     {
-      if(t==1)
-      {
-        ll x,k;
-        cin>>x>>k;
-        rt->ins(x,k);
-      }
-      else
-      {
-        ll l,r;
-        cin>>l>>r;
-        cout<<rt->qr(l,r+1)<<endl;
-      }
+      string s;
+      cin>>s;
+      REP(j,m)d[i][j]=s[j]-'0';
     }
 
+    ll tt=0;
+    REP(i,n)
+    {
+      REP(j,m)td[j]=1;
+      //FILL(tmpct,0);
+      for(int j=i;j<n;j++)
+      {
+        REP(k,m)td[k]&=d[j][k],tmpct[j][k]=0;
+        int it=0,it2=0;
 
+        while(it<m)
+        {
+            int tmp=0;
+            for(;it2<m&&td[it2];it2++)tmp+=it2-it+1;
+            tt+=tmp;
+            for(int k=it;k<it2;k++)tmpct[j][k]=(k-it+1)*(it2-k);
+            it2++;
+            it=it2;
+        }
+      }
+      for(int j=n-1;j>=i;j--)
+      {
+        REP(k,m)
+        {
+          tmpct[j][k]+=tmpct[j+1][k];
+          ct[j][k]+=tmpct[j][k];
+        }
+      }
+    }
+    ll mn=tt;
+    debug(tt);
+    REP(i,n)REP(j,m)mn=min(mn,tt-ct[i][j]);
+    cout<<mn<<endl;
 }

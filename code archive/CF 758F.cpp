@@ -44,61 +44,43 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct node{
-  ll l,r;
-  node *lc,*rc;
-  ll d;
-  node(ll li,ll ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci),d(0){}
-  void ins(ll x,ll k)
-  {
-    if(l==r-1)d=k;
-    else
-    {
-      if(x<(l+r)/2)lc->ins(x,k);
-      else rc->ins(x,k);
-      d=max(lc->d,rc->d);
-    }
-  }
-  ll qr(ll li,ll ri)
-  {
-    if(li>=r||ri<=l)return 0;
-    else if(li<=l&&ri>=r)return d;
-    else return max(lc->qr(li,ri),rc->qr(li,ri));
-  }
-};
-node *build(ll l,ll r)
-{
-  if(l==r-1)return new node(l,r);
-  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
-}
-node *rt=0;
+vector<ll> dt[MAXn];
+ll p[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    rt=build(0,n);
-    ll t;
-    while(cin>>t)
+    ll n,l,r;
+    cin>>n>>l>>r;
+    if(n==1){cout<<r-l+1<<endl;return 0;}
+    else if(n==2){cout<<(r-l+1)*(r-l)<<endl;return 0;}
+    ll it=1;
+    for(;;it++)
     {
-      if(t==1)
+      ll t=1,b=1;
+      for(int j=1;j<n;j++)if(t*it>r){b=0;break;}else t*=it;
+      if(!b)break;
+      p[it]=t;
+    }
+    it--;
+    debug(it);
+    REP1(i,it)REP1(j,it)if(__gcd(i,j)==1&&i!=j)dt[i].pb(j);
+
+    ll ans=0;
+    REP1(i,it)
+    {
+      for(ll k:dt[i])
       {
-        ll x,k;
-        cin>>x>>k;
-        rt->ins(x,k);
-      }
-      else
-      {
-        ll l,r;
-        cin>>l>>r;
-        cout<<rt->qr(l,r+1)<<endl;
+        ll a=min(p[i],p[k]),b=max(p[i],p[k]);
+        ll mn=(l-1)/a+1;
+        ll mx=r/b;
+        debug(a,b,mn,mx);
+        ans+=max(0LL,mx-mn+1);
       }
     }
-
-
+    cout<<ans<<endl;
 }
