@@ -1,0 +1,16 @@
+input
+push 8
+pop
+push 8
+push 8
+pop
+pop
+print;jump 16
+push -1;*
+push -2;jump 6
+jump 8
+pop;*
+push 8
+pop;dup
+push 8
+push 7;input
