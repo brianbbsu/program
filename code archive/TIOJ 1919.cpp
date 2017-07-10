@@ -48,39 +48,78 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 ll n,m,q;
-ll bit[MAXn];
-void ins(ll x,ll k)
-{
-  while(x<=n)
+namespace bit{
+  ll bit[MAXn];
+  void ins(ll x,ll k)
   {
-    bit[x]+=k;
-    x+=-x;
+    x++;
+    while(x<=m)bit[x]+=k,x+=x&-x;
+  }
+  ll qr(ll x)
+  {
+    ll rt=0;
+    x++;
+    while(x>0)rt+=bit[x],x-=x&-x;
+    return rt;
   }
 }
-ll qr(ll x)
+
+struct tg{
+  int l,r,c;
+};
+tg qr[MAXn];
+int dt[MAXn],tmpdt[MAXn];
+int d[MAXn],lt[MAXn],p[MAXn],g[MAXn],ans[MAXn];
+ll tmpg[MAXn];
+
+struct ch{
+  int x,tp,id;
+  ch(int xi,int tpi,int idi):x(xi),tp(tpi),id(idi){}
+};
+bool operator < (const ch &a,const ch &b){return make_pair(a.x,a.tp)>make_pair(b.x,b.tp);}
+vector<ch> tmpch;
+
+void cal(int l,int r,int qrl,int qrr)
 {
-  ll r=0;
-  while(x>0)
+  if(l==r)return;
+  if(qrl==qrr-1)//base case
   {
-    r+=bit[x];
-    x-=-x;
+    for(int i=l;i<r;i++)ans[dt[i]]=qrl;
+    return;
   }
-  return r;
-}
 
-ll l[MAXn],r[MAXn],c[MAXn],nxt[MAXn];
-ll ans[MAXn];
-vector<ii> qr[MAXlg],tmpqr,tmpch;
-ll g[MAXn],lt[MAXn];
+  ll qrh=(qrl+qrr)/2;
 
-void DnC(int lv,int li,int ri)
-{
-    if(li==ri-1)
-    {
-      for(ii &k:qr[lv])ans[k.Y]=ri;
-      return;
-    }
+  tmpch.clear();
+  for(int i=l;i<r;i++)
+  {
+    int it=lt[dt[i]];
+    while(it!=-1)tmpch.pb(ch(it,1,dt[i])),it=p[it];
+    tmpg[dt[i]]=0;
+  }
+  for(int i=qrl;i<qrh;i++)tmpch.pb(ch(qr[i].r,0,i));
 
+  sort(ALL(tmpch));
+
+  for(auto &tmp:tmpch)
+  {
+    if(tmp.tp==0)bit::ins(qr[tmp.id].l,qr[tmp.id].c);
+    else tmpg[tmp.id]+=bit::qr(tmp.x)-bit::qr(p[tmp.x]);
+    debug(l,r,qrl,qrr,tmp.x,tmp.id,tmp.tp);
+  }
+
+  for(int i=qrl;i<qrh;i++)bit::ins(qr[i].l,-qr[i].c);
+  int itl=l,itr=r;
+  for(int i=l;i<r;i++)
+  {
+    debug(qrl,qrh,qrr,dt[i],tmpg[dt[i]]);
+    if(tmpg[dt[i]]>=g[dt[i]])tmpdt[itl++]=dt[i];
+    else tmpdt[--itr]=dt[i],g[dt[i]]-=tmpg[dt[i]];
+  }
+  for(int i=l;i<r;i++)dt[i]=tmpdt[i];
+
+  cal(l,itr,qrl,qrh);
+  cal(itr,r,qrh,qrr);
 }
 
 
@@ -88,19 +127,11 @@ int main()
 {
     IOS();
     cin>>n>>m>>q;
-    FILL(lt,-1);
-    FILL(nxt,-1);
-    for(int i=1;i<=m;i++)
-    {
-      ll t;
-      cin>>t;
-      t--;
-      if(lt[t]!=-1)nxt[lt[t]]=i;
-      lt[t]=i;
-      qr[0].pb(ii(i,t));
-    }
-    REP(i,n)cin>>g[i];
-    REP(i,q)cin>>l[i]>>r[i]>>c[i];
-    DnC(0,0,q);
-
+    REP(i,m)cin>>d[i],d[i]--,p[i]=-1;
+    REP(i,n)cin>>g[i],dt[i]=i,lt[i]=-1,ans[i]=q;
+    REP(i,q)cin>>qr[i].l>>qr[i].r>>qr[i].c,qr[i].l--;
+    REP(i,m)p[i]=lt[d[i]],lt[d[i]]=i;
+    pary(p,p+m);
+    cal(0,n,0,q+1);
+    REP(i,n)cout<<(ans[i]==q?-1:ans[i]+1)<<endl;
 }
