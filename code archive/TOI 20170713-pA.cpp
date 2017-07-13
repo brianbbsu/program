@@ -44,47 +44,60 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=7e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-ll d[MAXn][MAXn];
-vector<ii> dt[5];
+uint32_t x, y, z, w;
+uint32_t xorshift() {
+  uint32_t t = x;
+  t ^= t << 11;
+  t ^= t >> 8;
+  x = y; y = z; z = w;
+  w ^= w >> 19;
+  w ^= t;
+  return w & ((1 << 24) - 1);
+}
+void getInputMatrix(int n, ll A[][7000],uint32_t a, uint32_t b, uint32_t c, uint32_t d)
+{
+  x = a; y = b; z = c; w = d;
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      A[i][j] = xorshift();
+    }
+  }
+}
 
-vector<pair<ll,vector<ii>>> dp[5][MAXn][MAXn][MAXn][MAXn];
+ll A[7000][7000],B[7000][7000];
 
-ll dis(ii a,ii b){return abs(a.X-b.X)+abs(a.Y-b.Y);}
+ll pw[MAXn];
 
 int main()
 {
     IOS();
-    REP(i,5)REP(j,MAXn)REP(k,MAXn)dp[i][j][k]=make_pair(INF,vector<ii>(0));
-    ll r,c;
-    cin>>r>>c;
-    REP(i,r)REP(j,c)
+    ll n,a[4],b[4],p;
+    cin>>n;
+    REP(i,4)cin>>a[i];
+    REP(i,4)cin>>b[i];
+    cin>>p;
+    pw[0]=1;
+    REP1(i,MAXn-1)pw[i]=pw[i-1]*p%MOD;
+
+    getInputMatrix(n,A,a[0],a[1],a[2],a[3]);
+    getInputMatrix(n,B,b[0],b[1],b[2],b[3]);
+
+    REP(i,n)REP(j,n)B[i][j]=B[i][j]*pw[n-j-1]%MOD;
+
+    REP(i,n)REP1(j,n-1)B[i][j]=(B[i][j]+B[i][j-1]);
+    REP(i,n)B[i][n-1]%=MOD;
+
+    ll tt=0;
+
+    REP(i,n)
     {
-      cin>>d[i][j];
-      if(d[i][j]>0)dt[d[i][j]].pb(ii(i,j));
+      tt=tt*pw[n]%MOD;
+      REP(j,n)tt=(tt+A[i][j]*B[j][n-1])%MOD;
     }
-    dt[1].pb(ii(0,0));
-    dt[3].pb(ii(r-1,c-1));
-    REP1(i,3)sort(ALL(dt[i]));
-
-
-
-
-
-    REP(i,r)REP(j,c)
-    {
-      do{
-        if(dt[0]==ii(0,0))
-        {
-          ll tt=0;
-          REP(k,SZ(dt[0]-1))tt+=
-        }
-      }while(next_permutation(ALL(dt[i])));
-    }
-
-
+    cout<<tt<<endl;
 }

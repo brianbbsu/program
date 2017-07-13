@@ -44,47 +44,92 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll n;
+string s;
+ll tgsum=0,tgprod=1;
 
-ll d[MAXn][MAXn];
-vector<ii> dt[5];
+vector<int> his;
+ll cnt=0,ans=0;
 
-vector<pair<ll,vector<ii>>> dp[5][MAXn][MAXn][MAXn][MAXn];
+ll ct[15];
 
-ll dis(ii a,ii b){return abs(a.X-b.X)+abs(a.Y-b.Y);}
+ll fact[20];
+
+ll cal(ll k)
+{
+  ll tt=fact[k];
+  REP(i,10)tt/=fact[ct[i]];
+  return tt;
+}
+
+ll calperm()
+{
+  FILL(ct,0);
+  REP(i,n)ct[his[i]]++;
+  return cal(n);
+}
+
+ll calless()
+{
+  FILL(ct,0);
+  REP(i,n)ct[his[i]]++;
+  ll tt=0;
+
+  REP(i,n)
+  {
+    for(int j=0;j<s[i];j++)
+    {
+      if(ct[j])
+      {
+        ct[j]--;
+        tt+=cal(n-i-1);
+        ct[j]++;
+      }
+    }
+    if(ct[s[i]])ct[s[i]]--;
+    else break;
+  }
+  return tt;
+}
+
+void dfs(ll lv,ll mn,ll sum,ll prod)
+{
+  if(lv==n)
+  {
+    cnt++;
+    if(sum>tgsum)return;
+
+    if(sum<tgsum||prod<tgprod)ans+=calperm();
+    else if(prod>tgprod)return;
+    else ans+=calless();
+    //debug(his,ans);
+  }
+  else
+  {
+    for(int i=mn;i<=9;i++)
+    {
+      his.pb(i);
+      dfs(lv+1,i,sum+i,prod*(i+1));
+      his.pop_back();
+    }
+  }
+}
 
 int main()
 {
     IOS();
-    REP(i,5)REP(j,MAXn)REP(k,MAXn)dp[i][j][k]=make_pair(INF,vector<ii>(0));
-    ll r,c;
-    cin>>r>>c;
-    REP(i,r)REP(j,c)
-    {
-      cin>>d[i][j];
-      if(d[i][j]>0)dt[d[i][j]].pb(ii(i,j));
-    }
-    dt[1].pb(ii(0,0));
-    dt[3].pb(ii(r-1,c-1));
-    REP1(i,3)sort(ALL(dt[i]));
+    fact[0]=1;
+    REP1(i,18)fact[i]=fact[i-1]*i;
 
-
-
-
-
-    REP(i,r)REP(j,c)
-    {
-      do{
-        if(dt[0]==ii(0,0))
-        {
-          ll tt=0;
-          REP(k,SZ(dt[0]-1))tt+=
-        }
-      }while(next_permutation(ALL(dt[i])));
-    }
-
-
+    cin>>s;
+    n=SZ(s);
+    REP(i,n)s[i]-='0';
+    for(char c:s)tgsum+=c,tgprod*=(c+1);
+    dfs(0,0,0,1);
+    debug(cnt);
+    cout<<ans<<endl;
 }

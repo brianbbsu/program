@@ -44,47 +44,28 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=20,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
-ll d[MAXn][MAXn];
-vector<ii> dt[5];
-
-vector<pair<ll,vector<ii>>> dp[5][MAXn][MAXn][MAXn][MAXn];
-
-ll dis(ii a,ii b){return abs(a.X-b.X)+abs(a.Y-b.Y);}
+ll dp[(1<<20)][MAXn];
+ll cal[MAXn];
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    REP(i,5)REP(j,MAXn)REP(k,MAXn)dp[i][j][k]=make_pair(INF,vector<ii>(0));
-    ll r,c;
-    cin>>r>>c;
-    REP(i,r)REP(j,c)
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n)cin>>d[i];
+    ll lt;
+    cin>>lt;
+    lt--;
+    REP(i,m-1)
     {
-      cin>>d[i][j];
-      if(d[i][j]>0)dt[d[i][j]].pb(ii(i,j));
+      ll t;
+      cin>>t;
+      t--;
+
     }
-    dt[1].pb(ii(0,0));
-    dt[3].pb(ii(r-1,c-1));
-    REP1(i,3)sort(ALL(dt[i]));
-
-
-
-
-
-    REP(i,r)REP(j,c)
-    {
-      do{
-        if(dt[0]==ii(0,0))
-        {
-          ll tt=0;
-          REP(k,SZ(dt[0]-1))tt+=
-        }
-      }while(next_permutation(ALL(dt[i])));
-    }
-
-
 }
