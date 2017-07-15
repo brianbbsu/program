@@ -31,6 +31,7 @@ template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
     return _s;
 }
 template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a> ostream &operator << (ostream &_s,deque<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
@@ -46,60 +47,102 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
-
-vector<ii> d,tmpd;
-ll dp[2][MAXn];
-deque<int> dq;
-ll a[MAXn],b[MAXn];
+const ll INF=ll(1e18);
 
 
-ll take_photos(int n, int m, int k, vector<int> r, vector<int> c)
+#ifndef brian
+#include "lib1961.h"
+#endif
+
+struct seg{
+  ll a,b,l,r,pi;
+  seg(ll ai,ll bi,ll li,ll ri,ll pii):a(ai),b(bi),l(li),r(ri),pi(pii){}
+  ll operator () (ll x)const{return a*x+b;}
+};
+#ifdef brian
+ostream &operator << (ostream &_ss,const seg &_t){return _ss<<_t.a<<"x+"<<_t.b<<":"<<ii(_t.l,_t.r);}
+#endif
+
+vector<ii> dt,tmpdt;
+ll n,m,k;
+
+deque<seg> st;
+ll dp[MAXn],pi[MAXn];
+
+void cal(ll cst)
 {
-  d.clear();
-  tmpd.clear();
-  FILL(dp,0);
-
-  REP(i,n)tmpd.pb(ii(min(r[i],c[i]),-max(r[i],c[i])));
-  sort(ALL(tmpd));
-  ll lt=-1;
-  d.pb(ii(-1,-1));
-  for(ii &tmp:tmpd)if(-tmp.Y>lt)lt=-tmp.Y,d.pb(ii(tmp.X,-tmp.Y));
-  debug(d);
-  n=SZ(d)-1;
-  k=min(k,n);
-
-  bool fg=0;
-  REP1(i,n)dp[0][i]=INF;
-  REP(t,k)
+  dp[0]=0;pi[0]=0;
+  while(SZ(st))st.pop_back();
+  REP1(i,n)
   {
-    REP(i,n+1)debug(t,i,dp[fg][i]);
-    fg=!fg;
-    while(SZ(dq))dq.pop_front();
-    REP1(i,n)
+    seg tmp=seg(-2*dt[i].X,dp[i-1]+dt[i].X*dt[i].X-max(0LL,dt[i-1].Y-dt[i].X)*max(0LL,dt[i-1].Y-dt[i].X)+cst,0,ll(1e6+5),pi[i-1]);
+    bool b=0;
+    while(SZ(st))
     {
-      a[i-1]=-2*d[i].X;b[i-1]=dp[!fg][i-1]+d[i].X*d[i].X-2*d[i].X-max(0LL,(d[i-1].Y-d[i].X+1))*max(0LL,(d[i-1].Y-d[i].X+1));
-      while(SZ(dq)>=2&&(b[i-1]-b[dq[SZ(dq)-2]])*(a[dq[SZ(dq)-2]]-a[dq[SZ(dq)-1]])<=
-                       (b[dq[SZ(dq)-1]]-b[dq[SZ(dq)-2]])*(a[dq[SZ(dq)-2]]-a[i-1]))dq.pop_back();
-      dq.pb(i-1);
-      ll x=d[i].Y;
-      while(SZ(dq)>=2&&a[dq[1]]*x+b[dq[1]]<=a[dq[0]]*x+b[dq[0]])dq.pop_front();
-
-      dp[fg][i]=a[dq[0]]*x+b[dq[0]]+(x+1)*(x+1);
+      assert(st.back().a!=tmp.a);
+      if(st.back()(st.back().l)>=tmp(st.back().l)&&st.back()(st.back().r)>=tmp(st.back().r))tmp.l=st.back().l,st.pop_back();
+      else {tmp.l=(tmp.b-st.back().b)/(st.back().a-tmp.a)+1,st.back().r=tmp.l-1;break;}
     }
+    if(!b)st.pb(tmp);
+    while(SZ(st)>=2&&st.front().r<dt[i].Y)st.pop_front();
+    debug(st,dt[i].Y);
+    dp[i]=st[0](dt[i].Y)+dt[i].Y*dt[i].Y;
+    pi[i]=st[0].pi+1;
   }
-  REP(i,n+1)debug(k,i,dp[fg][i]);
-  return dp[fg][n];
+};
+
+ll take_photos(int N,int M,int K,int *R,int *C)
+{
+  dt.clear();tmpdt.clear();
+  n=N,m=M,k=K;
+  REP(i,n)tmpdt.pb(ii(min(R[i],C[i]),max(R[i],C[i])+1));
+  tmpdt.pb(ii(m+1,m+1));tmpdt.pb(ii(-1,-1));
+  sort(ALL(tmpdt),[](ii a,ii b){return ii(a.X,-a.Y)<ii(b.X,-b.Y);});
+  for(ii &tmp:tmpdt)if(!SZ(dt)||tmp.Y>dt.back().Y)dt.pb(tmp);
+  debug(dt);
+
+
+  n=SZ(dt)-2;
+
+  ll l=0,r=2*m*m;
+  ll cnt=0;
+  while(l!=r-1)
+  {
+    cnt++;
+    assert(cnt<=100);
+    ll h=(l+r)/2;
+    cal(h);
+    if(pi[n]<k)r=h;
+    else l=h;
+  }
+  cal(l);
+  debug(l,dp[n],pi[n]);
+  ll dpa=dp[n]-pi[n]*l,pia=pi[n];
+  cal(l+1);
+  debug(l+1,dp[n],pi[n]);
+  ll dpb=dp[n]-pi[n]*(l+1),pib=pi[n];
+  debug(dpa,pia,dpb,pib);
+  if(pia==pib)return dpa;
+  else return (k-pia)*(dpb-dpa)/(pib-pia)+dpa;
+
 }
 
 #ifdef brian
 int main()
 {
     IOS();
-    vector<int> _r={0,4,4,4,4};
-    vector<int> _c={3,4,6,5,6};
-    int _n=5,_m=7,_k=2;
-    ll _rs=take_photos(_n,_m,_k,_r,_c);
-    debug(_rs);
+    int _r[]={0,4,4,4,4};
+    int _c[]={3,4,6,5,6};
+    debug(take_photos(5,7,2,_r,_c));
+
+    int _r2[]={1,4};
+    int _c2[]={4,1};
+    debug(take_photos(2,6,2,_r2,_c2));
+
+    int _r3[]={1,2,6,7};
+    int _c3[]={1,2,6,7};
+    debug(take_photos(4,10,3,_r3,_c3));
+
+
 }
 #endif
