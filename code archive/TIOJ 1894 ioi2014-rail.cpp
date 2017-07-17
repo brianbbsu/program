@@ -66,6 +66,8 @@ ll dis[2][MAXn];
 
 vector<ll> dt;
 
+set<ll> rec;
+
 void findLocation(int n, int L, int loc[], int tp[])
 {
   dis[0][0]=INF;
@@ -78,62 +80,85 @@ void findLocation(int n, int L, int loc[], int tp[])
   loc[l]=L+dis[0][l];tp[l]=2;
   REP1(i,n-1)if(i!=l)dis[1][i]=getDistance(l,i);
 
-  REP1(i,n-1)if(i!=l&&dis[0][i]<dis[1][i])dt.pb(i);
+  dt.clear();
+
+  REP1(i,n-1)if(i!=l&&dis[0][i]!=dis[1][i]+loc[l]-L)dt.pb(i);
   sort(ALL(dt),[&](int a,int b){return dis[0][a]<dis[0][b];});
+
 
   debug(dt);
   if(SZ(dt))
   {
-    ll ltrc=l,lt=dt.front();
+    rec.clear();
+
+    ll lt=dt.front();
     loc[dt.front()]=L+dis[0][dt.front()];
     tp[dt.front()]=2;
+    rec.insert(loc[dt.front()]*2);
 
     REP1(i,SZ(dt)-1)
     {
       ll t=getDistance(lt,dt[i]);
-      if(t<loc[lt]-loc[ltrc]+dis[0][dt[i]]-(loc[ltrc]-L))
+
+      ll tmp=(loc[lt]-t+dis[0][dt[i]]+L);
+      if(rec.count(tmp))
       {
         tp[dt[i]]=1;
         loc[dt[i]]=loc[lt]-t;
-        ltrc=dt[i];
       }
       else
       {
         tp[dt[i]]=2;
         loc[dt[i]]=L+dis[0][dt[i]];
         lt=dt[i];
+        rec.insert(loc[dt[i]]*2);
       }
+      //assert(tp[dt[i]]==2);
     }
   }
+
+  //for(ll k:dt)loc[k]=L+dis[0][k],tp[k]=2;
+
   dt.clear();
-  REP1(i,n-1)if(i!=l&&dis[0][i]>dis[1][i])dt.pb(i);
+  REP1(i,n-1)if(i!=l&&dis[0][i]==dis[1][i]+loc[l]-L)dt.pb(i);
   sort(ALL(dt),[&](int a,int b){return dis[1][a]<dis[1][b];});
+
 
   debug(dt);
   if(SZ(dt))
   {
-    ll ltrc=l,lt=dt.front();
+    rec.clear();
+
+
+    ll lt=dt.front();
     loc[dt.front()]=loc[l]-dis[1][dt.front()];
     tp[dt.front()]=1;
-
+    rec.insert(loc[dt.front()]*2);
+    //rec.insert(L*2);
     REP1(i,SZ(dt)-1)
     {
       ll t=getDistance(lt,dt[i]);
-      debug(lt,dt[i],loc[ltrc]-loc[lt]+dis[1][dt[i]]-(loc[l]-loc[ltrc]));
-      if(t<loc[ltrc]-loc[lt]+dis[1][dt[i]]-(loc[l]-loc[ltrc]))
+      //debug(lt,dt[i],loc[ltrc]-loc[lt]+dis[1][dt[i]]-(loc[l]-loc[ltrc]));
+
+      ll tmp=(t+loc[lt]+loc[l]-dis[1][dt[i]]);
+      debug(tmp);
+      if(rec.count(tmp))
       {
         tp[dt[i]]=2;
         loc[dt[i]]=loc[lt]+t;
-        ltrc=dt[i];
       }
       else
       {
         tp[dt[i]]=1;
         loc[dt[i]]=loc[l]-dis[1][dt[i]];
         lt=dt[i];
+        rec.insert(loc[dt[i]]*2);
       }
+      //assert(tp[dt[i]]==1);
     }
   }
+
+  //for(ll k:dt)loc[k]=loc[l]-dis[1][k],tp[k]=1;
 
 
 }
@@ -145,7 +170,7 @@ int main()
     IOS();
     _ct=0;
     int loc[MAXn],tp[MAXn];
-    findLocation(1,5,loc,tp);
+    findLocation(6,6,loc,tp);
     pary(loc,loc+6);
     pary(tp,tp+6);
     debug(_ct);
