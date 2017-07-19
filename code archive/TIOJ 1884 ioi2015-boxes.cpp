@@ -44,63 +44,52 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn][6];
-bool tp[MAXn];
 
-vector<lf> ans,pt;
-ll bst=INF;
-vector<lf> tmp;
-ll n=0,mx=0,mn=INF;
+ll d[MAXn];
+ll dt[2][MAXn];
+int n,k,L;
 
-void cal(ll t)
+int cal(int l,int r)
 {
+  return min({l+r,L-l+r,L-r+l,L+L-r-l})+abs(r-l);
+}
 
-    ll ct[2][2];
-    FILL(ct,0);
+ll read()
+{
+    cin>>n>>k>>L;
+    REP1(i,n)cin>>d[i];
+    dt[0][0]=dt[1][n+1]=0;
+    //ll lt=0,lft=k,tt=0;
+    REP1(i,n)
+    {
+      dt[0][i]=dt[0][max(0LL,i-k)]+cal(d[max(0LL,i-k)+1],d[i]);
 
-    REP(i,n)
-    {
-      lf tt=0;
-      REP(j,5)tt+=tmp[j]*lf(d[i][j]-d[t][j]);
-      if(tt<=0)ct[tp[i]][0]++;
-      else ct[tp[i]][1]++;
     }
-    ll a=min(ct[0][0]+ct[1][1],ct[0][1]+ct[1][0]);
-    if(a<bst)
+
+    for(int i=n;i>0;i--)
     {
-      bst=a;
-      ans=tmp;
-      pt.clear();
-      REP(i,5)pt.pb(d[t][i]);
+      dt[1][i]=dt[1][min(n+1,i+k)]+cal(d[min(n+1,i+k)-1],d[i]);
+
     }
+    ll mn=INF;
+    REP(i,n+1)mn=min(mn,dt[0][i]+dt[1][i+1]);
+    pary(dt[0],dt[0]+n+1);
+    pary(dt[1],dt[1]+n+1);
+
+    return mn;
 }
 
 int main()
 {
     IOS();
-    srand(time(0));
-
-    while(cin>>d[n][0])
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      REP1(i,4)cin>>d[n][i];
-      cin>>tp[n];
-      REP(i,5)mx=max(mx,d[n][i]),mn=min(mn,d[n][i]);
-      n++;
+      cout<<read()<<endl;
     }
-    debug(n,mx,mn);
-
-    const ll MAXc=210;
-
-    REP(T,MAXn/10)
-    {
-      tmp.clear();
-      tmp.pb(1.0);
-      REP(i,4)tmp.pb(lf(rand()%(2*100*MAXc)-100*MAXc)/100.0);
-      REP(i,n)cal(i);
-    }
-    debug(bst,ans,pt);
 }

@@ -56,7 +56,7 @@ ll bst=INF;
 vector<lf> tmp;
 ll n=0,mx=0,mn=INF;
 
-void cal(ll t)
+bool cal(ll t)
 {
 
     ll ct[2][2];
@@ -70,18 +70,23 @@ void cal(ll t)
       else ct[tp[i]][1]++;
     }
     ll a=min(ct[0][0]+ct[1][1],ct[0][1]+ct[1][0]);
-    if(a<bst)
+    if(a<=bst)
     {
       bst=a;
       ans=tmp;
       pt.clear();
       REP(i,5)pt.pb(d[t][i]);
+      return 1;
     }
+    return 0;
 }
 
 int main()
 {
     IOS();
+
+    
+
     srand(time(0));
 
     while(cin>>d[n][0])
@@ -94,13 +99,22 @@ int main()
     debug(n,mx,mn);
 
     const ll MAXc=210;
+    lf dlt=100;
+
+    ans.pb(1);
+    REP(i,4)ans.pb(lf(rand()%(2*100*MAXc)-100*MAXc)/100.0);
 
     REP(T,MAXn/10)
     {
-      tmp.clear();
-      tmp.pb(1.0);
-      REP(i,4)tmp.pb(lf(rand()%(2*100*MAXc)-100*MAXc)/100.0);
-      REP(i,n)cal(i);
+      tmp=ans;
+      ll t=rand()%4+1;
+      dlt=rand()%100+1;
+      if(rand()%2)tmp[t]+=dlt;
+      else tmp[t]-=dlt;
+      //REP(i,4)tmp.pb(lf(rand()%(2*100*MAXc)-100*MAXc)/100.0);
+      bool b=0;
+      REP(i,n)b|=cal(i);
+      //if(b)dlt=max(dlt-5,5.0);
     }
-    debug(bst,ans,pt);
+    debug(bst,ans,pt,dlt);
 }

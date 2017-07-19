@@ -44,7 +44,7 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXb=131072,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
@@ -52,20 +52,153 @@ const ll INF=ll(1e15);
 #include "lib1899.h"
 #endif
 
-ll d[MAXn],n;
+
+namespace bit{
+  ll cnt[MAXb+10],tt[MAXb+10],B;
+
+  void clr(){
+    memset(cnt,0,(B+1)*sizeof(ll));
+    memset(tt,0,(B+1)*sizeof(ll));
+  }
+  void ins(ll x,ll tp,ll d){
+    x++;d*=tp;
+    while(x<=B){
+      cnt[x]+=tp;
+      tt[x]+=d;
+      x+=x&-x;
+    }
+  }
+
+  ll qr(ll k){
+    ll l=0,sz=(B>>1),rt=0;
+    while(sz>0){
+      if(cnt[l+sz]<=k){
+        k-=cnt[l+sz];
+        rt+=tt[l+sz];
+        l+=sz;
+      }
+      sz>>=1;
+    }
+    return rt;
+  }
+}
+
+struct tg{
+  ll idl,idr,l,r;
+  tg(ll idli,ll idri,ll li,ll ri):idl(idli),idr(idri),l(li),r(ri){}
+};
+
+ll d[MAXn],id[MAXn],n;
+vector<ll> dt;
+ll dp[2][3*MAXn],pi[2][3*MAXn];
+queue<tg> q;
 
 ll findMaxAttraction(int N, int S, int D, int *attr)
 {
-  n=N;
-  REP(i,n)d[i]=attr[i];
-  
-}
+  if(D==0)return 0;
+  n=N;dt.clear();
+  bit::B=(1<<(__lg(n)+1));
+  bit::clr();
 
+  memset(dp[0],0,(D+5)*sizeof(ll));
+  memset(dp[1],0,(D+5)*sizeof(ll));
+
+  REP(i,n)d[i]=attr[i];
+  REP(i,n)dt.pb(i);
+  sort(ALL(dt),[&](int a,int b){return d[a]>d[b];});
+  REP(i,n)id[dt[i]]=i;
+
+  while(SZ(q))q.pop();
+
+  q.push(tg(-1,-1,-1,-1));
+  q.push(tg(0,D,S+1,N-1));
+  ll it=S;
+  while(SZ(q))
+  {
+    tg t=q.front();
+    q.pop();
+    if(t.idl==-1)
+    {
+      bit::clr();
+      if(!SZ(q))break;
+      q.push(t);
+      it=S;
+      continue;
+    }
+    ll tpi=t.l,now=(t.idl+t.idr)/2;
+    for(int i=t.l;i<=t.r&&i-S-1<=now;i++)
+    {
+      while(it<i)it++,bit::ins(id[it],1,d[it]);
+      ll tmp=bit::qr(now-(i-S-1));
+      if(tmp>dp[0][now])tpi=i,dp[0][now]=tmp;
+    }
+    pi[0][now]=tpi;
+    if(t.idl!=t.idr-1)
+    {
+      q.push(tg(t.idl,now,t.l,tpi));
+      q.push(tg(now,t.idr,tpi,t.r));
+    }
+  }
+
+  while(SZ(q))q.pop();
+
+  q.push(tg(-1,-1,-1,-1));
+  q.push(tg(0,D,0,S-1));
+  it=S;
+  while(SZ(q))
+  {
+    tg t=q.front();
+    q.pop();
+    if(t.idl==-1)
+    {
+      bit::clr();
+      if(!SZ(q))break;
+      q.push(t);
+      it=S;
+      continue;
+    }
+    ll tpi=t.r,now=(t.idl+t.idr)/2;
+    for(int i=t.r;i>=t.l&&S-1-i<=now;i--)
+    {
+      while(it>i)it--,bit::ins(id[it],1,d[it]);
+      ll tmp=bit::qr(now-(S-1-i));
+      if(tmp>dp[1][now])tpi=i,dp[1][now]=tmp;
+    }
+    pi[1][now]=tpi;
+    if(t.idl!=t.idr-1)
+    {
+      q.push(tg(t.idl,now,tpi,t.r));
+      q.push(tg(now,t.idr,t.l,tpi));
+    }
+  }
+
+  ll mx=(D>0?d[S]:0);
+  REP1(i,D)
+  {
+    if(pi[0][i-1]-S+i<D)mx=max(mx,dp[0][i-1]+dp[1][D-(pi[0][i-1]-S+i)-1]);
+    else mx=max(mx,dp[0][i-1]);
+    if(S-pi[1][i-1]+i<D)mx=max(mx,dp[1][i-1]+dp[0][D-(S-pi[1][i-1]+i)-1]);
+    else mx=max(mx,dp[1][i-1]);
+
+    if(i>1)
+    {
+      ll j=i-1;
+      ll DD=D-1;
+      if(pi[0][j-1]-S+j<DD)mx=max(mx,dp[0][j-1]+dp[1][DD-(pi[0][j-1]-S+j)-1]+d[S]);
+      else mx=max(mx,dp[0][j-1]+d[S]);
+      if(S-pi[1][j-1]+j<DD)mx=max(mx,dp[1][j-1]+dp[0][DD-(S-pi[1][j-1]+j)-1]+d[S]);
+      else mx=max(mx,dp[1][j-1]+d[S]);
+    }
+  }
+  return mx;
+}
 
 #ifdef brian
 int main()
 {
     IOS();
-
+    int _d[]={10,2,20,30,1};
+    ll _t=findMaxAttraction(5,2,6,_d);
+     _t=findMaxAttraction(5,0,5,_d);
 }
 #endif
