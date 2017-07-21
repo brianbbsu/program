@@ -45,62 +45,62 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MOD=666013;
 const ll INF=ll(1e15);
 
-ll d[MAXn][6];
-bool tp[MAXn];
-
-vector<lf> ans,pt;
-ll bst=INF;
-vector<lf> tmp;
-ll n=0,mx=0,mn=INF;
-
-void cal(ll t)
+ll _cal(ll l,ll r,ll a,ll b)
 {
+    return max(min(r,b)-max(l,a)+1,0LL);
+}
 
-    ll ct[2][2];
-    FILL(ct,0);
+void cal(ll l,ll r,ll a,ll b,ll *d)
+{
+    d[0]=_cal(l,r,a,b);
+    REP1(i,1000)
+    {
+        d[i]=_cal(l,r,a-i,b-i)+_cal(l,r,a+i,b+i);
+    }
+}
 
-    REP(i,n)
-    {
-      lf tt=0;
-      REP(j,5)tt+=tmp[j]*lf(d[i][j]-d[t][j]);
-      if(tt<=0)ct[tp[i]][0]++;
-      else ct[tp[i]][1]++;
-    }
-    ll a=min(ct[0][0]+ct[1][1],ct[0][1]+ct[1][0]);
-    if(a<bst)
-    {
-      bst=a;
-      ans=tmp;
-      pt.clear();
-      REP(i,5)pt.pb(d[t][i]);
-    }
+ll a[MAXn],b[MAXn];
+
+ii d[4];
+
+ll mypow(ll x,ll k)
+{
+    if(k==0)return 1;
+    ll t=mypow(x,k/2);
+    if(k&1)return t*t%MOD*x%MOD;
+    else return t*t%MOD;
+}
+
+ll fac[2*MAXn],ifac[2*MAXn];
+
+ll c(ll n,ll m)
+{
+    return fac[n]*ifac[m]%MOD*ifac[n-m]%MOD;
 }
 
 int main()
 {
     IOS();
-    srand(time(0));
+    FILL(d,0);
+    REP(i,4)cin>>d[i].X>>d[i].Y;
+    cal(d[0].X,d[1].X,d[2].X,d[3].X,a);
+    cal(d[0].Y,d[1].Y,d[2].Y,d[3].Y,b);
+    ifac[0]=fac[0]=1;
+    REP1(i,2*MAXn-1)fac[i]=fac[i-1]*i%MOD,ifac[i]=mypow(fac[i],MOD-2);
 
-    while(cin>>d[n][0])
-    {
-      REP1(i,4)cin>>d[n][i];
-      cin>>tp[n];
-      REP(i,5)mx=max(mx,d[n][i]),mn=min(mn,d[n][i]);
-      n++;
-    }
-    debug(n,mx,mn);
+    pary(a,a+100);
+    pary(b,b+100);
 
-    const ll MAXc=210;
+    ll ans=0;
+    REP(i,1005)a[i]=a[i]*ifac[i]%MOD;
+    REP(i,1005)b[i]=b[i]*ifac[i]%MOD;
 
-    REP(T,MAXn/10)
-    {
-      tmp.clear();
-      tmp.pb(1.0);
-      REP(i,4)tmp.pb(lf(rand()%(2*100*MAXc)-100*MAXc)/100.0);
-      REP(i,n)cal(i);
-    }
-    debug(bst,ans,pt);
+    REP(i,1005)REP(j,1005)ans=(ans+a[i]*b[j]%MOD*fac[i+j])%MOD;
+    cout<<ans<<endl;
+
+    //REP(i,10)REP(j,10)debug(i,j,c(i+j,j));
+    //REP(i,10)debug(i,a[i],b[i]);
 }

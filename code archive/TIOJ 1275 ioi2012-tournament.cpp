@@ -65,63 +65,49 @@ namespace bit{
     x++;
     while(x<=B)bit[x]+=k,x+=x&-x;
   }
-  int qr(int k)
+  int qr(int k,int dt=0)
   {
+    bit[B]-=dt;
     int l=0,sz=(B>>1);
     while(sz>0)
     {
       if(bit[l+sz]<k)k-=bit[l+sz],l+=sz;
+      else bit[l+sz]-=dt;
       sz>>=1;
     }
     debug(k,l,sz);
-
     return l;
   }
 }
 
 vector<ii> dt;
-set<int> dst;
 int d[MAXn];
-bool st[MAXn][MAXlg];
+int st[MAXn];
 int lg[MAXn];
-
-bool cal(int l,int r)
-{
-  int t=lg[r-l+1];
-  return st[l][t]||st[r-(1<<t)+1][t];
-}
 
 int GetBestPosition(int N, int C, int R, int K[], int A[], int B[])
 {
   dt.clear();
-  dst.clear();
   bit::init(N);
-  lg[0]=0;
-  REP1(i,N)lg[i]=((1<<(lg[i-1]+1))==i?lg[i-1]+1:lg[i-1]);
 
-  REP(i,N+1)dst.insert(i),bit::ins(i,1);
+  REP(i,N+1)bit::ins(i,1);
   REP(i,C)
   {
     int l=bit::qr(A[i]+1),r=bit::qr(B[i]+2);
-    auto ita=dst.lower_bound(l),itb=dst.lower_bound(r);
-    ita++;
-    while(ita!=itb)
-    {
-      bit::ins(*ita,-1);
-      ita=dst.erase(ita);
-    }
+    REP(j,B[i]-A[i])bit::qr(A[i]+2,1);
     dt.pb(ii(l,r-1));
   }
+
   debug(dt);
 
-  REP(i,N-1)st[i][0]=(K[i]>R);
-  for(int j=1;(1<<j)<=N-1;j++)REP(i,N-1)if((1<<j)+i<=N-1)st[i][j]=st[i][j-1]||st[i+(1<<(j-1))][j-1];
+  REP(i,N-1)st[i+1]=(K[i]>R);
+  partial_sum(st+1,st+N,st+1);
 
   memset(d,0,sizeof(int)*N);
 
   for(ii &tmp:dt)
   {
-    if(!cal(tmp.X,tmp.Y-1))d[tmp.X]++,d[tmp.Y+1]--;
+    if(st[tmp.X]==st[tmp.Y])d[tmp.X]++,d[tmp.Y+1]--;
   }
   partial_sum(d,d+N,d);
   int mx=*max_element(d,d+N);
