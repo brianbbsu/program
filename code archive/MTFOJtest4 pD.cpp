@@ -112,7 +112,7 @@ int main()
       }
       else//y==2
       {
-
+        g3();
       }
     }
     else

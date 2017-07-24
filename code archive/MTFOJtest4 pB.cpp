@@ -44,88 +44,35 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e18+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-vector<ll> dt[2][3];
-ll tmp=0;
+ll dp[MAXn][3][3][3],dt[MAXn];
 
-void g2(ll a,ll b,ll c)
-{
-  cout<<2<<endl;
-  cout<<(a^tmp^c)<<" "<<(b^c)<<endl;
-}
-void g3(ll a,ll b, ll c)
-{
-
-}
+string s,ts="RYB";
 
 int main()
 {
     IOS();
-
-    ll a,b;
-    cin>>a>>b;
-    ll n=a^b;
-    if(n%3==0)
+    cin>>s;
+    ll n=SZ(s);
+    FILL(dp,-1);
+    s=" "+s;
+    REP1(i,n)
     {
-      cout<<1<<endl<<n<<endl;
-      return 0;
-    }
-
-    for(ll i=0,I=1;i<60;i++,I<<=1)
-    {
-      dt[(n&I)>0][I%3].pb(i);
-    }
-    REP(i,2)REP1(j,2)debug(i,j,dt[i][j]);
-
-    REP1(i,2)while(SZ(dt[1][i])>=3)
-    {
-      REP(j,3)
+      REP(a,3)REP(b,3)REP(c,3)
       {
-        tmp|=(1LL<<dt[1][i].back());
-        dt[1][i].pop_back();
-      }
-    }
-    debug(tmp);
-    ll x=SZ(dt[1][1]),y=SZ(dt[1][2]);
-    vector<ll> &A=dt[1][1],&B=dt[1][2];
-    if(x==0)
-    {
-      if(y==1)
-      {
-        g3();
-      }
-      else//y==2
-      {
-        g2(B[0],B[1],1);
-      }
-    }
-    else if(x==1)
-    {
-      if(y==0)
-      {
-        g3();
-
-      }
-      else//y==2
-      {
-
-      }
-    }
-    else
-    {
-        if(y==0)
+        if(s[i]=='*'||s[i]==ts[a])
         {
-          g2(A[0],A[1],2);
+          if(dp[i-1][b][c][a]!=-1)dp[i][a][b][c]=dp[i-1][b][c][a];
+          else dp[i][a][b][c]=i;
         }
-        else //y==1
-        {
-          g2(A[0]&A[1],B[0],dt[0][1][0]);
-        }
+      }
     }
-
+    REP1(i,n)dt[i]=INF;
+    REP1(i,n)REP(a,3)REP(b,3)REP(c,3)if(dp[i][a][b][c]!=-1)dt[i]=min(dt[i],dt[dp[i][a][b][c]-1]+1);
+    cout<<dt[n]<<endl;
 
 }

@@ -48,84 +48,39 @@ const ll MAXn=1e18+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> dt[2][MAXlg];
 
-vector<ll> dt[2][3];
-ll tmp=0;
-
-void g2(ll a,ll b,ll c)
+bool issq(ll a)
 {
-  cout<<2<<endl;
-  cout<<(a^tmp^c)<<" "<<(b^c)<<endl;
-}
-void g3(ll a,ll b, ll c)
-{
-
+  ll t=sqrt(a+0.5);
+  return (t*t==a);
 }
 
 int main()
 {
     IOS();
 
+    ll ans=1;
     ll a,b;
     cin>>a>>b;
-    ll n=a^b;
-    if(n%3==0)
-    {
-      cout<<1<<endl<<n<<endl;
-      return 0;
-    }
+    ll ta=a/__gcd(a,b),tb=b/__gcd(a,b);
+    if(issq(ta)&&issq(tb))ans++;
 
-    for(ll i=0,I=1;i<60;i++,I<<=1)
+    for(ll i=1;i<=1000000;i++)
     {
-      dt[(n&I)>0][I%3].pb(i);
-    }
-    REP(i,2)REP1(j,2)debug(i,j,dt[i][j]);
-
-    REP1(i,2)while(SZ(dt[1][i])>=3)
-    {
-      REP(j,3)
+      for(ll j=1,t=1;j<MAXlg&&(t<=a||t<=b);j++)
       {
-        tmp|=(1LL<<dt[1][i].back());
-        dt[1][i].pop_back();
+        if(MAXn/t<i)break;
+        else t*=i;
+        if(j<=2)continue;
+        if(a%t==0)dt[0][j].pb(t);
+        if(b%t==0)dt[1][j].pb(t);
       }
     }
-    debug(tmp);
-    ll x=SZ(dt[1][1]),y=SZ(dt[1][2]);
-    vector<ll> &A=dt[1][1],&B=dt[1][2];
-    if(x==0)
+    REP(i,MAXlg)
     {
-      if(y==1)
-      {
-        g3();
-      }
-      else//y==2
-      {
-        g2(B[0],B[1],1);
-      }
+      for(ll j:dt[0][i])for(ll k:dt[1][i])if(a/j==b/k)ans++;
     }
-    else if(x==1)
-    {
-      if(y==0)
-      {
-        g3();
-
-      }
-      else//y==2
-      {
-
-      }
-    }
-    else
-    {
-        if(y==0)
-        {
-          g2(A[0],A[1],2);
-        }
-        else //y==1
-        {
-          g2(A[0]&A[1],B[0],dt[0][1][0]);
-        }
-    }
-
+    cout<<ans<<endl;
 
 }
