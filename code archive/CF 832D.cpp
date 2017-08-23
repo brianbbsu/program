@@ -44,91 +44,67 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e18+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> v[MAXn];
+ll dp[MAXn];
+ll st[MAXn][MAXlg];
 
-vector<ll> dt[2][3];
-ll tmp=0;
-
-void g2(ll a,ll b,ll c)
+void dfs(ll now,ll f,ll dps)
 {
-  cout<<2<<endl;
-  cout<<(a^tmp^c)<<" "<<(b^c)<<endl;
+  st[now][0]=f;
+  dp[now]=dps;
+  for(ll k:v[now])if(k!=f)dfs(k,now,dps+1);
 }
-void g3(ll a,ll b,ll c,ll d)
+
+ll lca(ll a,ll b)
 {
-  cout<<3<<endl;
-  cout<<(a^tmp^b^c)<<" "<<(a^b^d)<<" "<<(a^c^d)<<endl;
+  if(dp[a]<dp[b])swap(a,b);
+  for(int j=MAXlg-1;j>=0;j--)if(st[a][j]!=-1&&dp[st[a][j]]>=dp[b])a=st[a][j];
+  if(a==b)return a;
+  for(int j=MAXlg-1;j>=0;j--)if(st[a][j]!=st[b][j])a=st[a][j],b=st[b][j];
+  return st[a][0];
 }
 
 int main()
 {
     IOS();
+    ll n,q;
+    cin>>n>>q;
+    REP1(i,n-1)
+    {
+      ll a;
+      cin>>a;
+      v[a].pb(i+1);
+      v[i+1].pb(a);
+    }
+    dfs(1,-1,0);
+    REP1(j,MAXlg-1)REP1(i,n)if(st[i][j-1]!=-1)st[i][j]=st[st[i][j-1]][j-1];
 
-    ll a,b;
-    cin>>a>>b;
-    ll n=a^b;
-    if(n%3==0)
+    REP(t,q)
     {
-      cout<<1<<endl<<n<<endl;
-      return 0;
-    }
-
-    for(ll i=0,I=1;i<60;i++,I<<=1)
-    {
-      dt[(n&I)>0][I%3].pb(i);
-    }
-    REP(i,2)REP1(j,2)debug(i,j,dt[i][j]);
-
-    REP1(i,2)while(SZ(dt[1][i])>=3)
-    {
-      REP(j,3)
+      ll d[3];
+      ll dt[3][3]={{0,1,2},{1,0,2},{2,0,1}};
+      REP(i,3)cin>>d[i];
+      ll ans=0;
+      REP(i,3)
       {
-        tmp|=(1LL<<dt[1][i].back());
-        dt[1][i].pop_back();
-      }
-    }
-    REP(i,2)REP1(j,2)for(ll &k:dt[i][j])k=(1LL<<k);
-    debug(tmp);
-    n^=tmp;
-    ll x=SZ(dt[1][1]),y=SZ(dt[1][2]);
-    vector<ll> &A=dt[1][1],&B=dt[1][2];
-    if(x==0)
-    {
-      if(y==1)
-      {
-        g3(n,dt[0][2][0],dt[0][2][1],dt[0][2][2]);
-      }
-      else//y==2
-      {
-        g2(B[0],B[1],1);
-      }
-    }
-    else if(x==1)
-    {
-      if(y==0)
-      {
-        g3(n,dt[0][1][0],dt[0][1][1],dt[0][1][2]);
-
-      }
-      else//y==2
-      {
-        g3(n,dt[0][1][0]&dt[0][1][1],dt[0][1][2]&dt[0][1][3],dt[0][1][4]&dt[0][1][5]);
-      }
-    }
-    else
-    {
-        if(y==0)
+        ll la[3][3];
+        ll a[3];
+        REP(j,3)a[j]=d[dt[i][j]];
+        REP(j,3)REP(k,3)if(j<k)la[j][k]=la[k][j]=lca(d[dt[i][j]],d[dt[i][k]]);
+        if(dp[la[0][1]]<=dp[la[1][2]]&&dp[la[0][2]]<=dp[la[1][2]])ans=max(ans,1+dp[la[1][2]]+dp[a[0]]-2*dp[la[0][2]]);
+        else  if(la[0][1]==la[1][2])//right
         {
-          g2(A[0],A[1],2);
+          ans=max(ans,dp[a[0]]-dp[la[0][2]]+1);
         }
-        else //y==1
+        else //left
         {
-          g2(A[0]&A[1],B[0],dt[0][1][0]);
+          ans=max(ans,dp[a[0]]-dp[la[0][1]]+1);
         }
+      }
+      cout<<ans<<endl;
     }
-
-
 }
