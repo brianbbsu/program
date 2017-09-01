@@ -44,54 +44,28 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn];
-ll dg[MAXn];
 
-void cal(ll now)
-{
-   ii g[3]={ii(0,1),ii(1,2),ii(0,2)};
-   REP(i,3)
-   {
-     for(ll k:v[v[now][g[i].X]])if(k==v[now][g[i].Y])
-     {
-       cout<<now+1<<" "<<v[now][g[i].X]+1<<" "<<v[now][g[i].Y]+1<<endl;
-       exit(0);
-     }
-   }
-   cout<<v[now][0]+1<<" "<<v[now][1]+1<<" "<<v[now][2]+1<<endl;
-   exit(0);
-}
-ll vis[MAXn];
-vector<ll> dt;
-void dfs(ll now)
-{
-  vis[now]=1;
-  dt.pb(now);
-  for(ll k:v[now])if(!vis[k])dfs(k);
-}
+ll clr[MAXn];
 
 int main()
 {
     IOS();
     ll n,m;
     cin>>n>>m;
+    REP1(i,n)cin>>clr[i];
     REP(i,m)
     {
       ll a,b;
       cin>>a>>b;
-      a--;b--;
-      v[a].pb(b);v[b].pb(a);
-      dg[a]++,dg[b]++;
+      if(clr[a]==clr[b])
+      {
+        cout<<"No"<<endl;
+        return 0;
+      }
     }
-    REP(i,n)if(dg[i]>=3)cal(i);
-    REP(i,n)if(dg[i]==1||n%3!=0)
-    {
-      cout<<-1<<endl;return 0;
-    }
-    dfs(0);
-    cout<<dt[0]+1<<" "<<dt[n/3]+1<<" "<<dt[n/3*2]+1<<endl;
+    cout<<"Yes"<<endl;
 }

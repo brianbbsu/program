@@ -48,50 +48,50 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn];
-ll dg[MAXn];
+ll d[100][100];
+ll ct[2][2][MAXn];
 
-void cal(ll now)
+ll c[100][100];
+
+ll ans=0;
+
+void cal1(ll a)
 {
-   ii g[3]={ii(0,1),ii(1,2),ii(0,2)};
-   REP(i,3)
-   {
-     for(ll k:v[v[now][g[i].X]])if(k==v[now][g[i].Y])
-     {
-       cout<<now+1<<" "<<v[now][g[i].X]+1<<" "<<v[now][g[i].Y]+1<<endl;
-       exit(0);
-     }
-   }
-   cout<<v[now][0]+1<<" "<<v[now][1]+1<<" "<<v[now][2]+1<<endl;
-   exit(0);
+  REP1(i,a)ans+=c[a][i];
 }
-ll vis[MAXn];
-vector<ll> dt;
-void dfs(ll now)
+
+void cal2(ll a)
 {
-  vis[now]=1;
-  dt.pb(now);
-  for(ll k:v[now])if(!vis[k])dfs(k);
+  REP1(i,a-1)ans+=c[a][i+1];
 }
 
 int main()
 {
     IOS();
+
+    REP(i,60)REP(j,i+1)
+    {
+      if(j==0||j==i)c[i][j]=1;
+      else c[i][j]=c[i-1][j]+c[i-1][j-1];
+    }
     ll n,m;
     cin>>n>>m;
+    REP(i,n)REP(j,m)
+    {
+      cin>>d[i][j];
+      ct[d[i][j]][0][i]++;
+      ct[d[i][j]][1][j]++;
+    }
+    REP(i,n)
+    {
+      cal1(ct[0][0][i]);
+      cal1(ct[1][0][i]);
+    }
     REP(i,m)
     {
-      ll a,b;
-      cin>>a>>b;
-      a--;b--;
-      v[a].pb(b);v[b].pb(a);
-      dg[a]++,dg[b]++;
+      cal2(ct[0][1][i]);
+      cal2(ct[1][1][i]);
     }
-    REP(i,n)if(dg[i]>=3)cal(i);
-    REP(i,n)if(dg[i]==1||n%3!=0)
-    {
-      cout<<-1<<endl;return 0;
-    }
-    dfs(0);
-    cout<<dt[0]+1<<" "<<dt[n/3]+1<<" "<<dt[n/3*2]+1<<endl;
+    cout<<ans<<endl;
+
 }

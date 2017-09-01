@@ -38,7 +38,7 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-#define endl '\n'
+//#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
@@ -48,50 +48,70 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn];
-ll dg[MAXn];
 
-void cal(ll now)
+ll myrand()
 {
-   ii g[3]={ii(0,1),ii(1,2),ii(0,2)};
-   REP(i,3)
-   {
-     for(ll k:v[v[now][g[i].X]])if(k==v[now][g[i].Y])
-     {
-       cout<<now+1<<" "<<v[now][g[i].X]+1<<" "<<v[now][g[i].Y]+1<<endl;
-       exit(0);
-     }
-   }
-   cout<<v[now][0]+1<<" "<<v[now][1]+1<<" "<<v[now][2]+1<<endl;
-   exit(0);
+  return rand()*100+rand()/100;
 }
-ll vis[MAXn];
-vector<ll> dt;
-void dfs(ll now)
+
+ll mx;
+ii d[MAXn];
+ii myask(ll a)
 {
-  vis[now]=1;
-  dt.pb(now);
-  for(ll k:v[now])if(!vis[k])dfs(k);
+  if(d[a]!=ii(0,0))return d[a];
+  else
+  {
+    cout<<"? "<<a+1<<endl;
+    ll v,nx;
+    cin>>v>>nx;
+    if(v==-1)exit(0);
+    return d[a]=ii(v,nx-1);
+  }
 }
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    REP(i,m)
+    ll n,st,x;
+    cin>>n>>st>>x;
+    myask(st-1);
+    mx=st-1;
+    if(n<=1000)
     {
-      ll a,b;
-      cin>>a>>b;
-      a--;b--;
-      v[a].pb(b);v[b].pb(a);
-      dg[a]++,dg[b]++;
+      REP(i,n)
+      {
+        myask(i);
+        if(d[i].X<=x&&d[i].X>d[mx].X)mx=i;
+      }
     }
-    REP(i,n)if(dg[i]>=3)cal(i);
-    REP(i,n)if(dg[i]==1||n%3!=0)
+    else
     {
-      cout<<-1<<endl;return 0;
+      REP(i,1000)
+      {
+        ll t=myrand()%n;
+        myask(t);
+        if(d[t].X<=x&&d[t].X>d[mx].X)mx=t;
+      }
     }
-    dfs(0);
-    cout<<dt[0]+1<<" "<<dt[n/3]+1<<" "<<dt[n/3*2]+1<<endl;
+    if(d[mx].X>=x)
+    {
+      cout<<"! "<<d[mx].X<<endl;
+      return 0;
+    }
+    REP(i,999)
+    {
+      mx=d[mx].Y;
+      debug(mx);
+      if(mx==-2){
+        cout<<"! -1"<<endl;
+        return 0;
+      }
+      myask(mx);
+      if(d[mx].X>=x)
+      {
+        cout<<"! "<<d[mx].X<<endl;
+        return 0;
+      }
+    }
+    cout<<"! -1"<<endl;
 }

@@ -48,50 +48,41 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn];
-ll dg[MAXn];
-
-void cal(ll now)
-{
-   ii g[3]={ii(0,1),ii(1,2),ii(0,2)};
-   REP(i,3)
-   {
-     for(ll k:v[v[now][g[i].X]])if(k==v[now][g[i].Y])
-     {
-       cout<<now+1<<" "<<v[now][g[i].X]+1<<" "<<v[now][g[i].Y]+1<<endl;
-       exit(0);
-     }
-   }
-   cout<<v[now][0]+1<<" "<<v[now][1]+1<<" "<<v[now][2]+1<<endl;
-   exit(0);
-}
+ll d[MAXn];
+ll dt[MAXn];
+ll p[MAXn];
 ll vis[MAXn];
-vector<ll> dt;
+
+vector<vector<ll> > ans;
+vector<ll> tmpdt;
+
 void dfs(ll now)
 {
   vis[now]=1;
-  dt.pb(now);
-  for(ll k:v[now])if(!vis[k])dfs(k);
+  tmpdt.pb(now);
+  if(!vis[p[now]])dfs(p[now]);
 }
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    REP(i,m)
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    REP(i,n)dt[i]=i;
+    sort(dt,dt+n,[&](int a,int b){return d[a]<d[b];});
+    REP(i,n)p[dt[i]]=i;
+    REP(i,n)if(!vis[i])
     {
-      ll a,b;
-      cin>>a>>b;
-      a--;b--;
-      v[a].pb(b);v[b].pb(a);
-      dg[a]++,dg[b]++;
+      tmpdt.clear();
+      dfs(i);
+      ans.pb(tmpdt);
     }
-    REP(i,n)if(dg[i]>=3)cal(i);
-    REP(i,n)if(dg[i]==1||n%3!=0)
+    cout<<SZ(ans)<<endl;
+    for(auto &t:ans)
     {
-      cout<<-1<<endl;return 0;
+      cout<<SZ(t);
+      for(ll k:t)cout<<" "<<k+1;
+      cout<<endl;
     }
-    dfs(0);
-    cout<<dt[0]+1<<" "<<dt[n/3]+1<<" "<<dt[n/3*2]+1<<endl;
 }
