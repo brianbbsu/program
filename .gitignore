@@ -28,3 +28,6 @@
 *.out
 *.in
 *.app
+
+.build-tools.cson
+
