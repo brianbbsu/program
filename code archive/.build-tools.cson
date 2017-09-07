@@ -4,8 +4,8 @@ providers: [
     config:
       commands: [
         {
-          project: "D:\\Brian\\program\\code archive"
-          source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
+          project: "/home/bb/program/code archive"
+          source: "/home/bb/program/code archive/.build-tools.cson"
           name: "make"
           command: "g++ \"%f\" -O2 -std=c++11 -Wall -fexceptions -Wshadow -Wextra -Dbrian -o \"%e.exe\""
           wd: "%d"
@@ -37,14 +37,14 @@ providers: [
               stdin: false
             linter:
               no_trace: false
-              immediate: false
+              immediate: true
           version: 2
         }
         {
-          project: "D:\\Brian\\program\\code archive"
-          source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
+          project: "/home/bb/program/code archive"
+          source: "/home/bb/program/code archive/.build-tools.cson"
           name: "make and run"
-          command: "\"%e.exe\""
+          command: "\"./%e.exe\""
           wd: "%d"
           env: {}
           modifier:
@@ -87,10 +87,10 @@ providers: [
           version: 2
         }
         {
-          project: "D:\\Brian\\program\\code archive"
-          source: "D:\\Brian\\program\\code archive\\.build-tools.cson"
+          project: "/home/bb/program/code archive"
+          source: "/home/bb/program/code archive/.build-tools.cson"
           name: "run"
-          command: "\"%e.exe\""
+          command: "\"./%e.exe\""
           wd: "%d"
           env: {}
           modifier:
