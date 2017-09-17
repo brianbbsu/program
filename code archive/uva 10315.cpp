@@ -61,10 +61,17 @@ void cal(vector<ll> dt,val &v,bool sc)
 {
   bool strt=1;
   REP1(i,4)if(dt[i]!=dt[i-1]+1)strt=0;
+  vector<ll> ttt={2,3,4,5,14};
+  if(dt==ttt)
+  {
+    strt=1;
+    vector<ll> tttt={14,2,3,4,5};
+    dt=tttt;
+  }
   if(strt||sc)
   {
     v.d=dt;
-    sort(ALL(v.d),greater<ll>());
+    reverse(ALL(v.d));
     if(sc&&strt)v.tp=8;
     else if(sc) v.tp=5;
     else v.tp=4;
