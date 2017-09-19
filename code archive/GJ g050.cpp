@@ -1,5 +1,15 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
 using namespace std;
 typedef long long ll;
 typedef double lf;
@@ -44,16 +54,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000000;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-priority_queue<int,vector<int>,greater<int> > pq;
+
 
 int main()
 {
     IOS();
-    pq.push(1);
-    pq.push(2);
-    debug(pq.top());
-}
+    ll a,b;
+    ll T;
+    cin>>T;
+    while(T--&&cin>>a>>b)
+    {
+      ll c=(a-a/2)*b+(int)ceil(int(a/2)*b*0.6-1e-3);
+      ll d=ceil(a*b*0.812-1e-5);
+      debug(c,d);
+      if(d==c)cout<<"SAME"<<endl;
+      else if(c<d)cout<<": )"<<endl;
+      else cout<<"8-12=-4"<<endl;
+    }
+
+
+}  

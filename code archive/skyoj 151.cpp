@@ -44,16 +44,77 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000000;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-priority_queue<int,vector<int>,greater<int> > pq;
+
+namespace dinic{
+  const int MAXn = 2e4+20;
+  const int INF = 1e6;
+  struct edge{
+    int t,c,r;
+  };
+  vector<edge> v[MAXn];
+  void add_edge(int a,int b,int c)
+  {
+    v[a].pb((edge){b,c,SZ(v[b])  });
+    v[b].pb((edge){a,0,SZ(v[a])-1});
+  }
+  int dis[MAXn],iter[MAXn];
+  void bfs(int s)
+  {
+    queue<int> q;
+    FILL(dis,-1);
+    dis[s]=0;q.push(s);
+    while(SZ(q))
+    {
+      int t=q.front();q.pop();
+      for(edge &e:v[t])
+      {
+        if(e.c>0&&dis[e.t]==-1)
+        {
+          dis[e.t]=dis[t]+1;
+          q.push(e.t);
+        }
+      }
+    }
+  }
+  int dfs(int now,int t,int f)
+  {
+    if(now==t)return f;
+    for(int &i=iter[now];i<SZ(v[now]);i++)
+    {
+      edge &e=v[now][i];
+      if(e.c>0&&dis[e.t]==dis[now]+1)
+      {
+        int d=dfs(e.t,t,min(e.c,f));
+        if(d>0)
+        {
+          e.c -= d; v[e.t][e.r].c -= d;
+          return d;
+        }
+      }
+    }
+    return 0;
+  }
+  int flow(ll s,ll t)
+  {
+    ll rt=0;
+    while(1)
+    {
+      bfs(s);
+      if(dis[t]==-1)return rt;
+      FILL(iter,0);
+      int d;
+      while((d=dfs(s,t,INF))>0)rt+=d;
+    }
+  }
+};
+
 
 int main()
 {
     IOS();
-    pq.push(1);
-    pq.push(2);
-    debug(pq.top());
+
 }
