@@ -48,74 +48,10 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-namespace dinic{
-  const int MAXn = 500;
-  const int INF = 1e6;
-
-  struct edge{
-    int t,c,r;
-    edge(int ti,int ci,int ri):t(ti),c(ci),r(ri){}
-  };
-  vector<edge> v[MAXn];
-  void init()
-  {
-    for(int i=0;i<MAXn;i++)v[i].clear();
-  }
-  void add_edge(int s,int t,int c){
-    v[s].pb(edge(t,c,SZ(v[t])  ));
-    v[t].pb(edge(s,0,SZ(v[s])-1));
-  }
-  int dis[MAXn],iter[MAXn];
-  void bfs(int s)
-  {
-    FILL(dis,-1);
-    queue<int> q;
-    dis[s]=0;q.push(s);
-    while(SZ(q))
-    {
-      int t=q.front();
-      q.pop();
-      for(edge &e:v[t])if(e.c>0&&dis[e.t]==-1)
-      {
-        dis[e.t]=dis[t]+1;
-        q.push(e.t);
-      }
-    }
-  }
-  int dfs(int now,int t,int mn)
-  {
-    if(now==t)return mn;
-    for(int &i=iter[now];i<SZ(v[now]);i++)
-    {
-      edge &e=v[now][i];
-      if(e.c>0&&dis[e.t]==dis[now]+1)
-      {
-        int d=dfs(e.t,t,min(mn,e.c));
-        if(d>0)
-        {
-          e.c-=d; v[e.t][e.r].c+=d;
-          return d;
-        }
-      }
-    }
-    return 0;
-  }
-  int flow(int s,int t)
-  {
-    int rt=0;
-    while(1)
-    {
-      bfs(s);
-      if(dis[t]==-1)return rt;
-      FILL(iter,0);
-      int d;
-      while(d=dfs(s,t,INF))rt+=d;
-    }
-  }
-};
 
 int main()
 {
     IOS();
-
+    int a[]={3,4,5};
+    pary(a,a+3);
 }

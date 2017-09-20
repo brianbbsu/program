@@ -92,6 +92,8 @@ namespace FF{
 };
 
 vector<ll> v[MAXn];
+#define fS 1
+#define fT 10011
 
 int main()
 {
@@ -114,8 +116,6 @@ int main()
       {
         FF::init();
         ll h=(l+r)/2;
-        #define fS 1
-        #define fT 10011
         REP(i,h)FF::add_edge(i*n+n,fT,k);
         REP(i,h-1)REP1(j,n)for(ll t:v[j])FF::add_edge(i*n+j,(i+1)*n+t,1);
         ll rt=FF::flow(fS,fT,k);
