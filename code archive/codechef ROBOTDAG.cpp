@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef int ll;
+typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -46,11 +46,10 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-//const ll INF=ll(1e15);
+const ll INF=ll(1e15);
 
-
-namespace dinic{
-  const int MAXn = 4e4+20;
+namespace FF{
+  const int MAXn=1e4+20;
   const int INF = 1e6;
   struct edge{
     int t,c,r;
@@ -60,63 +59,39 @@ namespace dinic{
   {
     REP(i,MAXn)v[i].clear();
   }
-  void add_edge(int a,int b,int c)
-  {
+  void add_edge(int a,int b,int c){
     v[a].pb((edge){b,c,SZ(v[b])  });
     v[b].pb((edge){a,0,SZ(v[a])-1});
   }
-  int dis[MAXn],iter[MAXn];
-  void bfs(int s)
-  {
-    queue<int> q;
-    FILL(dis,-1);
-    dis[s]=0;q.push(s);
-    while(SZ(q))
-    {
-      int t=q.front();q.pop();
-      for(edge &e:v[t])
-      {
-        if(e.c>0&&dis[e.t]==-1)
-        {
-          dis[e.t]=dis[t]+1;
-          q.push(e.t);
-        }
-      }
-    }
-  }
-  int dfs(int now,int t,int f)
-  {
+  int vis[MAXn];
+  int dfs(int now,int t,int f,int it){
     if(now==t)return f;
-    for(int &i=iter[now];i<SZ(v[now]);i++)
+    vis[now]=it;
+    for(edge &e:v[now])
     {
-      edge &e=v[now][i];
-      if(e.c>0&&dis[e.t]==dis[now]+1)
+      if(vis[e.t]!=it&&e.c>0)
       {
-        int d=dfs(e.t,t,min(e.c,f));
+        int d=dfs(e.t,t,min(f,e.c),it);
         if(d>0)
         {
-          e.c -= d; v[e.t][e.r].c += d;
+          e.c-=d; v[e.t][e.r].c += d;
           return d;
         }
       }
     }
     return 0;
-  }
-  int flow(int s,int t)
+  };
+  int flow(int s,int t,int mxt)
   {
-    int rt=0;
-    while(1)
-    {
-      bfs(s);
-      if(dis[t]==-1)return rt;
-      FILL(iter,0);
-      int d;
-      while((d=dfs(s,t,INF))>0)rt+=d;
-    }
+    FILL(vis,-1);
+    int it=0,rt=0;
+    int d=0;
+    while(it!=mxt&&(d=dfs(s,t,INF,it++)) > 0)rt+=d;
+    return d;
   }
 };
 
-ll d[10005][300];
+vector<ll> v[MAXn];
 
 int main()
 {
@@ -125,24 +100,29 @@ int main()
     cin>>T;
     while(T--)
     {
-      dinic::init();
-      int r,n,l;
-      cin>>r>>n>>l;
-      #define S 40015
-      #define TT 40016
-      REP(i,r)REP(j,n)cin>>d[i][j];
-      REP(i,n)
+      ll n,m,k;
+      cin>>n>>m>>k;
+      REP1(i,n)v[i].clear();
+      REP(i,m)
       {
-        dinic::add_edge(S,2*(i),1);
-        dinic::add_edge(2*((r-1)*n+i)+1,TT,1);
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
       }
-      REP(i,r-1)
+      ll l=0,r=n+1;
+      while(l!=r-1)
       {
-        REP(j,n)REP(k,n)if(abs(d[i+1][k]-d[i][j])<=l)dinic::add_edge(2*(i*n+j)+1,2*((i+1)*n+k),1);
+        FF::init();
+        ll h=(l+r)/2;
+        #define fS 1
+        #define fT 10011
+        REP(i,h)FF::add_edge(i*n+n,fT,k);
+        REP(i,h-1)REP1(j,n)for(ll t:v[j])FF::add_edge(i*n+j,(i+1)*n+t,1);
+        ll rt=FF::flow(fS,fT,k);
+        if(rt>=k)r=h;
+        else l=h;
       }
-      REP(i,r)REP(j,n)dinic::add_edge(2*(i*n+j),2*(i*n+j)+1,1);
-      debug(S,TT);
-      cout<<dinic::flow(S,TT)<<endl;
-
+      if(r==n+1)cout<<-1<<endl;
+      else cout<<r<<endl;
     }
 }
