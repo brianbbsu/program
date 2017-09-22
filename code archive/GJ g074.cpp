@@ -1,5 +1,16 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
+
 using namespace std;
 typedef long long ll;
 typedef double lf;
@@ -49,7 +60,82 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll dp[20][1000];
+
+vector<int> gt[1000][10][5];
+
+vector<int> get2(ll x,ll n,ll c)
+{
+  vector<int> rt;
+  REP(i,n)
+  {
+    rt.pb(x%c);
+    x/=c;
+  }
+  return rt;
+}
+
+vector<int> get(ll x,ll n,ll c)
+{
+  return gt[x][n][c];
+}
+ll ans[50][50][10];
+
 int main()
 {
     IOS();
+
+    REP(i,729)REP1(j,6)REP1(k,3)gt[i][j][k]=get2(i,j,k);
+
+
+    ll T;
+    cin>>T;
+    while(T--)
+    //REP1(X,14)REP1(Y,6)REP1(Z,3)
+    {
+      ll n,m,c;
+      cin>>n>>m>>c;
+      //n=X,m=Y,c=Z;
+      ll t=1;
+      REP(i,m)t*=c;
+      //FILL(dp,0);
+      REP1(i,n)REP(j,t)dp[i][j]=0;
+      REP(I,t)
+      {
+        vector<int> tmp=get(I,m,c);
+        bool ok=1;
+        REP(i,m-1)if(tmp[i]==tmp[i+1])ok=0;
+        dp[1][I]=ok;
+      }
+      for(int i=2;i<=n;i++)
+      {
+        REP(I,t)
+        {
+          if(!dp[i-1][I])continue;
+          vector<int> a=get(I,m,c);
+          REP(J,t)
+          {
+            vector<int> b=get(J,m,c);
+            bool ok=1;
+            REP(j,m-1)if(b[j]==b[j+1])ok=0;
+            if(!ok)continue;
+            REP(j,m)if(b[j]==a[j])ok=0;
+            if(ok)dp[i][J]+=dp[i-1][I];
+          }
+
+        }
+      }
+      ll tt=0;
+      REP(I,t)tt+=dp[n][I];
+      cout<<tt<<endl;
+      //ans[n][m][c]=tt;
+    }
+    /*
+    cin>>T;
+    while(T--)
+    {
+      ll n,m,c;
+      cin>>n>>m>>c;
+      cout<<ans[n][m][c]<<endl;
+    }*/
 }

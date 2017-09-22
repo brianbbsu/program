@@ -48,8 +48,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll dp[MAXn];
+
+ll a[MAXn],d[MAXn];
 
 int main()
 {
     IOS();
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll w,b,n,m;
+      cin>>w>>b>>n;
+      REP(i,n)cin>>a[i]>>d[i];
+      cin>>m;
+      REP(i,w+1)dp[i]=0;
+      REP(i,n)REP(j,w)dp[min(w+1,j+a[i]+m)]=max(dp[min(w+1,j+a[i]+m)],dp[j]+d[i]);
+      if(lower_bound(dp,dp+w+1,b)-dp<w)cout<<"Yes"<<endl;
+      else cout<<"No"<<endl;
+    }
+
 }

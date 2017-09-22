@@ -49,7 +49,7 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 namespace FF{
-  const int MAXn=1e4+20;
+  const int MAXn=1e4+200;
   const int INF = 1e6;
   struct edge{
     int t,c,r;
@@ -60,11 +60,13 @@ namespace FF{
     REP(i,MAXn)v[i].clear();
   }
   void add_edge(int a,int b,int c){
+    //debug(a,b,c);
     v[a].pb((edge){b,c,SZ(v[b])  });
     v[b].pb((edge){a,0,SZ(v[a])-1});
   }
   int vis[MAXn];
   int dfs(int now,int t,int f,int it){
+    //debug(now,t,f,it);
     if(now==t)return f;
     vis[now]=it;
     for(edge &e:v[now])
@@ -87,13 +89,13 @@ namespace FF{
     int it=0,rt=0;
     int d=0;
     while(it!=mxt&&(d=dfs(s,t,INF,it++)) > 0)rt+=d;
-    return d;
+    return rt;
   }
 };
 
 vector<ll> v[MAXn];
 #define fS 1
-#define fT 10011
+#define fT 10111
 
 int main()
 {
@@ -116,9 +118,10 @@ int main()
       {
         FF::init();
         ll h=(l+r)/2;
-        REP(i,h)FF::add_edge(i*n+n,fT,k);
-        REP(i,h-1)REP1(j,n)for(ll t:v[j])FF::add_edge(i*n+j,(i+1)*n+t,1);
+        REP1(i,h)FF::add_edge(i*n+n,fT,k);
+        REP(i,h)REP1(j,n)for(ll t:v[j])FF::add_edge(i*n+j,(i+1)*n+t,1);
         ll rt=FF::flow(fS,fT,k);
+        debug(T,h,rt);
         if(rt>=k)r=h;
         else l=h;
       }
@@ -126,3 +129,55 @@ int main()
       else cout<<r<<endl;
     }
 }
+/*
+1
+4 4 2
+1 2
+1 3
+2 4
+3 4
+*/
+
+/*
+3
+8 11 1
+1 2
+1 3
+1 4
+6 7
+2 5
+3 6
+3 2
+4 6
+5 7
+7 8
+2 7
+8 11 2
+1 2
+1 3
+1 4
+6 7
+2 5
+3 6
+3 2
+4 6
+5 7
+7 8
+2 7
+8 11 3
+1 2
+1 3
+1 4
+6 7
+2 5
+3 6
+3 2
+4 6
+5 7
+7 8
+2 7
+
+3
+4
+5
+*/
