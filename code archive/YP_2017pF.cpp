@@ -44,95 +44,41 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e3+5,MAXq=4e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
 
-ll ans[MAXn];
-
-struct tg{
-  ll s,t,k,id;
-};
-
-vector<tg> qr,dt[MAXn];
-
-vector<ll> v[MAXn];
-bool vis[MAXn];
-
-
-vector<ll> his;
-ll h[MAXn],rt[MAXn];
-
-void predfs(ll now)
+ll bit[MAXn];
+void ins(ll x,ll k)
 {
-  vis[now]=1;
-  rt[now]=h[now];
-  for(ll k:v[now])
-  {
-    if(!vis[k])
-    {
-      h[k]=h[now]+1;
-      predfs(k);
-    }
-    rt[now]=min(rt[now],rt[k]);
-  }
+  ll t=x;
+  while(x<MAXn)bit[x]+=k-d[t],x+=x&-x;
+  d[t]=k;
 }
-
-void dfs(ll now)
+ll qr(ll x)
 {
-  vis[now]=1;
-  his.pb(now);
-  for(auto &q:dt[now])
-  {
-    if(SZ(his)>=q.k)ans[q.id]=his[q.k-1];
-  }
-  for(ll k:v[now])
-  {
-    if(!vis[k])dfs(k);
-    
-  }
-  his.pop_back();
+  ll rt=0;
+  while(x>0)rt+=bit[x],x-=x&-x;
+  return rt;
 }
 
 int main()
 {
     IOS();
-    ll n,m,q;
-    cin>>n>>m>>q;
-    REP(i,m)
-    {
-      ll a,b;
-      cin>>a>>b;
-      v[a].pb(b);
+    ll n,q;
+    cin>>n>>q;
+    REP1(i,n){
+      ll t;
+      cin>>t;
+      ins(i,max(t,0LL));
     }
-
-    FILL(ans,-1);
     REP(i,q)
     {
-      ll a,b,k;
-      cin>>a>>b>>k;
-      qr.pb((tg){a,b,k,i});
+      ll t,a,b;
+      cin>>t>>a>>b;
+      if(t==1)ins(a,max(b,0LL));
+      else cout<<qr(b)-qr(a-1)<<endl;
     }
-    sort(ALL(qr),[](const tg &a,const tg &b){return a.s<b.s;});
-
-    REP1(i,n)sort(ALL(v[i]));
-
-    ll it=0;
-
-    REP1(i,n)
-    {
-      FILL(vis,0);
-      h[i]=0;
-      predfs(i);
-      FILL(vis,0);
-      REP1(j,n)dt[j].clear();
-      while(it<SZ(qr)&&qr[it].s==i)
-      {
-        dt[qr[it].t].pb(qr[it]);
-        it++;
-      }
-      dfs(i);
-    }
-    REP(i,q)cout<<ans[i]<<endl;
 }
