@@ -49,26 +49,56 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll ct[100];
+ll md[10];
+
+void qt(bool b)
+{
+  if(b)cout<<"Yes"<<endl;
+  else cout<<"No"<<endl;
+  exit(0);
+}
+
 int main()
 {
     IOS();
-    ll n,x,y;
-    cin>>n>>x>>y;
-    REP(T,n)
+    ll r,c;
+    cin>>r>>c;
+    REP(i,r)
     {
-      ll ct;
-      cin>>ct;
-      ll l=0,r=1e18+5;
-      while(l!=r-1)
-      {
-        ll h=(l+r)/2;
-        if(h/x+h/y>=ct)r=h;
-        else l=h;
-      }
-      bool a=(r%x==0),b=(r%y==0);
-      if(a&&b)cout<<"Both ";
-      else if(a)cout<<"Left ";
-      else cout<<"Right ";
-      cout<<r<<endl;
+      string s;
+      cin>>s;
+      REP(j,c)ct[s[j]-'a']++;
+    }
+    REP(i,26)md[ct[i]&3]++;
+
+    bool tr=(r&1),tc=(c&1);
+
+    if(!tr&&!tc)
+    {
+      if(md[0]!=26)qt(0);
+      else qt(1);
+    }
+    else if(tr^tc)
+    {
+      ll t=(tr?c:r);
+      t/=2;
+      if(md[1]||md[3])qt(0);
+      if(md[2]>t)qt(0);
+      if((t-md[2])%2!=0)qt(0);
+      else qt(1);
+    }
+    else
+    {
+      ll t=c+r-2;
+      t/=2;
+      if(md[1]&&md[3])qt(0);
+      else if(md[1])md[0]++;
+      else if(md[3])md[2]++;
+      else qt(0);
+      if(md[2]>t)qt(0);
+      if((t-md[2])%2!=0)qt(0);
+      else qt(1);
+
     }
 }

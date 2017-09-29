@@ -51,24 +51,9 @@ const ll INF=ll(1e15);
 
 int main()
 {
-    IOS();
-    ll n,x,y;
-    cin>>n>>x>>y;
-    REP(T,n)
-    {
-      ll ct;
-      cin>>ct;
-      ll l=0,r=1e18+5;
-      while(l!=r-1)
-      {
-        ll h=(l+r)/2;
-        if(h/x+h/y>=ct)r=h;
-        else l=h;
-      }
-      bool a=(r%x==0),b=(r%y==0);
-      if(a&&b)cout<<"Both ";
-      else if(a)cout<<"Left ";
-      else cout<<"Right ";
-      cout<<r<<endl;
-    }
+    //IOS();
+    string s;
+    cin>>s;
+    if(SZ(s)>=4&&s.substr(0,4)=="YAKI")puts("Yes");
+    else puts("No");
 }

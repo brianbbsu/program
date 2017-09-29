@@ -52,23 +52,10 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    ll n,x,y;
-    cin>>n>>x>>y;
-    REP(T,n)
-    {
-      ll ct;
-      cin>>ct;
-      ll l=0,r=1e18+5;
-      while(l!=r-1)
-      {
-        ll h=(l+r)/2;
-        if(h/x+h/y>=ct)r=h;
-        else l=h;
-      }
-      bool a=(r%x==0),b=(r%y==0);
-      if(a&&b)cout<<"Both ";
-      else if(a)cout<<"Left ";
-      else cout<<"Right ";
-      cout<<r<<endl;
-    }
+    ll r,c,k;
+    cin>>r>>c>>k;
+    bool b=0;
+    REP(i,r+1)REP(j,c+1)if(i*c+j*r-2*i*j==k)b=1;
+    if(b)cout<<"Yes"<<endl;
+    else cout<<"No"<<endl;
 }
