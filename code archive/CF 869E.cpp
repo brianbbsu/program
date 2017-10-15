@@ -44,28 +44,102 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=888888888919;
 const ll INF=ll(1e15);
 
 
-ll clr[MAXn];
+
+ll myrand()
+{
+  ll rt=0;
+  REP(i,13)rt=rt*10+((ll)rand()>>5)%10;
+  return rt%MOD;
+}
+
+ll sed[MAXn];
+
+ll bit[3000][3000];
+
+ll cal(ll x,ll y)
+{
+  ll rt=0;
+  while(x>0)
+  {
+    ll tp=y;
+    while(tp>0)
+    {
+      rt+=bit[x][tp];
+      tp-=tp&-tp;
+    }
+    x-=x&-x;
+  }
+  return rt%MOD;
+}
+
+const ll MAXc=3000;
+
+void ins(ll x,ll y,ll t)
+{
+  t=(t+MOD)%MOD;
+  while(x<MAXc)
+  {
+    ll tp=y;
+    while(tp<MAXc)
+    {
+      bit[x][tp]=bit[x][tp]+t;
+      if(bit[x][tp]>=MOD)bit[x][tp]-=MOD;
+      tp+=tp&-tp;
+    }
+    x+=x&-x;
+  }
+}
+map<ll,ll> mp;
+ll hs(ll a,ll b,ll c,ll d)
+{
+  return a*MAXc*MAXc*MAXc+b*MAXc*MAXc+c*MAXc+d;
+}
+
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    REP1(i,n)cin>>clr[i];
-    REP(i,n)
+    srand(time(NULL));
+    ll n,m,q;
+    cin>>n>>m>>q;
+    debug(RAND_MAX);
+    REP(i,q)sed[i]=myrand();
+    FILL(bit,0);
+
+    REP(i,q)
     {
-      ll a,b;
-      cin>>a>>b;
-      if(clr[a]==clr[b])
+      ll tp;
+      ll r1,c1,r2,c2;
+      cin>>tp>>r1>>c1>>r2>>c2;
+      if(tp==3)
       {
-        cout<<"No"<<endl;
-        return 0;
+        ll a=cal(r1,c1),b=cal(r2,c2);
+        if(a==b)cout<<"Yes"<<endl;
+        else cout<<"No"<<endl;
+      }
+      else if(tp==1)//add
+      {
+        ll h=hs(r1,c1,r2,c2);
+        mp[h]=i;
+        ins(r1,c1,sed[i]);
+        ins(r2+1,c2+1,sed[i]);
+        ins(r1,c2+1,-sed[i]);
+        ins(r2+1,c1,-sed[i]);
+      }
+      else //rm
+      {
+        ll h=hs(r1,c1,r2,c2);
+        ll it=mp[h];
+        mp.erase(h);
+        ins(r1,c1,-sed[it]);
+        ins(r2+1,c2+1,-sed[it]);
+        ins(r1,c2+1,sed[it]);
+        ins(r2+1,c1,sed[it]);
       }
     }
-    cout<<"Yes"<<endl;
 }

@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,28 +44,72 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-ll clr[MAXn];
+ll n,m;
+struct edge{ll a,b,c;};
+vector<edge> e;
+
+ll g[MAXn];
+unordered_set<ll> st[MAXn];
+ll fd(ll a){return g[a]=(g[a]==a?a:fd(g[a]));}
+ll ans[MAXn];
+
+void mg(ll a,ll b,ll c)
+{
+  a=fd(a);b=fd(b);
+  if(a==b)return;
+  if(SZ(st[a])>SZ(st[b]))swap(a,b);
+  g[a]=b;
+  for(ll tmp:st[a])
+  {
+    if(st[b].count(tmp))
+    {
+      st[b].erase(tmp);
+      ans[tmp]=c;
+    }
+    else st[b].insert(tmp);
+  }
+  st[a].clear();
+}
+
+
 
 int main()
 {
     IOS();
-    ll n,m;
     cin>>n>>m;
-    REP1(i,n)cin>>clr[i];
-    REP(i,n)
+    REP(i,m)
+    {
+      ll a,b,c;
+      cin>>a>>b>>c;
+      edge tmp;
+      tmp.a=a;tmp.b=b;tmp.c=c;
+      e.pb(tmp);
+    }
+    sort(ALL(e),[](const edge &a,const edge &b){return a.c<b.c;});
+
+    REP1(i,n)g[i]=i;
+
+    FILL(ans,-1);
+
+    ll q;
+    cin>>q;
+    REP(i,q)
     {
       ll a,b;
       cin>>a>>b;
-      if(clr[a]==clr[b])
-      {
-        cout<<"No"<<endl;
-        return 0;
-      }
+      if(a==b)ans[i]=0;
+      else st[a].insert(i);st[b].insert(i);
     }
-    cout<<"Yes"<<endl;
+
+    for(edge &tmp:e)
+    {
+      mg(tmp.a,tmp.b,tmp.c);
+    }
+    REP(i,q)cout<<ans[i]<<endl;
+
 }

@@ -44,28 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-ll clr[MAXn];
+struct tg{ll s,a,b;}
+tg d[MAXn];
+ll n,s,S=0;
+
+ll cal(ll t)
+{
+  if(t>S)return -1;
+  ll l=0,r=0;
+  REP(i,n)if(d[i].a>=d[i].b)l+=d[i].s;else r+=d[i].s;
+}
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    REP1(i,n)cin>>clr[i];
-    REP(i,n)
-    {
-      ll a,b;
-      cin>>a>>b;
-      if(clr[a]==clr[b])
-      {
-        cout<<"No"<<endl;
-        return 0;
-      }
-    }
-    cout<<"Yes"<<endl;
+    cin>>n>>s;
+    REP(i,n)cin>>d[i].s>>d[i].x>>d[i].y,S+=d[i].s;
+    S=(S-1)/s+1;
+    sort(d,d+n,[](const tg &a,const tg &b){return a.b-a.a>b.b-b.a});
+    ll tt=0;
+    for(int i=0;i<n&&d[i].b-d[i].a>0;i++)tt+=d[i].s;
+    cout<<max(cal(tt/s),cal(tt/s)+1)<<endl;
 }
