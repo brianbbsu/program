@@ -1,56 +1,55 @@
-//{
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef double lf;
-typedef pair<ll,ll> ii;
-#define REP(i,n) for(ll i=0;i<n;i++)
-#define REP1(i,n) for(ll i=1;i<=n;i++)
-#define FILL(i,n) memset(i,n,sizeof i)
-#define X first
-#define Y second
-#define SZ(_a) (int)_a.size()
-#define ALL(_a) _a.begin(),_a.end()
-#define pb push_back
-#ifdef brian
-#define debug(...) do{\
-    fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
-    _do(__VA_ARGS__);\
-}while(0)
-template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
-template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
-template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
-template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
-{
-    _s<<"{";
-    for(It _it=_ita;_it!=_itb;_it++)
-    {
-        _s<<(_it==_ita?"":",")<<*_it;
-    }
-    _s<<"}";
-    return _s;
+
+const ll MaxN=1e5+5;
+const ll INF=1e18;
+
+ll dp[50000][105];
+ll x[105];
+
+ll sum(ll total,ll m){
+	if(total<0){
+		return INF;
+	}
+	if(m<=0){
+		if(total==0){
+			return 0;
+		}
+		else{
+			return INF;
+		}
+	}
+	if(dp[total][m]!=-1){
+		return dp[total][m];
+	}
+	else{
+		return dp[total][m]=min(sum(total-x[m],m-1),sum(total,m-1));
+	}
 }
-template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
-#define IOS()
-#else
-#define debug(...)
-#define pary(...)
-#define endl '\n'
-#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
-#endif // brian
-//}
 
-
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
-const ll INF=ll(1e15);
-
-
-int main()
-{
-    IOS();
-
+int main(){
+	ll n,m;
+	cin>>n>>m;
+	while(n--){
+		ll ans=0;
+		ll total=0;
+		memset(dp,-1,sizeof dp);
+		for(int i=0;i<m;i++){
+			cin>>x[i];
+			total+=x[i];
+		}
+		if(total%2){
+			cout<<"No"<<endl;
+			continue;
+		}
+		total/=2;
+		ans=sum(total,m-1);
+		if(ans>=INF){
+			cout<<"No"<<endl;
+		}
+		else{
+			cout<<"Yes"<<endl;
+		}
+	}
 }
