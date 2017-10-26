@@ -48,11 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
 
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    ll n;
+    string s;
+    cin>>n>>s;
+    string v="aeiou";
+    REP(i,n){
+      for(char c:v)if(s[i]==c)d[i]=1;
+    }
+    ll a=0;
+    REP(i,n-1)if(d[i]&&d[i+1])a++;
+    cout<<a<<endl;
 }

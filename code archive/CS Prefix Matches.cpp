@@ -49,10 +49,26 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll d[MAXn];
+ll a[MAXn];
+
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    ll n;
+    cin>>n;
+    ll t=0;
+    REP(i,n-1)
+    {
+      ll x;
+      cin>>x;
+      if(x)d[i+x-1]=max(d[i+x-1],x);
+    }
+    for(int i=n-1;i>=0;i--)
+    {
+      t=max(t,d[i]);
+      a[i]=t;
+      t=max(t-1,0LL);
+    }
+    REP(i,n-1)cout<<a[i]<<" ";cout<<endl;
 }

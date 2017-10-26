@@ -48,11 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+string s[MAXn];
+ll dt[MAXn];
 
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    ll n;
+    cin>>n;
+    REP(i,n)
+    {
+      cin>>s[i];
+      dt[i]=i;
+    }
+    sort(dt,dt+n,[](int a,int b){return s[a]<s[b];});
+    REP(i,n)cout<<dt[i]+1<<" ";
 }

@@ -52,7 +52,15 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    int mx=-1;
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n)
+    {
+      string s;
+      cin>>s;
+      set<char> st(ALL(s));
+      if(SZ(st)<=k)mx=max(mx,SZ(s));
+    }
+    cout<<mx<<endl;
 }

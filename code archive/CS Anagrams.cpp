@@ -48,11 +48,20 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+map<string,ll> mp;
 
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    ll n;
+    cin>>n;
+    ll mx=0;
+    REP(i,n)
+    {
+      string s;
+      cin>>s;
+      sort(ALL(s));
+      mx=max(mx,++mp[s]);
+    }
+    cout<<mx<<endl;
 }

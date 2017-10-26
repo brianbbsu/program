@@ -52,7 +52,29 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
+    string s,a,b;
+    cin>>s>>a>>b;
+    for(int i=0;i<SZ(s);)
+    {
+      if(SZ(s)-i<SZ(a)){
+        cout<<s[i];
+        i++;
+      }
+      else if(s.substr(i,SZ(a))==a)
+      {
+        cout<<b;
+        i+=SZ(a);
+      }
+      else if(s.substr(i,SZ(a))==b)
+      {
+        cout<<a;
+        i+=SZ(a);
+      }
+      else
+      {
+        cout<<s[i];
+        i++;
+      }
 
+    }
 }

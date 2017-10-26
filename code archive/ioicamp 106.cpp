@@ -49,10 +49,62 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+int rk[MAXn],sa[MAXn],dt[MAXn],cnt[MAXn],ork[MAXn],h[MAXn];
+
+bool eq(ll a,ll b,ll t,ll n)
+{
+  return !(ork[a]!=ork[b]||a+t>=n||b+t>=n||ork[a+t]!=ork[b+t]);
+}
+ll cal(ll n)
+{
+  return n*(n+1)/2;
+}
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      string s;
+      cin>>s;
+      ll n=SZ(s);
+      REP(i,n)rk[i]=s[i]-'a';
 
+      for(int k=1;k<n;k*=2)
+      {
+        REP(i,n)cnt[i]=0;
+        cnt[0]=k;
+        REP(i,n-k)cnt[rk[i+k]]++;
+        partial_sum(cnt,cnt+n,cnt);
+        REP(i,n-k)dt[--cnt[rk[i+k]]]=i;
+        REP(i,k)dt[i]=n-i-1;
+
+        REP(i,n)cnt[i]=0;
+        REP(i,n)cnt[rk[i]]++;
+        partial_sum(cnt,cnt+n,cnt);
+        for(int i=n-1;i>=0;i--)sa[--cnt[rk[dt[i]]]]=dt[i];
+        REP(i,n)ork[i]=rk[i];
+        rk[sa[0]]=0;
+        REP1(i,n-1)if(eq(sa[i],sa[i-1],k,n))rk[sa[i]]=rk[sa[i-1]];else rk[sa[i]]=rk[sa[i-1]]+1;
+        pary(sa,sa+n);
+        pary(rk,rk+n);
+      }
+      debug(123);
+      h[0]=0;
+      for(int j=0,k=0;j<n;j++)
+      {
+        if(rk[j])
+        {
+          while(k<min(n-j,n-sa[rk[j]-1])&&s[sa[rk[j]-1]+k]==s[j+k])k++;
+        }
+        h[rk[j]]=k;
+        k=max(k-1,0);
+      }
+      REP(i,n)debug(i,s.substr(sa[i]));
+      pary(h,h+n);
+      ll tt=0;
+      REP(i,n)tt+=(cal(n-sa[i])-cal(h[i]));
+      cout<<tt<<endl;
+    }
 }

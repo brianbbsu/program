@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -52,7 +52,23 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    multiset<ll> st;
+    ll t;
+    while(cin>>t&&t)
+    {
+      if(t==-1)//smallest
+      {
+        if(!SZ(st))continue;
+        cout<<*st.begin()<<" ";
+        st.erase(st.begin());
+      }
+      else if(t==-2)//big
+      {
+        if(!SZ(st))continue;
+        auto it=prev(st.end());
+        cout<<*it<<" ";
+        st.erase(it);
+      }
+      else st.insert(t);
+    }
 }

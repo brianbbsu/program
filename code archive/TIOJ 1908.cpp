@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -48,11 +48,73 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll dp[2][(1<<22)];
+bool b[(1<<22)];
+ll ct[(1<<22)];
+ll d[30][30];
+ll lg[(1<<22)];
 
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
 
+
+    ll n;
+    cin>>n;
+    REP(i,n)REP(j,n)cin>>d[i][j];
+    REP(I,(1<<n))
+    {
+      b[I]=1;
+      for(int j=0,J=1;j<22;j++,J<<=1)
+      {
+        if(J&I)if((I&(J<<1)))
+        {
+          b[I]=0;
+          break;
+        }
+      }
+    }
+    REP(i,n)lg[(1<<i)]=i;
+    bool fg=0;
+    REP(i,n)
+    {
+      fg=!fg;
+      REP(I,(1<<n))dp[fg][I]=0;
+
+      REP(I,(1<<n))
+      {
+        if(!b[I])continue;
+        ll T=(1<<n)-1,tt=0;
+        ll tmp=I;
+        while(tmp)
+        {
+          ll J=tmp&-tmp;
+          tt+=d[i][lg[J]];
+          T=((T<<1)&(~(7<<lg[J])))>>1;
+          tmp-=J;
+          //else tmp.pb(J);
+        }
+        //debug(bitset<3>(I),bitset<3>(T));
+        dp[fg][I]=dp[!fg][T]+tt;
+        /*for(int j=0,J=1;j<n;j++,J<<=1)
+        {
+          if(!(J&I))dp[fg][J|I]=max(dp[fg][J|I],dp[fg][I]);
+        }*/
+        //for(ll k:tmp)dp[fg][I|k]=max(dp[fg][I|k],dp[fg][I]);
+      }
+
+      //REP(I,(1<<n))debug(i,bitset<3>(I),dp[fg][I]);
+      REP(I,(1<<n))
+      {
+          ll tmp=I;
+          while(tmp)
+          {
+            ll J=tmp&-tmp;
+            dp[fg][I]=max(dp[fg][I],dp[fg][I-J]);
+            tmp-=J;
+          }
+
+      }
+    }
+    cout<<dp[fg][(1<<n)-1]<<endl;
 }

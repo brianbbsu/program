@@ -52,7 +52,15 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    ll n;
+    cin>>n;
+    string s="";
+    REP(i,n)
+    {
+      string tmp;
+      cin>>tmp;
+      s.pb(*min_element(ALL(tmp)));
+    }
+    sort(ALL(s));
+    cout<<s<<endl;
 }

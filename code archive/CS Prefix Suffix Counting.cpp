@@ -44,15 +44,91 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
+
+void build_z(string s)
+{
+  ll n=SZ(s);
+
+  ll t=-1,l=-1;
+  for(int i=1;i<n;i++)
+  {
+    if(l<i)
+    for(d[i]=0;d[i]+i<n&&s[d[i]]==s[d[i]+i];d[i]++);
+    else if(d[i-t]>=l-i+1)
+    for(d[i]=l-i+1;d[i]+i<n&&s[d[i]]==s[d[i]+i];d[i]++);
+    else
+    d[i]=d[i-t];
+    if(i+d[i]-1>l)t=i,l=i+d[i]-1;
+  }
+}
 
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
+    string n,m;
+    cin>>n>>m;
+    ll a=SZ(n),b=SZ(m);
+    build_z(m);
+    d[0]=b;
+    if(a<b){cout<<0<<endl;return 0;}
+    if(a<=2*b)
+    {
+      ll tt=0;
+      REP(i,a-b+1)
+      {
+        if(d[i]!=b-i)continue;
+        if(i!=a-b)tt++;
+        else
+        {
+          string tmp=m+m.substr(b-i);
+          if(tmp<=n)tt++;
+          debug(tmp,n);
+        }
+      }
+      cout<<tt<<endl;
+      return 0;
+    }
+    ll tt=0;
+    REP(i,b)
+    {
+      if(d[i]!=b-i)continue;
+      tt++;
+    }
+    ll lt=a-2*b;
+    ll nw=1;
+    REP(i,lt)
+    {
+      tt+=nw;
+      if(tt>=MOD)tt-=MOD;
+      nw=nw*10%MOD;
+    }
+    if(n.substr(0,b)>m)
+    {
+      tt+=nw;
+      if(tt>=MOD)tt-=MOD;
+    }
+    else if(n.substr(0,b)==m)
+    {
+      string q=n.substr(b,lt);
+      ll tmp=0;
+      for(char c:q)
+      {
+        tmp=tmp*10%MOD;
+        tmp+=c-'0';
+        if(tmp>=MOD)tmp-=MOD;
+      }
+      tmp++;
+      if(n.substr(b+lt)<m)tmp--;
+      if(tmp<0)tmp+=MOD;
+      else if(tmp>=MOD)tmp-=MOD;
+      tt+=tmp;
+      if(tt>=MOD)tt-=MOD;
+    }
+    cout<<tt<<endl;
 
 }

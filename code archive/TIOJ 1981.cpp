@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,15 +44,56 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+vector<ll> v[MAXn],rv[MAXn],v3[MAXn],tp;
+ll g[MAXn],vis[MAXn],sz[MAXn],dp[MAXn];
+
+
+void dfs1(ll now)
+{
+  vis[now]=1;
+  for(ll k:v[now])if(!vis[k])dfs1(k);
+  tp.pb(now);
+}
+void dfs2(ll now,ll tg)
+{
+  vis[now]=1;g[now]=tg;
+  sz[tg]++;
+  for(ll k:rv[now])if(!vis[k])dfs2(k,tg);
+}
+void dfs3(ll now)
+{
+  dp[now]=sz[now];
+  for(ll k:v3[now])
+  {
+    if(dp[k]==-1)dfs3(k);
+    dp[now]=max(dp[now],dp[k]+sz[now]);
+  }
+}
+
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
+    {
+      ll a,b;
+      cin>>a>>b;
+      v[a].pb(b);
+      rv[b].pb(a);
+    }
+    REP(i,n)if(!vis[i])dfs1(i);
+    reverse(ALL(tp));
+    ll it=0;
+    FILL(vis,0);
+    REP(i,n)if(!vis[tp[i]])dfs2(tp[i],it++);
+    REP(i,n)for(ll k:v[i])if(g[i]!=g[k])v3[g[i]].pb(g[k]);
+    FILL(dp,-1);
+    REP(i,it)if(dp[i]==-1)dfs3(i);
+    cout<<*max_element(dp,dp+it)<<endl;
 }

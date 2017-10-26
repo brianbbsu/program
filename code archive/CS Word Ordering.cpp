@@ -48,11 +48,39 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+map<char,char> mp;
+
+vector<string> dt;
 
 int main()
 {
     IOS();
-		cout<<22<<endl;
-		REP(i,22)REP(j,22)cout<<8<<" \n"[j==21];
-
+    string ord;
+    cin>>ord;
+    REP(i,26)mp[ord[i]]=i+'A',mp[toupper(ord[i])]=i+'a';
+    ll n;
+    cin>>n;
+    REP(i,n)
+    {
+      string t;
+      cin>>t;
+      for(char &c:t)c=mp[c];
+      dt.pb(t);
+    }
+    sort(ALL(dt));
+    for(string s:dt)
+    {
+      for(char &c:s)
+      {
+        if(islower(c))
+        {
+          c=ord[c-'a']-'a'+'A';
+        }
+        else
+        {
+          c=ord[c-'A'];
+        }
+      }
+      cout<<s<<endl;
+    }
 }
