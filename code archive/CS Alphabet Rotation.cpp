@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef int ll;
+typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -12,7 +12,6 @@ typedef pair<ll,ll> ii;
 #define SZ(_a) (int)_a.size()
 #define ALL(_a) _a.begin(),_a.end()
 #define pb push_back
-
 #ifdef brian
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
@@ -45,54 +44,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll n;
-ll cnt[MAXn];
-ll pdt[MAXn];
-ll dt[MAXn];//dt[2][MAXn];
-ll rk[MAXn],tmprk[MAXn];
-ll ans[MAXn];
-
-
-inline bool diff(ll a,ll b,ll l)
-{
-  return (rk[a]!=rk[b]||a+l>=n||b+l>=n||rk[a+l]!=rk[b+l]);
-}
-
-char s[MAXn];
+string d[MAXn];
+map<string,int> mp;
 int main()
 {
-    //IOS();
-
-    fgets(s,MAXn,stdin);
-    //s.append(0);
-    n=strlen(s)-1;
-    REP(i,n)rk[i]=s[i];
-    int sigma=128;
-
-    for(int l=1;l<n;l*=2)
+    IOS();
+    ll n;
+    cin>>n;
+    REP(i,n)
     {
-      memset(cnt,0,sizeof(int)*sigma);
-      REP(i,n-l)cnt[rk[i+l]]++;
-                cnt[0]+=l;
-      partial_sum(cnt,cnt+sigma,cnt);
-      REP(i,n-l)pdt[--cnt[rk[i+l]]]=i;
-      REP(i,l)pdt[i]=n-l+i;
-
-      memset(cnt,0,sizeof(int)*sigma);
-      REP(i,n)cnt[rk[i]]++;
-      partial_sum(cnt,cnt+sigma,cnt);
-      for(int i=n-1;i>=0;i--)dt[--cnt[rk[pdt[i]]]]=pdt[i];
-      tmprk[0]=0;
-      REP1(i,n-1)tmprk[i]=tmprk[i-1]+diff(dt[i-1],dt[i],l);
-      REP(i,n)rk[dt[i]]=tmprk[i];
-      sigma=tmprk[n-1]+1;
-      if(sigma==n)break;
+      string s;
+      cin>>s;
+      ll rt=s[0]-'a';
+      rt=(26-rt)%26;
+      for(char &c:s)c=(c-'a'+rt)%26+'a';
+      mp[s]++;
+      d[i]=s;
     }
+    REP(i,n)cout<<(mp[d[i]]>1)<<endl;
 
-    REP(i,n)ans[rk[i]]=i;
-    REP(i,n)printf("%d\n",ans[i]);
 }
