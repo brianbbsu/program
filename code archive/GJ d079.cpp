@@ -65,5 +65,15 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    while(n--)
+    {
+      string a,s;
+      cin>>a>>s;
+      if(SZ(a)!=3||a[0]!=a[2]){cout<<-1<<endl;continue;}
+      ll tt=0;
+      REP(i,SZ(s)-2)if(s.substr(i,3)==a)tt++;
+      cout<<tt<<endl;
+    }
 }

@@ -57,13 +57,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e10+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> dt;
+bool chk(ll i)
+{
+  while(i)
+  {
+    if(i%2)return 0;
+    i/=10;
+  }
+  return 1;
+}
 
 int main()
 {
     IOS();
-
+    for(ll i=1;i*i<=MAXn;i++)
+    {
+      if(chk(i*i))dt.pb(i*i);
+    }
+    debug("ok");
+    ll t;
+    cin>>t;
+    while(t--)
+    {
+      ll n;
+      cin>>n;
+      ll x=1;
+      REP(i,n-1)x*=10;
+      debug(dt);
+      cout<<*lower_bound(ALL(dt),x)<<endl;
+    }
 }

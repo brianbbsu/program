@@ -61,9 +61,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll dp[1005][105];
+string d[105];
 
 int main()
 {
     IOS();
-
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      string s;
+      cin>>s;
+      ll n;
+      cin>>n;
+      REP(i,n)cin>>d[i];
+      FILL(dp,-1);
+      REP(i,SZ(s))REP(j,n)
+      {
+        if(SZ(d[j]))
+      }
+    }
 }
