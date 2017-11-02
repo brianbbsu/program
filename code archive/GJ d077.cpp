@@ -61,9 +61,33 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ii> dt;
+queue<int> q;
 
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    REP(i,n)
+    {
+      ii x;
+      cin>>x.X>>x.Y;
+      dt.pb(x);
+    }
+    //sort(ALL(dt));
+    ll mx=0,t=0;
+    REP(i,SZ(dt))
+    {
+      ii tmp=dt[i];
+      while(SZ(q)&&t<tmp.X)
+      {
+        t+=dt[q.front()].Y;
+        q.pop();
+      }
+      if(t<tmp.X)t=tmp.X+tmp.Y;
+      else q.push(i);
+      mx=max(mx,(ll)SZ(q));
+    }
+    cout<<mx<<endl;
 }

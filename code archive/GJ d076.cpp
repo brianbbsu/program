@@ -65,5 +65,17 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n;
+      cin>>n;
+      if(n&1)cout<<0<<endl;
+      else
+      {
+        ll x=(1<<((n-2)/2));
+        cout<<x<<" "<<x<<" "<<x<<" "<<x<<endl;
+      }
+    }
 }

@@ -65,5 +65,10 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    ll a,b;
+    cin>>a>>b;
+    REP1(i,min(a,b))
+    {
+      if(a%i==0&&b%i==0)cout<<i<<" "<<(a/i)*(b/i)<<endl;
+    }
 }

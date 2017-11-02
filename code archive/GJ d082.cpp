@@ -65,5 +65,24 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    string s;
+    cin>>s;
+    ll it=1;
+    vector<string> d;
+    while(it<SZ(s))
+    {
+      int t=0;
+      while(isdigit(s[it+t])||isalpha(s[it+t]))t++;
+      d.pb(s.substr(it,t));
+      it+=t+1;
+    }
+    REP(i,SZ(d))
+    {
+      string &tmp=d[i];
+      bool fg=1;
+      REP(j,SZ(tmp))if(!isupper(tmp[j]))fg=0;
+      if(fg)reverse(ALL(tmp));
+    }
+    cout<<"{";
+    REP(i,SZ(d))cout<<d[i]<<",}"[i==SZ(d)-1];cout<<endl;
 }
