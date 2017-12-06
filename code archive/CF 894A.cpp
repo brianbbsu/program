@@ -52,5 +52,9 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    string s;
+    cin>>s;
+    ll tt=0;
+    REP(i,SZ(s))REP(j,i)REP(k,j)if(s[i]=='Q'&&s[j]=='A'&&s[k]=='Q')tt++;
+    cout<<tt<<endl;
 }

@@ -48,9 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll mypow(ll x,ll k)
+{
+  if(!k)return 1;
+  ll a=mypow(x,k/2);
+  if(k&1)return a*a%MOD*x%MOD;
+  else return a*a%MOD;
+}
 
 int main()
 {
     IOS();
-
+    ll n,m,k;
+    cin>>n>>m>>k;
+    if(k==-1&&(n%2!=m%2))cout<<0<<endl;
+    else cout<<mypow(mypow(2,(n-1)),(m-1))<<endl;
 }

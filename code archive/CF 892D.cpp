@@ -48,9 +48,16 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn],ans[MAXn],dt[MAXn];
+
 
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i],dt[i]=i;
+    sort(dt,dt+n,[](int a,int b){return d[a]<d[b];});
+    REP(i,n)ans[dt[i]]=d[dt[(i+1)%n]];
+    REP(i,n)cout<<ans[i]<<" ";
 }

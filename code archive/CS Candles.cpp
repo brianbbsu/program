@@ -48,6 +48,9 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+struct node{
+  
+}
 
 int main()
 {

@@ -44,13 +44,69 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(9e18);
 
+bool vx[MAXn],vy[MAXn];
+ll lbx[MAXn],lby[MAXn],v[MAXn][MAXn],px[MAXn],py[MAXn],slk[MAXn];
+ll n;
+
+bool dfs(int now)
+{
+  vx[now]=1;
+  REP(i,n)
+  {
+    if(!vy[i])
+    {
+      ll t=lby[i]+lbx[now]-v[now][i];
+      if(t==0)
+      {
+        vy[i]=1;
+        if(py[i]==-1||dfs(py[i]))
+        {
+          px[now]=i;py[i]=now;
+          return 1;
+        }
+      }
+      else if(t<slk[i])slk[i]=t;
+    }
+  }
+  return 0;
+}
 
 int main()
 {
     IOS();
+    while(cin>>n&&n)
+    {
+      REP(i,n)REP(j,n)cin>>v[i][j],v[i][j]=max(v[i][j],0LL);
+      memset(lby,0,sizeof(ll)*n);
+      memset(px,-1,sizeof(ll)*n);
+      memset(py,-1,sizeof(ll)*n);
+      REP(i,n)
+      {
+        lbx[i]=v[i][0];
+        REP(j,n)lbx[i]=max(lbx[i],v[i][j]);
+      }
+      REP(t,n)
+      {
+        while(1)
+        {
+          memset(vx,0,sizeof(bool)*n);
+          memset(vy,0,sizeof(bool)*n);
+          REP(i,n)slk[i]=INF;
+          if(dfs(t))break;
 
+          ll mn=INF;
+          REP(i,n)if(!vy[i]&&slk[i]<mn)mn=slk[i];
+
+          REP(i,n)if(vx[i])lbx[i]-=mn;
+          REP(j,n)if(vy[j])lby[j]+=mn;
+        }
+      }
+      ll tt=0;
+      REP(i,n)if(v[i][px[i]]>0)tt+=v[i][px[i]];
+      cout<<tt<<endl;
+    }
 }

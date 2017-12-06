@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,13 +44,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e9);
 
+int dp[MAXn][MAXn];
+int d[MAXn],nxt[MAXn],clr[MAXn];
 
 int main()
 {
     IOS();
-
+    int n,m;
+    int T;
+    cin>>T;
+    while(T--)
+    {
+      cin>>n>>m;
+      memset(clr,-1,sizeof(int)*(m+1));
+      REP(i,n)cin>>d[i],dp[i][i]=1;
+      REP(i,n)
+      {
+        nxt[i]=n;
+        if(clr[d[i]]!=-1)nxt[clr[d[i]]]=i;
+        clr[d[i]]=i;
+      }
+      for(int i=2;i<=n;i++)REP(j,n-i+1)
+      {
+        int l=j,r=j+i-1,k;
+        dp[l][r]=INF;
+        if(d[l]==d[r])
+        {
+          dp[l][r]=dp[l+1][r-1]+1;k=nxt[l];
+          while(k<r)dp[l][r]=min(dp[l][r],dp[l][k]+dp[k][r]-1),k=nxt[k];
+        }
+        else
+        {
+          k=l;
+          while(k<=r)dp[l][r]=min(dp[l][r],dp[l][k]+dp[k+1][r]),k=nxt[k];
+        }
+      }
+      cout<<dp[0][n-1]<<endl;
+    }
 }

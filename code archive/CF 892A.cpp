@@ -52,5 +52,18 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    ll n;
+    ll a=0,b=0,tt=0;
+    cin>>n;
+    ll t;
+    REP(i,n)cin>>t,tt+=t;
+    REP(i,n)
+    {
+      ll y;
+      cin>>y;
+      if(y>=a)b=a,a=y;
+      else if(y>b)b=y;
+    }
+    if(a+b>=tt)cout<<"YES";
+    else cout<<"NO";
 }

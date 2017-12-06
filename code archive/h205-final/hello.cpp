@@ -52,5 +52,10 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
+    ll n;
+    string s;
+    cin>>n>>s;
+    reverse(ALL(s));
+    cout<<"Hello, "<<s<<"."<<endl;
 
 }

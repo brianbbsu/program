@@ -48,9 +48,41 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<string> ans;
+
+ll cal(string s)
+{
+  ll rt=0,t=0;
+  for(char c:s)t+=c-'0';
+  rt=t;
+  while(t>=10)
+  {
+    rt=0;
+    while(t)rt+=t%10,t/=10;
+    t=rt;
+  }
+  return rt;
+}
 
 int main()
 {
     IOS();
+    ll n,r;
+    string s;
+    cin>>n>>r>>s;
+
+    REP(i,10)
+    {
+      string tmp=" ";tmp[0]=i+'0';
+
+      if(cal(s+tmp)==r)REP(j,SZ(s)+1)
+      {
+        string aa=s.substr(0,j)+tmp+s.substr(j);
+        ans.pb(aa);
+      }
+    }
+    sort(ALL(ans));
+    ans.resize(unique(ALL(ans))-ans.begin());
+    REP1(i,SZ(ans)-2)cout<<ans[i]<<endl;
 
 }

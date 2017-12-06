@@ -3,7 +3,7 @@
 using namespace std;
 typedef long long ll;
 typedef double lf;
-typedef pair<ll,ll> ii;
+typedef pair<int,int> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
@@ -44,13 +44,60 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ii p[MAXn];
+vector<ii> v[MAXn],dt[MAXn];
+vector<ll> pre[MAXn];
+
+
+void dfs(ll now)
+{
+  dt[now].pb(ii(0,now));
+  for(ii &k:v[now])
+  {
+    dfs(k.X);
+    for(ii &tmp:dt[k.X])dt[now].pb(ii(tmp.X+k.Y,tmp.Y));
+    //dt[now].pb(ii(k.Y,k.X));
+  }
+  if(SZ(v[now])==2)inplace_merge(dt[now].begin()+1,dt[now].begin()+1+SZ(dt[v[now][0].X]),dt[now].end());
+  pre[now].pb(0);
+  for(ii &tmp:dt[now])pre[now].pb(pre[now].back()+tmp.X);
+}
 
 int main()
 {
     IOS();
+    ll q,n;
+    cin>>n>>q;
+    REP1(i,n-1)
+    {
+      ll t;
+      cin>>t;
+      p[i+1]=ii((i+1)/2,t);
+      v[(i+1)/2].pb(ii(i+1,t));
+    }
+    dfs(1);
+    REP1(i,n)debug(i,dt[i],pre[i]);
+    REP(T,q)
+    {
+      ll x,h;
+      cin>>x>>h;
+      ll ct=0,tt=0,s=0,tmph=h;
+      while(h>0)
+      {
+        ll a=lower_bound(ALL(dt[x]),ii(h,-1))-dt[x].begin();
+        tt+=pre[x][a]+a*s;ct+=a;
+        debug(T,dt[x],pre[x],s,h,a,ct,tt);
+        if(x==1)break;
 
+        ll b=lower_bound(ALL(dt[x]),ii(h-2*p[x].Y,-1))-dt[x].begin();
+        ct-=b;tt-=pre[x][b]+(p[x].Y)*b+b*(s+p[x].Y);
+        debug(T,h,b,ct,tt);
+        s+=p[x].Y,h-=p[x].Y;x=p[x].X;
+      }
+      cout<<ct*tmph-tt<<endl;
+    }
 }

@@ -48,9 +48,17 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
 
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    ll t=d[0];
+    REP1(i,n-1)t=__gcd(t,d[i]);
+    if(t!=d[0]){cout<<-1<<endl;return 0;}
+    cout<<2*n<<endl;
+    REP(i,n)cout<<d[i]<<" "<<t<<" ";
 }

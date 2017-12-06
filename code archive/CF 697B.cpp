@@ -52,5 +52,34 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    string s,a,b,c;
+    cin>>s;
+    ll p,d;
+    REP(i,SZ(s))
+    {
+      if(s[i]=='.')
+      {
+        p=i;
+      }
+      else if(s[i]=='e')
+      {
+        c=s.substr(i+1);
+        a=s.substr(0,p);
+        b=s.substr(p+1,i-p-1);
+      }
+    }
+    stringstream ss(c);
+    ss>>d;
+    p+=d;
+    while(d>SZ(b))b.pb('0');
+    a+=b.substr(0,d);
+    b=b.substr(d);
+    ll it=SZ(b)-1,it2=0;
+    while(it>=0)if(b[it]!='0')break;else it--;
+    while(it2<SZ(a))if(a[it2]!='0')break;else it2++;
+    a=a.substr(it2);
+    b=b.substr(0,it+1);
+    if(a=="")a="0";
+    if(SZ(b))cout<<a<<"."<<b<<endl;
+    else cout<<a<<endl;
 }

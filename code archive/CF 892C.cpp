@@ -49,8 +49,33 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll d[MAXn];
+
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    ll one=0;
+    REP(i,n)if(d[i]==1)one++;
+    if(one){
+      cout<<n-one<<endl;
+      return 0;
+    }
+    ll mn=INF;
+    REP(i,n)
+    {
+      ll tmp=d[i],it=i;
+      do{
+        tmp=__gcd(tmp,d[it]);
+        if(tmp==1)mn=min(mn,it-i);
+        debug(i,it,tmp);
+        it++;
+      }while(it<n);
+      debug(i,mn);
+    }
+    debug(mn);
+    if(mn>=INF)cout<<-1<<endl;else
+    cout<<mn+n-1<<endl;
 }
