@@ -44,13 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll n,m;
+vector<ll> v[MAXn];
+ll dt[MAXn],ans[MAXn],vis[MAXn],dg[MAXn];
+
+ll cal(ll *lb)
+{
+  ll mx=0;
+  REP(i,n)
+  {
+    ll tt=0;
+    for(ll k:v[i])if(lb[i]<lb[k])tt++;
+    mx=max(mx,tt);
+  }
+  return mx;
+}
+
+priority_queue<ii,vector<ii>,greater<ii> > pq;
 
 int main()
 {
     IOS();
-    
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      cin>>n>>m;
+      REP(i,n)v[i].clear(),vis[i]=dg[i]=0,dt[i]=i;
+      REP(i,m)
+      {
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+        dg[a]++;dg[b]++;
+      }
+      while(SZ(pq))pq.pop();
+      REP(i,n)pq.push(ii(dg[i],i));
+      ll it=0;
+      while(1)
+      {
+        while(SZ(pq)&&vis[pq.top().Y])pq.pop();
+        if(!SZ(pq))break;
+        ll x=pq.top().Y;
+        ans[x]=it++;
+        vis[x]=1;
+        for(ll k:v[x])if(!vis[k])dg[k]--,pq.push(ii(dg[k],k));
+      }
+      cout<<cal(dt)<<" "<<cal(ans)<<endl;
+    }
 }
