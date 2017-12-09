@@ -48,9 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    ll  mn=360,tt=0,it=0;
+    REP(i,n)
+    {
+      tt+=d[i];mn=min(mn,abs(360-2*tt));
+      while(tt>180)tt-=d[it++],mn=min(mn,abs(360-2*tt));
+    }
+    cout<<mn<<endl;
 }

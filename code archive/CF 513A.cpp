@@ -52,5 +52,8 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll a,b;
+    cin>>a>>b;
+    if(a>b)cout<<"First";
+    else cout<<"Second";
 }

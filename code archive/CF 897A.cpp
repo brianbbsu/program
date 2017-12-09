@@ -52,5 +52,15 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    string s;
+    ll n,m;
+    cin>>n>>m>>s;
+    REP(q,m)
+    {
+      ll l,r;
+      char a,b;
+      cin>>l>>r>>a>>b;
+      for(int i=l-1;i<r;i++)if(s[i]==a)s[i]=b;
+    }
+    cout<<s<<endl;
 }

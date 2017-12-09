@@ -48,9 +48,27 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll cal(ll x)
+{
+  string a,b;
+  stringstream ss;
+  ss<<x;
+  ss>>a;
+  b=a;
+  reverse(ALL(b));
+  a+=b;
+  stringstream ss2(a);
+  ll rt;
+  ss2>>rt;
+  return rt;
+}
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll k,p;
+    ll rt=0;
+    cin>>k>>p;
+    REP1(i,k)rt+=cal(i);
+    cout<<rt%p<<endl;
 }

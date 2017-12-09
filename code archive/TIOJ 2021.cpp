@@ -48,9 +48,87 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+struct mat{
+  ll d[4][4],r,c;
+  mat(ll r,ll c)
+  {
+    REP(i,r)REP(j,c)d[i][j]=0;
+    this->r=r;this->c=c;
+  }
+
+  ll *operator [](size_t r)
+  {
+    return d[r];
+  }
+  mat &operator = (mat di)
+  {
+    REP(i,r)REP(j,c)d[i][j]=di[i][j];
+    return *this;
+  }
+};
+mat operator * (mat &a,mat &b)
+{
+  mat rt(a.r,b.c);
+  REP(i,a.r)REP(j,b.c)REP(k,a.c)rt[i][j]=(rt[i][j]+a[i][k]*b[k][j])%MOD;
+  return rt;
+}
+
+mat pw(mat x,ll k)
+{
+  if(!k)
+  {
+    mat rt(x.r,x.r);
+    REP(i,x.r)rt[i][i]=1;
+    return rt;
+  }
+  mat a=pw(x,k/2);
+  a=a*a;
+  if(k&1)return a*x;
+  else return a;
+}
+
+ll g(ll k)
+{
+  mat sq(3,3);
+  mat dt(3,1);
+  ll sqi[][3]={{1,1,0},
+            {1,0,0},
+            {1,0,1}};
+  REP(i,sq.r)REP(j,sq.c)sq[i][j]=sqi[i][j];
+  REP(i,dt.r)REP(j,dt.c)dt[i][j]=1;
+  mat rt=pw(sq,k-1);
+  return (rt*dt)[2][0];
+}
+
+ll h(ll k)
+{
+  mat sq(4,4);
+  mat dt(4,1);
+  ll sqi[][4]={{1,1,2,0},
+            {1,0,0,0},
+            {1,0,1,0},
+            {1,0,0,1}};
+  REP(i,sq.r)REP(j,sq.c)sq[i][j]=sqi[i][j];
+  REP(i,dt.r)REP(j,dt.c)dt[i][j]=1;
+  mat rt=pw(sq,k-1);
+  return (rt*dt)[3][0];
+}
+
+ll cal(ll k)
+{
+  if(!k)return 0;
+  else return (h(k)-g(k)+MOD)%MOD;
+}
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll l,r;
+      cin>>l>>r;
+      cout<<(cal(r)-cal(l-1)+MOD)*500000004%MOD<<endl;;
+    }
 }

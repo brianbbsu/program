@@ -44,13 +44,22 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+priority_queue<ll> pq;
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll n,now=0,tt=0;
+    cin>>n;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      pq.push(now);
+      
+    }
 }

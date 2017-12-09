@@ -49,8 +49,41 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll twopw(ll x)
+{
+  if(!x)return 1;
+  ll a=twopw(x/2);
+  a=a*a%MOD;
+  if(x&1)a=a*2%MOD;
+  return a;
+}
+
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    int T;
+    cin>>T;
+    while(T--)
+    {
+      int n;
+      cin>>n;
+      n--;
+      cout<<twopw(2*n)<<endl;
+      /*
+      vector<ll> dt;
+      REP(i,n)dt.pb(0);
+      REP(i,n)dt.pb(1);
+      ll tt=0;
+      do{
+        tt++;
+        ll x=0,y=0;
+        for(ll t:dt)
+        {
+          if(t)x++;
+          else y++;
+          if(x==y)tt++;
+        }
+      }while(next_permutation(ALL(dt)));
+      cout<<tt<<endl;*/
+    }
 }

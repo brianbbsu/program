@@ -48,9 +48,27 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
+vector<ll> dt;
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll n,x,k;
+    cin>>n>>x>>k;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      d[i]=t;
+      dt.pb(t);
+    }
+    sort(ALL(dt));
+    ll ans=0;
+    REP(i,n)
+    {
+      ll t=max(d[i],((d[i]-1)/x+k)*x),r=((d[i]-1)/x+k+1)*x;
+      ans+=upper_bound(ALL(dt),r-1)-lower_bound(ALL(dt),t);
+    }
+    cout<<ans<<endl;
 }

@@ -49,8 +49,51 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll d[MAXn],mx[MAXn];
+
+void qt(ll t=-1)
+{
+  cout<<t<<endl;
+  exit(0);
+}
+
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll n,D;
+    cin>>n>>D;
+    ll it=0,now=0,tmpmx=0;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      if(t==0)
+      {
+        d[it]=now;
+        mx[it]=tmpmx;
+        it++;
+        tmpmx=now;
+      }
+      else now+=t,tmpmx=max(tmpmx,now);
+    }
+    if(tmpmx>D)qt();
+    if(!it)qt(0);
+    REP(i,it)if(mx[i]>D)qt();
+    mx[it-1]=max(tmpmx,mx[it-1]);
+    mx[it]=tmpmx;
+    for(int i=it-2;i>=0;i--)mx[i]=max(mx[i],mx[i+1]);
+    ll ans=0;
+
+    now=0;
+    REP(i,it)
+    {
+      if(d[i]+now>=0)continue;
+      else
+      {
+        ans++;
+        now=D-mx[i+1];
+        if(d[i]+now<0)qt();
+      }
+    }
+    qt(ans);
 }

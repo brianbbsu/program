@@ -48,9 +48,28 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+set<ll> st;
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll a,m;
+    cin>>a>>m;
+    a%=m;
+    st.insert(a);
+    while(1)
+    {
+      a=(a+a%m)%m;
+      if(a==0)
+      {
+        cout<<"Yes"<<endl;
+        return 0;
+      }
+      if(st.count(a))
+      {
+        cout<<"No"<<endl;
+        return 0;
+      }
+      st.insert(a);
+    }
 }

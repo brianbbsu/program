@@ -49,8 +49,35 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+void qt(vector<lf> dt)
+{
+  cout<<SZ(dt)<<endl;
+  for(auto tmp:dt)cout<<fixed<<setprecision(12)<<tmp<<endl;
+}
+
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll a,b,c;
+    cin>>a>>b>>c;
+    if(a==0)
+    {
+      if(b==0)
+      {
+        if(!c)cout<<-1;
+        else qt({});
+      }
+      else qt({lf(-c)/b});
+    }
+    else
+    {
+      ll d=b*b-4*a*c;
+      if(d<0)qt({});
+      else if(d==0)qt({lf(-b)/2/a});
+      else
+      {
+        lf x=lf(-b+sqrt(d))/2/a,y=lf(-b-sqrt(d))/2/a;
+        qt({min(x,y),max(x,y)});
+      }
+    }
 }

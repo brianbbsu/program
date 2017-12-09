@@ -52,5 +52,8 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll m,n;
+    cin>>n>>m;
+    if(m-1>=n-m)cout<<max(1LL,m-1)<<endl;
+    else cout<<m+1<<endl;
 }

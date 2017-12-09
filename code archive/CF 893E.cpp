@@ -44,13 +44,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll mypw(ll x,ll k)
+{
+  if(!k)return 1;
+  ll a=mypw(x,k/2);
+  a=a*a%MOD;
+  return (k&1?a*x%MOD:a);
+}
+
+int ct[MAXn][MAXlg],c[MAXn][MAXlg];
+vector<int> pm;
+int smpm[MAXn],pmct[MAXn],pms[MAXn];
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+
+    FILL(smpm,-1);
+    FILL(pmct,0);
+    for(ll i=2;i<MAXn;i++)
+    {
+      //debug(i);
+      if(smpm[i]==-1)pm.pb(i),smpm[i]=i,pmct[i]=1,pms[i]=1,ct[i][1]=1;
+      for(int j=0;pm[j]*i<MAXn;j++)
+      {
+        ll t=i*pm[j];
+        smpm[t]=pm[j];
+        if(pm[j]==smpm[i])pmct[t]=pmct[i]+1,pms[t]=pms[i];
+        else pmct[t]=1,pms[t]=i;
+        REP1(k,MAXlg-1)ct[t][k]=ct[pms[t]][k];
+        ct[t][pmct[t]]++;
+        if(i%pm[j]==0)break;
+      }
+    }
+    //REP(i,MAXlg)c[0][i]=1;
+    c[0][0]=1;
+    REP1(i,MAXn-1)REP(j,MAXlg)
+    {
+      if(j==0)c[i][j]=1;
+      else c[i][j]=(c[i-1][j]+c[i][j-1])%MOD;
+    }
+
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll x,y;
+      cin>>x>>y;
+      ll tt=1;
+      REP1(i,MAXlg-1)
+      {
+        tt=tt*mypw(c[y][i],ct[x][i])%MOD;
+        debug(y,i,c[y][i]);
+      }
+      cout<<tt*mypw(2,y-1)%MOD<<endl;
+    }
+
 }

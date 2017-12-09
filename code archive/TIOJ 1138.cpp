@@ -44,13 +44,47 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e1+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn][MAXn];
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      FILL(d,0);
+      ll n;
+      cin>>n;
+      REP(i,n)
+      {
+        ll m;
+        cin>>m;
+        REP(j,m)
+        {
+          ll t;
+          cin>>t;
+          d[i][t]=1;
+        }
+        cin>>d[i][n];
+      }
+      REP(i,n)
+      {
+        if(d[i][i]==0)
+        {
+          for(int j=i+1;j<n&&d[i][i]==0;j++)if(d[j][i]!=0)REP(k,n+1)swap(d[i][k],d[j][k]);
+        }
+        REP(j,n)
+        {
+          if(i==j||d[j][i]==0)continue;
+          ll fg=(((d[i][i]<0)^(d[j][i]<0))?1:-1),gcd=__gcd(abs(d[i][i]),abs(d[j][i])),a=abs(d[j][i])/gcd,b=abs(d[i][i])/gcd;
+          REP(k,n+1)d[j][k]=b*d[j][k]+fg*a*d[i][k];
+        }
+      }
+      REP(i,n)cout<<d[i][n]/d[i][i]<<endl;
+    }
 }

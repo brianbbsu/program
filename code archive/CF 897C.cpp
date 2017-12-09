@@ -46,11 +46,43 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(2e18);
 
+string f0="What are you doing at the end of the world? Are you busy? Will you save us?";
+string fa="What are you doing while sending \"",fb="\"? Are you busy? Will you send \"",fc="\"?";
+
+ll l[MAXn];
+
+char cal(ll n,ll k)
+{
+  if(k>l[n])return '.';
+  if(!n)return f0[k-1];
+  if(k<=SZ(fa))return fa[k-1];
+  k-=SZ(fa);
+  if(k<=l[n-1])return cal(n-1,k);
+  k-=l[n-1];
+  if(k<=SZ(fb))return fb[k-1];
+  k-=SZ(fb);
+  if(k<=l[n-1])return cal(n-1,k);
+  k-=l[n-1];
+  return fc[k-1];
+}
 
 int main()
 {
     IOS();
-    for(int i=0;i<10;i++);
+    l[0]=SZ(f0);
+    REP1(i,MAXn-1)
+    {
+      l[i]=2*l[i-1]+SZ(fa)+SZ(fb)+SZ(fc);
+      if(l[i]>=INF)l[i]=INF;
+    }
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n,k;
+      cin>>n>>k;
+      cout<<cal(n,k);
+    }
 }
