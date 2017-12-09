@@ -44,29 +44,50 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-priority_queue<ii> pq;
+
+ll a,b,c,mn=INF;
+void update(ll x,ll y,ll z)
+{
+  ll t=2*(x*y+x*z+y*z);
+  if(t>mn)return;
+  ll d[]={x,y,z};
+  sort(d,d+3);
+  if(t<mn)
+  {
+    mn=t;
+    a=d[0];b=d[1];c=d[2];
+    return;
+  }
+  else if(tie(a,b,c)>tie(d[0],d[1],d[2]))
+  {
+    a=d[0];b=d[1];c=d[2];
+  }
+}
+
+void cal(ll x,ll t)
+{
+  for(int i=sqrt(t+0.5);i>=1;i--)
+  {
+    if(t%i==0)
+    {
+      update(x,i,t/i);
+      return;
+    }
+  }
+}
 
 int main()
 {
     IOS();
-    ll n,now=0,tt=0;
+    ll n;
     cin>>n;
-    REP(i,n)
+    for(ll i=1;i*i*i<=n;i++)
     {
-      ll t;
-      cin>>t;
-      pq.push(ii(now,i));
-      now+=t;
-      while(SZ(pq)&&pq.top().X>now)
-      {
-        debug(i,pq.top());
-        tt+=n-i;
-        pq.pop();
-      }
+      if(n%i==0)cal(i,n/i);
     }
-    cout<<tt<<endl;
+    cout<<mn<<" "<<a<<" "<<b<<" "<<c<<endl;
 }

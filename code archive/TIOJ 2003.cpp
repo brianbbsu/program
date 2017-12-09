@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -48,25 +48,61 @@ const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-priority_queue<ii> pq;
+
+ll g[MAXn];
+inline ll f(ll a){return g[a]=(g[a]==a?a:f(g[a]));}
+inline void mg(ll a,ll b)
+{
+  a=f(a),b=f(b);
+  debug(a,b);
+  g[max(a,b)]=min(a,b);
+}
+
+ll *d[MAXn],now[MAXn],y[MAXn],dt[MAXn],ct[MAXn];
+vector<ll> ans;
+void dfs(ll t)
+{
+  if(t<0)ans.pb(-t);
+  else
+  {
+    REP(i,ct[t])dfs(d[t][i]);
+  }
+}
 
 int main()
 {
     IOS();
-    ll n,now=0,tt=0;
-    cin>>n;
-    REP(i,n)
+    ll n,m;
+    cin>>n>>m;
+    REP1(i,n)now[i]=-i,g[i]=i;
+    REP(i,m)
     {
-      ll t;
-      cin>>t;
-      pq.push(ii(now,i));
-      now+=t;
-      while(SZ(pq)&&pq.top().X>now)
-      {
-        debug(i,pq.top());
-        tt+=n-i;
-        pq.pop();
-      }
+      dt[i]=i;
+      cin>>y[i]>>ct[i];
+      d[i]=new ll[ct[i]];
+      REP(j,ct[i])cin>>d[i][j];
     }
-    cout<<tt<<endl;
+    sort(dt,dt+m,[](int a,int b){return y[a]<y[b];});
+    REP(i,m)
+    {
+      ll t=dt[i];
+      REP(j,ct[t])d[t][j]=f(d[t][j]);
+      pary(g+1,g+n+1);
+      pary(d[t],d[t]+ct[t]);
+      sort(d[t],d[t]+ct[t]);
+      REP1(j,ct[t]-1)
+      {
+        ll tmp=d[t][j];
+        mg(d[t][0],tmp);
+        d[t][j]=now[tmp];
+        now[tmp]=t;
+      }
+      ll tmp=d[t][0];
+      d[t][0]=now[tmp];
+      now[tmp]=t;
+    }
+    REP1(i,n)if(g[i]==i)dfs(now[i]);
+    debug(ans);
+    assert(SZ(ans)==n);
+    REP(i,n)cout<<ans[i]<<" \n"[i==n-1];
 }

@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,29 +44,31 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-priority_queue<ii> pq;
+int tt[(1<<22)];
 
 int main()
 {
     IOS();
-    ll n,now=0,tt=0;
-    cin>>n;
-    REP(i,n)
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
     {
-      ll t;
-      cin>>t;
-      pq.push(ii(now,i));
-      now+=t;
-      while(SZ(pq)&&pq.top().X>now)
-      {
-        debug(i,pq.top());
-        tt+=n-i;
-        pq.pop();
-      }
+      string s;ll d,t=0;
+      cin>>s>>d;
+      REP(j,n)if(s[j]=='1')t+=(1<<j);
+      tt[t]=d;
     }
-    cout<<tt<<endl;
+    REP(I,(1<<n))REP(i,n)
+    {
+      if(!(I&(1<<i)))tt[I|(1<<i)]+=tt[I];
+    }
+    sort(tt+1,tt+(1<<n));
+    long long ans=0;
+    for(long long i=1;i<(1<<n);i++)ans+=(long long)i*tt[i];
+    cout<<ans<<endl;
+
 }
