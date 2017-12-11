@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,13 +44,34 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+int d[MAXn],tt[3],n;
+
+
+int cal(int a,int b,int c)
+{
+  int mx=0,tmpmx=-MAXn,tmptt[]={0,0,0};
+  REP(i,n)
+  {
+    tmptt[d[i]]++;
+    tmpmx=max(tmpmx,tmptt[a]-tmptt[b]);
+    mx=max(mx,tt[c]-tmptt[c]+tmptt[b]+tmpmx);
+  }
+  return mx;
+}
 
 int main()
 {
     IOS();
-    
+    string s,S="CEP";
+    cin>>n>>s;
+    REP(i,n)REP(j,3)if(s[i]==S[j])d[i]=j,tt[j]++;
+    int dt[]={0,1,2},mx=0;
+    do{
+      mx=max(mx,cal(dt[0],dt[1],dt[2]));
+    }while(next_permutation(dt,dt+3));
+    cout<<mx<<endl;
 }

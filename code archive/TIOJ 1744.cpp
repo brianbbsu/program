@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,13 +44,72 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e9);
 
+vector<ll> v[MAXn],vr[MAXn],v3[MAXn],tp;
+ll d[MAXn],g[MAXn],vis[MAXn],tt[MAXn],dp[MAXn],fg[MAXn];
+
+void dfs1(ll now)
+{
+  vis[now]=1;
+  for(ll k:v[now])if(!vis[k])dfs1(k);
+  tp.pb(now);
+}
+
+void dfs2(ll now,ll gi)
+{
+  vis[now]=1;g[now]=gi;
+  for(ll k:vr[now])if(!vis[k])dfs2(k,gi);
+}
+
+ll it(ll now)
+{
+  if(dp[now]!=-1)return dp[now];
+  ll mx;
+  if(fg[now])mx=tt[now];
+  else mx=-INF;
+  for(ll k:v3[now])mx=max(mx,it(k)+tt[now]);
+  return dp[now]=mx;
+}
 
 int main()
 {
     IOS();
-    
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
+    {
+      ll a,b;
+      cin>>a>>b;
+      v[a].pb(b);
+      vr[b].pb(a);
+    }
+    REP1(i,n)cin>>d[i];
+
+    memset(vis,0,sizeof(ll)*(n+1));
+    REP1(i,n)if(!vis[i])dfs1(i);
+    reverse(ALL(tp));
+
+    ll nit=0;
+    memset(vis,0,sizeof(ll)*(n+1));
+    REP(i,n)if(!vis[tp[i]])dfs2(tp[i],nit++);
+
+    REP1(i,n)for(ll k:v[i])if(g[i]!=g[k])v3[g[i]].pb(g[k]);
+    debug(nit,tp);
+    REP1(i,n)debug(i,g[i]);
+    REP(i,nit)debug(i,v3[i]);
+
+    ll s,p;
+    cin>>s>>p;
+    REP(i,p)
+    {
+      ll t;
+      cin>>t;
+      fg[g[t]]=1;
+    }
+    memset(dp,-1,sizeof(ll)*(nit+1));
+    REP1(i,n)tt[g[i]]+=d[i];
+    cout<<it(g[s])<<endl;
 }

@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef unsigned int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -45,12 +45,22 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MOD=1000000009;
 const ll INF=ll(1e15);
 
+
+ll dp[105][2];
 
 int main()
 {
     IOS();
-    
+    dp[0][0]=dp[0][1]=1;
+    REP1(i,100)
+    {
+      dp[i][0]=(2*dp[i-1][1]+dp[i-1][0])%MOD;
+      dp[i][1]=(3*dp[i-1][1]+dp[i-1][0])%MOD;
+    }
+    ll T,t;
+    cin>>T;
+    while(T--&&cin>>t)cout<<dp[t-1][1]<<endl;
 }

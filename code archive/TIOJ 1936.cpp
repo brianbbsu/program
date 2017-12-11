@@ -44,13 +44,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1100,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll a[MAXn][MAXn],b[MAXn][MAXn],c[MAXn][MAXn];
+ll dta[MAXn],dtb[MAXn],sa[MAXn],sb[MAXn];
+
 int main()
 {
     IOS();
-    
+    srand(time(NULL));
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n;
+      cin>>n;
+      REP(i,n)REP(j,n)cin>>a[i][j],sa[i]=0;
+      REP(i,n)REP(j,n)cin>>b[i][j],sb[i]=0;
+      REP(i,n)REP(j,n)cin>>c[i][j];
+      REP(i,n)dta[i]=rand(),dtb[i]=rand();
+      ll tt=0,ttc=0;
+      REP(i,n)REP(j,n)
+      {
+        dta[i]=1,dtb[j]=1;
+        sa[j]+=dta[i]*a[i][j];
+        sb[i]+=dtb[j]*b[i][j];
+        ttc+=dta[i]*dtb[j]*c[i][j];
+      }
+      REP(i,n)tt+=sa[i]*sb[i];
+      if(tt==ttc)cout<<"Loli is god."<<endl;
+      else cout<<"QAQ!"<<endl;
+    }
 }

@@ -44,13 +44,66 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll K,n,q,tt=0;
+vector<ll> uni;
+
+ll d[MAXn],ct[MAXn],ans[MAXn],dt[MAXn],qrl[MAXn],qrr[MAXn],sq[MAXn];
+ii rk[MAXn];
+ll l=0,r=0;
+
+void add(ll t)
+{
+  if(ct[t]>=0)tt=(tt+uni[t]*(sq[ct[t]+1]-sq[ct[t]]))%MOD;
+  if(tt<0)tt+=MOD;
+  ct[t]++;
+  debug(t,tt);
+}
+void sub(ll t)
+{
+  if(ct[t]>=1)tt=(tt+uni[t]*(sq[ct[t]-1]-sq[ct[t]]))%MOD;
+  if(tt<0)tt+=MOD;
+  ct[t]--;
+  debug(t,tt);
+}
+
 int main()
 {
     IOS();
-    
+    cin>>n>>q;
+    K=max(1.1,n/sqrt(q+0.5));
+    REP(i,n)cin>>d[i],uni.pb(d[i]);
+    sort(ALL(uni));
+    uni.resize(unique(ALL(uni))-uni.begin());
+    REP(i,n)d[i]=lower_bound(ALL(uni),d[i])-uni.begin();
+
+    REP(i,q)cin>>qrl[i]>>qrr[i],dt[i]=i;
+    REP(i,q)
+    {
+      ll t=qrl[i]/K;
+      rk[i]=ii(t,((t&1)?-1:1)*qrr[i]);
+    }
+    sort(dt,dt+q,[](int a,int b){return rk[a]<rk[b];});
+
+    REP(i,n+1)sq[i]=(i*i)%MOD;
+
+    debug(uni,K);
+    pary(dt,dt+q);
+    pary(sq,sq+n+1);
+    REP(i,q)
+    {
+      ll t=dt[i];
+      debug(t,qrl[t],qrr[t]);
+      while(l<qrl[t])sub(d[l++]);
+      while(l>qrl[t])add(d[--l]);
+      while(r<qrr[t])add(d[r++]);
+      while(r>qrr[t])sub(d[--r]);
+      ans[t]=tt;
+    }
+    REP(i,q)cout<<ans[i]<<endl;
+
 }

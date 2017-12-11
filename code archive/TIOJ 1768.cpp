@@ -44,13 +44,54 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e7+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+inline char readchar()
+{
+    static const size_t bufsize = 65536;
+    static char buf[bufsize];
+    static char *p = buf, *end = buf;
+    if (p == end) end = buf + fread_unlocked(buf, 1, bufsize, stdin), p = buf;
+    return *p++;
+}
+
+template <class T> void input(T& a)
+{
+    static char p;
+    while ((p = readchar()) < '0') ;
+    a = p ^ '0';
+    while ((p = readchar()) >= '0') a *= 10, a += p ^ '0';
+}
+
+
+int d[MAXn];
+
 int main()
 {
-    IOS();
-    
+    //IOS();
+    ll n,ttw=0,ttwi=0;
+    input(n);
+    REP(i,n)
+    {
+      input(d[i]);
+      ttw+=d[i];ttwi+=i*d[i];
+    }
+    if(ttwi%ttw==0)
+    {
+      cout<<0<<" "<<ttwi/ttw<<endl;
+      return 0;
+    }
+    for(int x=0;;x++)
+    {
+      ttwi+=(n-2*x-1)*(d[x]-d[n-x-1]);
+      if(ttwi%ttw==0)
+      {
+        cout<<x+1<<" "<<ttwi/ttw<<endl;
+        return 0;
+      }
+    }
+
 }

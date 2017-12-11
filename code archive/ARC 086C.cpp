@@ -48,9 +48,24 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+map<ll,ll> mp;
 
 int main()
 {
     IOS();
-    
+    // C
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      mp[t]++;
+    }
+    vector<ll> dt;
+    for(auto tmp:mp)dt.pb(tmp.Y);
+    sort(ALL(dt));
+    ll tt=0;
+    for(int i=0;SZ(dt)-i>k;i++)tt+=dt[i];
+    cout<<tt<<endl;
 }

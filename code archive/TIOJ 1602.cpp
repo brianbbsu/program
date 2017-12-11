@@ -44,13 +44,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+bool vis[MAXn][MAXn];
+ll d[MAXn][MAXn];
 
 int main()
 {
     IOS();
-    
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n)REP(j,m)cin>>d[j][i];
+    ll x,y;
+    cin>>x>>y;
+    vis[x][y]=1;
+    queue<ii> q;
+    q.push(ii(x,y));
+    int dx[]={1,-1,0,0},dy[]={0,0,1,-1};
+    while(SZ(q))
+    {
+      ii tmp=q.front();
+      q.pop();
+      REP(i,4)
+      {
+        x=tmp.X+dx[i],y=tmp.Y+dy[i];
+        if(x>=0&&x<m&&y>=0&&y<n&&d[tmp.X][tmp.Y]<=d[x][y]&&!vis[x][y])
+        {
+          vis[x][y]=1;
+          q.push(ii(x,y));
+        }
+      }
+    }
+    REP(i,m)REP(j,n)if(vis[i][j])cout<<"("<<i<<","<<j<<")"<<endl;
 }

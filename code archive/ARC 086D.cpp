@@ -48,9 +48,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    
+    // D
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    ll id=0;
+    REP1(i,n-1)if(abs(d[i])>abs(d[id]))id=i;
+    if(d[id]==0)
+    {
+      cout<<0<<endl;
+      return 0;
+    }
+    else if(d[id]>0)
+    {
+      cout<<2*n-1<<endl;
+      REP1(i,n)cout<<id+1<<" "<<i<<endl;
+      REP1(i,n-1)cout<<i<<" "<<i+1<<endl;
+    }
+    else
+    {
+      cout<<2*n-1<<endl;
+      REP1(i,n)cout<<id+1<<" "<<i<<endl;
+      for(int i=n;i>1;i--)cout<<i<<" "<<i-1<<endl;
+    }
 }

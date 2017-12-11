@@ -48,9 +48,21 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll dp[105][205][205];
 
 int main()
 {
     IOS();
-    
+    ll m,n,a,b,c,d;
+    cin>>m>>n>>a>>b>>c>>d;
+    REP1(i,n)REP(j,m+1)dp[i][j][0]=dp[i][0][j]=-INF;
+    REP1(i,n)
+    {
+      REP1(x,m)REP1(y,m)
+      {
+        ll t=dp[i-1][x-1][y-1]+(a*(i-1)+b*(x-1)+c*(y-1))%d;
+        dp[i][x][y]=max({t,dp[i][x-1][y],dp[i][x][y-1]});
+      }
+    }
+    cout<<dp[n][m][m]<<endl;
 }

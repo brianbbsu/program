@@ -44,13 +44,41 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll dp[2][MAXn],d[MAXn],dt[MAXn],v[MAXn];
 
 int main()
 {
     IOS();
-    
+    ll n,k,X,D;
+    cin>>n>>k>>X>>D;
+    REP1(i,n)
+    {
+      cin>>d[i]>>v[i];
+      dt[i]=i;
+    }
+    sort(dt+1,dt+n+1,[](int a,int b){return d[a]<d[b];});
+    REP1(i,n)dp[0][i]=-INF;
+    bool fg=0;
+    REP(T,k)
+    {
+      fg=!fg;
+      deque<ll> q;
+      q.pb(0);
+      REP1(i,n)
+      {
+        ll t=dt[i];
+        while(SZ(q)&&d[t]-d[q.front()]>D)q.pop_front();
+        if(!SZ(q))dp[fg][t]=-INF;
+        else dp[fg][t]=v[t]+dp[!fg][q.front()];
+        while(SZ(q)&&dp[!fg][t]>=dp[!fg][q.back()])q.pop_back();
+        q.pb(t);
+      }
+    }
+    ll mx=0;
+    REP1(i,n)if(X-d[i]<=D)mx=max(mx,dp[fg][i]);
+    cout<<mx<<endl;
 }

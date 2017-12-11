@@ -4,8 +4,8 @@ using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
-#define REP(i,n) for(ll i=0;i<n;i++)
-#define REP1(i,n) for(ll i=1;i<=n;i++)
+#define REP(i,n) for(int i=0;i<n;i++)
+#define REP1(i,n) for(int i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -48,9 +48,48 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+int bit[MAXn];
+inline void ins(int x,int k)
+{
+  while(x<MAXn)
+  {
+    bit[x]+=k;
+    x+=x&-x;
+  }
+}
+inline int qr(int x)
+{
+  int rt=0;
+  while(x)
+  {
+    rt+=bit[x];
+    x-=x&-x;
+  }
+  return rt;
+}
+
+int d[MAXn],l[MAXn];
 
 int main()
 {
     IOS();
-    
+    int T,n;
+    cin>>T;
+    while(T--&&cin>>n)
+    {
+      REP(i,n)
+      {
+        cin>>d[i];
+        l[i]=qr(d[i]-1);
+        ins(d[i],1);
+      }
+      ll tt=0;
+      REP(i,n)
+      {
+        int r=qr(d[i]-1)-l[i];
+        tt+=l[i]*(n-i-1-r)+(i-l[i])*r;
+      }
+      cout<<tt<<endl;
+      if(T)REP(i,n)ins(d[i],-1);
+    }
 }
