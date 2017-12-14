@@ -44,45 +44,55 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll fac[20];
-
-ll cal_perm(ll *d,ll n)
+ll mypw(ll x,ll k)
 {
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
+  if(!k)return 1;
+  ll a=mypw(x,k/2);
+  a=a*a%MOD;
+  if(k&1)return a*x%MOD;
+  else return a;
 }
 
-ll solve(ll *d,ll *g,ll n)
+map<ll,ll> dp;
+inline void sub(ll &a,ll b)
 {
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
+  a-=b;
+  if(a<0)a+=MOD;
 }
+
+ll it(ll x)
+{
+  debug(x);
+  if(x==1)return 1;
+  else if(dp.count(x))return dp[x];
+  ll tt=mypw(2,x-1);
+  debug(tt);
+  for(ll i=1;i*i<=x;i++)
+  {
+    if(x%i!=0)continue;
+    debug(i);
+    if(i*i!=x)sub(tt,it(i));
+    if(i!=1)sub(tt,it(x/i));
+  }
+  return dp[x]=tt;
+}
+
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
-
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+    ll x,y;
+    cin>>x>>y;
+    if(y%x!=0)
+    {
+      cout<<0<<endl;
+      return 0;
+    }
+    y/=x;
+    cout<<it(y)<<endl;
+    debug(dp);
 }

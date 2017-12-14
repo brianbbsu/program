@@ -44,45 +44,87 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+const ll M=26;
 
-ll fac[20];
-
-ll cal_perm(ll *d,ll n)
+int tri[MAXn][M],triit=0,p[MAXn],pc[MAXn],f[MAXn],fg[MAXn],dp[105][MAXn],rt;
+int gt(int pi,int pci)
 {
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
+  int t=triit++;
+  REP(i,M)tri[t][i]=-1;
+  p[t]=pi;pc[t]=pci;fg[t]=0;f[t]=0;
+  return t;
 }
 
-ll solve(ll *d,ll *g,ll n)
+void dfs(ll now)
 {
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
+  debug(now,p[now],(char)(pc[now]+'a'),f[now],fg[now]);
+  REP(i,M)if(tri[now][i]!=-1)dfs(tri[now][i]);
+  debug("exit",now);
+}
+ void add(int &a,int b)
+{
+  a+=b;
+  if(a>=MOD)a-=MOD;
 }
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
-
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n,m;
+      cin>>n>>m;
+      triit=0;
+      rt=gt(0,-1);
+      REP(i,m)
+      {
+        string s;
+        cin>>s;
+        for(char &c:s)c-='a';
+        int now=rt;
+        for(char c:s)
+        {
+          if(tri[now][c]==-1)tri[now][c]=gt(now,c);
+          now=tri[now][c];
+        }
+        fg[now]=1;
+      }
+      queue<ll> q;
+      q.push(rt);
+      while(SZ(q))
+      {
+        ll t=q.front();q.pop();
+        ll now=p[t];
+        while(now!=0)
+        {
+          now=f[now];
+          if(tri[now][pc[t]]!=-1)
+          {
+            f[t]=tri[now][pc[t]];
+            break;
+          }
+        }
+        if(fg[f[t]])fg[t]=1;
+        REP(i,M)
+        {
+          if(tri[t][i]!=-1){
+            q.push(tri[t][i]);
+            if(fg[t])fg[tri[t][i]]=1;
+          }
+          else tri[t][i]=tri[f[t]][i];
+          if(tri[t][i]==-1)tri[t][i]=0;
+        }
+      }
+      REP(j,n+1)REP(i,triit)dp[j][i]=0;
+      dp[0][0]=1;
+      REP(i,n)REP(j,triit)if(!fg[j])REP(k,M)add(dp[i+1][tri[j][k]],dp[i][j]);
+      int tt=0;
+      REP(i,triit)if(!fg[i])add(tt,dp[n][i]);
+      cout<<tt<<endl;
+    }
 }

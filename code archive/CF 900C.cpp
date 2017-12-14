@@ -48,41 +48,29 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll fac[20];
-
-ll cal_perm(ll *d,ll n)
-{
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
-}
-
-ll solve(ll *d,ll *g,ll n)
-{
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
-}
+ll ct[MAXn],ok[MAXn];
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
-
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+    ll n;
+    cin>>n;
+    set<ll> st;
+    ll t;
+    REP(i,n)
+    {
+      cin>>t;
+      if(!SZ(st)||*prev(st.end())<t)ok[t]=1;
+      else if(SZ(st)==1||*prev(prev(st.end()))<t)ct[*prev(st.end())]++;
+      st.insert(t);
+    }
+    ll mx=-INF,id=0;
+    REP1(i,n)
+    {
+      t=ct[i]-ok[i];
+      if(t>mx)mx=t,id=i;
+    }
+    pary(ct+1,ct+1+n);
+    pary(ok+1,ok+1+n);
+    cout<<id<<endl;
 }

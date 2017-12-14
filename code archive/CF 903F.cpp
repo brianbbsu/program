@@ -44,45 +44,61 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const int MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const int INF=ll(1e9);
+const int M = (1<<12);
 
-ll fac[20];
+int dp[2][M],cst[15],msk[15];
+int d[MAXn],p[10];
 
-ll cal_perm(ll *d,ll n)
-{
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
-}
+inline void smin(int &a,int b){a=min(a,b);}
 
-ll solve(ll *d,ll *g,ll n)
-{
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
-}
+#define dbg() REP(I,M)debug(bitset<12>(I),dp[fg][I]);
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
 
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+    int n;
+    cin>>n;
+    REP1(i,4)cin>>p[i];
+    REP(i,4)
+    {
+      string s;
+      cin>>s;
+      REP(j,n)if(s[j]=='*')d[j]+=(1<<i);
+    }
+    int it=0;
+    REP1(i,3)for(int j=0;j+i<=4;j++)
+    {
+      REP(k,i)msk[it]=(msk[it]<<4)+(1<<i)-1;
+      msk[it]<<=j;
+      cst[it]=p[i];
+      it++;
+    }
+    REP(i,it)debug(i,bitset<12>(msk[i]),cst[i]);
+    REP(i,n)debug(i,bitset<4>(d[i]));
+    bool fg=0;
+    REP(I,M)dp[0][I]=INF;
+    dp[0][d[0]]=0;
+    debug(dp[fg][15]);
+    REP(i,n)
+    {
+      REP(j,it)
+      {
+        REP(I,M)dp[!fg][I]=dp[fg][I];
+        REP(I,M)smin(dp[!fg][I&(~(msk[j]))],dp[fg][I]+cst[j]);
+        fg=!fg;
+      }
+      REP(I,M)dp[!fg][I]=INF;
+      REP(I,M)
+      {
+        smin(dp[!fg][0],dp[fg][I]+p[4]);
+        if(I<(1<<8))smin(dp[!fg][(I<<4)|d[i+1]],dp[fg][I]);
+      }
+      fg=!fg;
+      //dbg();
+    }
+    cout<<dp[fg][0]<<endl;
 }

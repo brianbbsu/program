@@ -48,41 +48,20 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll fac[20];
-
-ll cal_perm(ll *d,ll n)
-{
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
-}
-
-ll solve(ll *d,ll *g,ll n)
-{
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
-}
+vector<ll> dt;
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
-
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+    ll h1,a1,c,h2,a2;
+    cin>>h1>>a1>>c>>h2>>a2;
+    while(1)
+    {
+      if(h1>a2||h2<=a1)dt.pb(0),h2-=a1;
+      else dt.pb(1),h1+=c;
+      if(h2<=0)break;
+      h1-=a2;
+    }
+    cout<<SZ(dt)<<endl;
+    for(ll k:dt)cout<<(k==0?"STRIKE":"HEAL")<<endl;
 }

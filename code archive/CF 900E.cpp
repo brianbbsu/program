@@ -48,41 +48,60 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll fac[20];
 
-ll cal_perm(ll *d,ll n)
-{
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
-}
-
-ll solve(ll *d,ll *g,ll n)
-{
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
-}
+ii dp[MAXn]; //(cnt,-replace)
+ll can[MAXn];
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
+    ll n,m;
+    string s;
+    cin>>n>>s>>m; //t=ababa....
+    ll far,cnt;
+    //even 0 2 4...
+    far=cnt=0;
+    REP(i,n)
+    {
+      if((i%2==0&&s[i]=='b')||(i%2==1&&s[i]=='a'))far=i+1,cnt=0;
+      else
+      {
+        if(s[i]=='?')cnt++;
+        while(i-far+1>m)
+        {
+          if(s[far]=='?')cnt--;
+          far++;
+        }
+      }
+      if(i<m-1){can[i]=-1;continue;}
+      if((i-m+1)%2==1)continue;
+      if(i-far+1==m)can[i]=cnt;
+      else can[i]=-1;
+    }
+    //odd 1 3 5...
+    far=cnt=0;
+    REP(i,n)
+    {
+      if((i%2==0&&s[i]=='a')||(i%2==1&&s[i]=='b'))far=i+1,cnt=0;
+      else
+      {
+        if(s[i]=='?')cnt++;
+        while(i-far+1>m)
+        {
+          if(s[far]=='?')cnt--;
+          far++;
+        }
+      }
+      if(i<m-1){can[i]=-1;continue;}
+      if((i-m+1)%2==0)continue;
+      if(i-far+1==m)can[i]=cnt;
+      else can[i]=-1;
+    }
 
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+    REP1(i,n)
+    {
+      dp[i]=dp[i-1];
+      if(can[i-1]!=-1)dp[i]=max(dp[i],ii(dp[i-m].X+1,dp[i-m].Y-can[i-1]));
+    }
+    cout<<-dp[n].Y<<endl;
 }

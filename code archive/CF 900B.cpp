@@ -48,9 +48,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+set<ll> st;
 
 int main()
 {
     IOS();
-    
+    ll a,b,c;
+    cin>>a>>b>>c;
+    a%=b;
+    for(int i=1;;i++)
+    {
+      a*=10;
+      ll t=a/b;
+      if(t==c)
+      {
+        cout<<i<<endl;
+        return 0;
+      }
+      a%=b;
+      if(st.count(a)){cout<<-1<<endl;return 0;}
+      else st.insert(a);
+    }
 }

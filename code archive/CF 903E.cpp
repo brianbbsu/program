@@ -44,45 +44,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll fac[20];
+string d[MAXn];
+int chcnt[30];
 
-ll cal_perm(ll *d,ll n)
-{
-	map<ll,ll> mp;
-	REP(i,n)mp[d[i]]++;
-	ll tt=fac[n];
-	for(auto tmp:mp)tt/=fac[tmp.Y];
-	return tt;
-}
 
-ll solve(ll *d,ll *g,ll n)
-{
-	if(!n)return 1;
-	ll tt=0;
-	while(d[0]!=g[0])
-	{
-		tt+=cal_perm(d+1,n-1);
-		for(int i=0;;i++)if(d[i]>d[0])
-		{
-			swap(d[0],d[i]);break;
-		}
-	}
-	return tt+solve(d+1,g+1,n-1);
-}
 
 int main()
 {
     IOS();
-		fac[0]=1;
-		for(ll i=1;i<=16;i++)fac[i]=fac[i-1]*i;
+    ll k,n;
+    cin>>k>>n;
+    REP(i,k)cin>>d[i];
+    REP(i,n)chcnt[d[0][i]-'a']++;
+    REP1(i,k-1)
+    {
+      int tmpcnt[30];
+      FILL(tmpcnt,0);
+      REP(j,n)tmpcnt[d[i][j]-'a']++;
+      REP(j,26)if(chcnt[j]!=tmpcnt[j]){
+        cout<<-1<<endl;
+        return 0;
+      }
+    }
 
-		ll d[20],g[20];
-		ll n;cin>>n;
-		REP(i,n)cin>>d[i],g[i]=d[i];
-		sort(d,d+n);
-		cout<<solve(d,g,n)<<endl;
+
+
 }

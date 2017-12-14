@@ -48,14 +48,13 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+int ok[105];
 
 int main()
 {
     IOS();
-    ll n;
-    string s;
-    cin>>n>>s;
-    reverse(ALL(s));
-    cout<<"Hello, "<<s<<"."<<endl;
-
+    REP(i,100)REP(j,100)if(3*i+7*j<105)ok[3*i+7*j]=1;
+    ll T,t;
+    cin>>T;
+    while(T--&&cin>>t)cout<<(ok[t]?"YES":"NO")<<endl;
 }
