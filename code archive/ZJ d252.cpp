@@ -44,33 +44,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
-
-int ct[MAXn];
-
-void it(int n)
-{
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
-}
 
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    string s,dt;
+    getline(cin,s);
+    getline(cin,dt);
+    ll it=0;
+    REP(i,SZ(dt))
     {
-      if(ct[i]>=m)
+      char c=dt[i];
+      if(c=='0')it=0;
+      else if(c=='$')it=SZ(s);
+      else if(c=='+')it++;
+      else if(c=='-')it--;
+      else if(c=='u')
       {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
+        if(isalpha(s[it]))s[it]=toupper(s[it]);
+        it++;
       }
-      else m-=ct[i];
+      else if(c=='s')
+      {
+        if(it<SZ(s)-1)swap(s[it],s[it+1]);
+      }
+      else if(c=='x')
+      {
+        if(it!=SZ(s))s.erase(it,1);
+      }
+      else if(c=='i')
+      {
+        char tmp=dt[i+1];
+        i++;
+        s.insert(it,1,tmp);
+        it++;
+      }
     }
+    cout<<s<<endl;
 }

@@ -44,33 +44,47 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXc=3e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
-{
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
-}
+ll dp[2][MAXc];
 
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      if(ct[i]>=m)
+      ll n,k,M;
+      cin>>n>>k>>M;
+      bool fg=0;
+      REP(i,M+1)dp[fg][i]=0;
+      while(n--)
       {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
+        ll p,b,c;
+        cin>>p>>b>>c;
+        fg=!fg;
+        REP(x,p)
+        {
+          deque<ii> dq;
+          for(ll t=0;t*p+x<=M;t++)
+          {
+            if(t>=k)
+            {
+              ii tmp(t-k,dp[!fg][(t-k)*p+x]-(t-k)*b);
+              while(SZ(dq)&&dq.back().Y<=tmp.Y)dq.pop_back();
+              dq.pb(tmp);
+            }
+            while(SZ(dq)&&dq.front().X<t-c)dq.pop_front();
+            if(SZ(dq))dp[fg][t*p+x]=dq.front().Y+t*b;
+            else dp[fg][t*p+x]=0;
+          }
+        }
+        REP(i,M+1)dp[fg][i]=max(dp[fg][i],dp[!fg][i]);
       }
-      else m-=ct[i];
+      cout<<dp[fg][M]<<endl;
     }
 }

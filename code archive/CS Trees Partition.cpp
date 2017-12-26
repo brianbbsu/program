@@ -44,33 +44,58 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
+ll myrnd()
 {
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
+  ll rt=0;
+  REP(i,2)rt=(rt<<15)+rand();
+  return rt;
 }
 
+vector<ll> v[MAXn],dt,tmpdt;
+ll d[MAXn],s[MAXn];
+
+void dfs1(ll now,ll f)
+{
+  s[now]=d[now];
+  for(ll k:v[now])if(k!=f)
+  {
+    dfs1(k,now);
+    s[now]+=s[k];
+  }
+}
+
+void cal(ll n)
+{
+  REP(i,n)v[i].clear();
+  dt.clear();
+  REP1(i,n-1)
+  {
+    ll t;
+    cin>>t;
+    v[t-1].pb(i);
+    v[i].pb(t-1);
+  }
+
+  dfs1(0,-1);
+  REP1(i,n-1)dt.pb(s[i]);
+}
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
-    {
-      if(ct[i]>=m)
-      {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
-      }
-      else m-=ct[i];
-    }
+    srand(880301);
+    ll n;
+    cin>>n;
+    REP(i,n)d[i]=myrnd();
+    cal(n);
+    tmpdt=dt;
+    cal(n);
+    set<ll> st(ALL(tmpdt));
+    ll tt=0;
+    for(ll k:dt)if(st.count(k))tt++;
+    cout<<tt<<endl;
 }

@@ -44,33 +44,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
+ll d[MAXn];
 
-void it(int n)
-{
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
-}
 
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    ll n,s=0;
+    cin>>n;
+    REP(i,n+1)cin>>d[i],s+=d[i];
+    ll ok=-1;
+    REP(i,n)if(d[i]>=2&&d[i+1]>=2)ok=i;
+    if(ok==-1)
     {
-      if(ct[i]>=m)
-      {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
-      }
-      else m-=ct[i];
+      cout<<"perfect"<<endl;
+      return 0;
     }
+    cout<<"ambiguous"<<endl;
+    REP(i,n+1)cout<<i<<" ";
+    REP(i,n+1)REP(j,d[i]-(i==ok||i==ok+1)-1)cout<<i<<" ";
+    cout<<ok<<" "<<ok+1<<endl;
+    REP(i,n+1)cout<<i<<" ";
+    REP(i,n+1)REP(j,d[i]-(i==ok||i==ok+1)-1)cout<<i<<" ";
+    cout<<ok<<" "<<s-1<<endl;
+
 }

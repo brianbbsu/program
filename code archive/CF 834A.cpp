@@ -44,33 +44,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
+ll f(char c)
 {
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
+  string S="^>v<";
+  REP(i,4)if(c==S[i])return i;
+  return 0;
 }
-
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
-    {
-      if(ct[i]>=m)
-      {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
-      }
-      else m-=ct[i];
-    }
+    string a,b;
+    ll s,t,n;
+    cin>>a>>b>>n;
+    s=f(a[0]),t=f(b[0]);
+    bool x= (s+n)%4==t,y= (s-n%4+4)%4==t;
+    debug(s,t,x,y);
+    if(!(x^y))cout<<"undefined"<<endl;
+    else if(x)cout<<"cw"<<endl;
+    else cout<<"ccw"<<endl;
 }

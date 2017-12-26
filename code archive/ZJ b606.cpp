@@ -44,33 +44,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
-{
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
-}
-
+priority_queue<ll,vector<ll>, greater<ll> > pq;
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    ll n;
+    while(cin>>n&&n)
     {
-      if(ct[i]>=m)
+      while(SZ(pq))pq.pop();
+      REP(i,n)
       {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
+        ll t;
+        cin>>t;
+        pq.push(t);
       }
-      else m-=ct[i];
+      ll tt=0;
+      while(SZ(pq)!=1)
+      {
+        ll x=pq.top();pq.pop();
+        ll y=pq.top();pq.pop();
+        tt+=x+y;
+        pq.push(x+y);
+      }
+      cout<<tt<<endl;
     }
 }

@@ -44,33 +44,55 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
+struct node{
+  ll l,r;
+  node *lc,*rc;
+  ll mx,tg;
+  inline ll dt(){return mx+tg;}
+  void ins(ll li,ll ri,ll k)
+  {
+    if(li>=r||ri<=l)return;
+    else if(li<=l&&ri>=r)tg+=k;
+    else lc->ins(li,ri,k),rc->ins(li,ri,k),mx=max(lc->dt(),rc->dt());
+  }
+  void clr()
+  {
+    mx=tg=0;
+    if(l!=r-1)lc->clr(),rc->clr();
+  }
+};
+node *build(ll l,ll r)
 {
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
+  if(l==r-1)return new node{l,r,0,0,0,0};
+  else return new node{l,r,build(l,(l+r)/2),build((l+r)/2,r),0,0};
 }
-
+node *rt=0;
+ll d[MAXn],lt[MAXn],dp[60][MAXn];
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    ll n,k;
+    cin>>n>>k;
+    rt = build(0,n+5);
+    REP1(i,n)cin>>d[i];
+    REP(i,k+1)REP(j,n+1)dp[i][j]=-INF;
+    dp[0][0]=0;
+    REP1(i,k)
     {
-      if(ct[i]>=m)
+      rt->clr();
+      FILL(lt,0);
+      REP1(j,n)
       {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
+        rt->ins(j-1,j,dp[i-1][j-1]);
+        rt->ins(lt[d[j]],j,1);
+        lt[d[j]]=j;
+        if(j>=i)dp[i][j]=rt->dt();
       }
-      else m-=ct[i];
     }
+    cout<<dp[k][n]<<endl;
 }

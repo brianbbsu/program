@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,33 +44,56 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=900720143;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
+int dp[2][MAXn],p[MAXn];
+ii lt[MAXn];
 
-void it(int n)
+inline void add(int &a,int b)
 {
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
+  a+=b;
+  if(a>=MOD)a-=MOD;
 }
-
+inline void sub(int &a,int b)
+{
+  a-=b;
+  if(a<0)a+=MOD;
+}
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    ll T;
+    cin>>T;
+    REP1(kz,T)
     {
-      if(ct[i]>=m)
+      ll n,k;
+      cin>>n>>k;
+      REP1(i,n)
       {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
+        ll t;
+        cin>>t;
+        if(lt[t].X==kz)p[i]=lt[t].Y;
+        else p[i]=0;
+        lt[t]=ii(kz,i);
       }
-      else m-=ct[i];
+      bool fg=0;
+      memset(dp[0],0,sizeof(int)*(n+1));
+      dp[0][0]=1;
+      while(k--)
+      {
+        int it=0,tt=0;
+        fg=!fg;
+        dp[fg][0]=0;
+        REP1(i,n)
+        {
+          add(tt,dp[!fg][i-1]);
+          while(it<p[i])sub(tt,dp[!fg][it++]);
+          dp[fg][i]=tt;
+        }
+      }
+      cout<<dp[fg][n]<<endl;
     }
 }

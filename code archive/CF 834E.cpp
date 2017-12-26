@@ -44,33 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
+ll brute_force(ll l,ll r)
 {
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
+  set<ll> st;
+  for(ll i=l;i<=r;i++)
+  {
+    string tmp=to_string(i);
+    sort(ALL(tmp));
+    st.insert(stoll(tmp));
+  }
+  return SZ(st);
 }
-
+ll cal(ll r,ll l)
+{
+  return 0;
+}
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
-    {
-      if(ct[i]>=m)
-      {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
-      }
-      else m-=ct[i];
-    }
+    ll l,r;
+    cin>>l>>r;
+    debug(brute_force(l,r));
 }

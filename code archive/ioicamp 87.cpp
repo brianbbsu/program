@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,33 +44,70 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
 
-void it(int n)
+vector<ll> v[MAXn];
+ll dp[MAXn],st[MAXn][MAXlg],l[MAXn],r[MAXn],it;
+void dfs(ll now,ll f)
 {
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
+  st[now][0]=f;
+  l[now] = ++it;
+  for(ll k:v[now])if(k!=f)
+  {
+    dp[k]=dp[now]+1;
+    dfs(k,now);
+  }
+  r[now] = it;
 }
 
+ll lca(ll a,ll b)
+{
+  if(dp[a]<dp[b])swap(a,b);
+  for(int i=MAXlg-1;i>=0;i--)if(dp[st[a][i]]>=dp[b])a=st[a][i];
+  if(a==b)return a;
+  for(int i=MAXlg-1;i>=0;i--)if(st[a][i]!=st[b][i])a=st[a][i],b=st[b][i];
+  return st[a][0];
+}
+
+inline bool isa(ll a,ll b){return l[b]<=l[a]&&r[b]>=r[a];}
+
+inline bool in(ll a,ll b,ll c)// is b between a,c (dp[a]>=dp[c])
+{
+  return isa(a,b) && isa(b,c);
+}
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      if(ct[i]>=m)
+      ll n,q;
+      cin>>n>>q;
+      REP1(i,n)v[i].clear();
+      REP(i,n-1)
       {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
       }
-      else m-=ct[i];
+      dp[1]=0;dp[0]=-1;
+      it = 0;
+      dfs(1,0);
+      REP1(i,MAXlg-1)REP1(j,n)st[j][i]=st[st[j][i-1]][i-1];
+      while(q--)
+      {
+        ll a,b,c,d,e,f;
+        cin>>a>>b>>d>>e;
+        c=lca(a,b);
+        f=lca(d,e);
+        if(in(a,f,c)||in(b,f,c)||in(d,c,f)||in(e,c,f))cout<<"tsan"<<endl;
+        else cout<<"hao"<<endl;
+      }
     }
 }

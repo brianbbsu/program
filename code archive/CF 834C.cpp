@@ -44,33 +44,26 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e7+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e9+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-int ct[MAXn];
-
-void it(int n)
-{
-  ct[n]++;
-  if(n<=1)return;
-  it(n/2),it(n-n/2);
-}
-
+vector<ii> d;
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    it(n);
-    for(int i=n;i>=0;i--)
+
+    for(ll i=1;i*i<=MAXn;i++)for(ll j=1;i*i*j<=MAXn&&i*j*j<=MAXn;j++)d.pb(ii(i*i*j,i*j*j));
+    sort(ALL(d));
+    //set<ii> st(ALL(d));
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      if(ct[i]>=m)
-      {
-        cout<<(i-i/2)<<" "<<(i/2)<<endl;
-        return 0;
-      }
-      else m-=ct[i];
+      ll a,b;
+      cin>>a>>b;
+      if(binary_search(ALL(d),ii(a,b)))cout<<"YES"<<endl;
+      else cout<<"NO"<<endl;
     }
 }
