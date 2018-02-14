@@ -48,13 +48,48 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+vector<ll> dt[30];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      string s;
+      cin>>s;
+      REP(i,26)dt[i].clear();
+      REP(i,SZ(s))dt[s[i]-'a'].pb(i);
+      ll od=-1,ok=1;
+      REP(i,26)if(SZ(dt[i])%2==1)
+      {
+        if(od!=-1){ok=0;break;}
+        else od=i;
+      }
+      if(!ok||(SZ(s)%2==0&&od!=-1)||(SZ(s)%2==1&&od==-1)){cout<<-1<<endl;continue;}
+      if(od!=-1){
+        ll tmp=od;
+        od=dt[od].back();
+        dt[tmp].pop_back();
+      }
+      REP(i,26)
+      {
+        ll tmp=SZ(dt[i])/2;
+        REP(j,tmp){
+          cout<<dt[i].back()+1<<" ";
+          dt[i].pop_back();
+        }
+      }
+      if(od!=-1)cout<<od+1<<" ";
+      for(int i=25;i>=0;i--)
+      {
+        ll tmp=SZ(dt[i]);
+        REP(j,tmp){
+          cout<<dt[i].back()+1<<" ";
+          dt[i].pop_back();
+        }
+      }
+      cout<<endl;
+    }
 }

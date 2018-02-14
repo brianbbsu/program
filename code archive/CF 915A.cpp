@@ -48,13 +48,18 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n,k;
+    ll ans=INF;
+    cin>>n>>k;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      if(k%t==0)ans=min(ans,k/t);
+    }
+    cout<<ans<<endl;
 }

@@ -44,17 +44,51 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll dis[MAXn];
+ll c[MAXn][MAXn];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
+    for(int i=2;i<MAXn;i++)
+    {
+      ll t = i,tt=0;
+      while(t)
+      {
+        if(t&1)tt++;
+        t/=2;
+      }
+      dis[i]=dis[tt]+1;
+    }
+    REP(i,MAXn)REP(j,i+1)
+    {
+      if(j==0||j==i)c[i][j]=1;
+      else c[i][j]=(c[i-1][j]+c[i-1][j-1])%MOD;
+    }
     string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll k;
+    cin>>s>>k;
+    if(k==0)
+    {
+      cout<<1<<endl;
+      return 0;
+    }
+    ll tt=0;
+    REP1(i,MAXn-1)if(dis[i]==k-1)
+    {
+      ll ct=i;
+      REP(j,SZ(s))
+      {
+        if(s[j]=='1')tt=(tt+c[SZ(s)-j-1][ct])%MOD,ct--;
+        if(ct==-1)break;
+      }
+      if(ct==0)tt=(tt+1)%MOD;
+    }
+    if(k==1)tt=(tt-1+MOD)%MOD;
+    cout<<tt<<endl;
+
 }

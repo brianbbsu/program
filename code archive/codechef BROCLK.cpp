@@ -48,13 +48,51 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll inv(ll x,ll k)
+{
+  if(!k)return 1;
+  ll a=inv(x,k/2);
+  a=a*a%MOD;
+  if(k&1)return a*x%MOD;
+  else return a;
+}
+
+struct tg{ll c,s,l;};
+
+ll ss,c;
+ll l,d,t;
+
+tg cal(ll k)
+{
+  if(k==1)return (tg){c,ss,l};
+  tg tmp=cal(k/2);
+  tmp.s=tmp.s*tmp.c*2%MOD;
+  tmp.c=(tmp.c*tmp.c*2-tmp.l*tmp.l)%MOD;
+  tmp.l=tmp.l*tmp.l%MOD;
+  if(k&1)
+  {
+    tg rt={0,0,tmp.l*l%MOD};
+    rt.c=(tmp.c*c-tmp.s)%MOD;
+    rt.s=(tmp.c*ss+tmp.s*c)%MOD;
+    return rt;
+  }
+  return tmp;
+}
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      cin>>l>>d>>t;
+      c=d;
+      ss=(l*l-d*d)%MOD;
+      tg rt=cal(t);
+      rt.c=rt.c*inv(rt.l,MOD-2)%MOD;
+      rt.c=rt.c*l%MOD;
+      if(rt.c<0)rt.c+=MOD;
+      cout<<rt.c<<endl;
+    }
 }

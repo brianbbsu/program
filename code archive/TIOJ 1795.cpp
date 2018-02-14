@@ -48,13 +48,52 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+vector<ii> e0,e1;
+ll g0[MAXn],g1[MAXn];
+
+ll fd(ll a,ll *p){return p[a]=(a==p[a]?a:fd(p[a],p));}
+void mg(ll a,ll b,ll *p)
+{
+  a=fd(a,p);b=fd(b,p);
+  p[a]=b;
+}
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n,m,k;
+    cin>>n>>m>>k;
+    REP(i,m)
+    {
+      ll a,b,c;
+      cin>>a>>b>>c;
+      if(c)e1.pb(ii(a-1,b-1));
+      else e0.pb(ii(a-1,b-1));
+    }
+    REP(i,n)g0[i]=g1[i]=i;
+    for(ii tmp:e0)if(fd(tmp.X,g0)!=fd(tmp.Y,g0))mg(tmp.X,tmp.Y,g0);
+    for(ii tmp:e1)
+    {
+      if(!k)break;
+      if(fd(tmp.X,g0)!=fd(tmp.Y,g0))
+      {
+        mg(tmp.X,tmp.Y,g0);
+        mg(tmp.X,tmp.Y,g1);
+        k--;
+      }
+    }
+    for(ii tmp:e1)
+    {
+      if(!k)break;
+      if(fd(tmp.X,g1)!=fd(tmp.Y,g1))
+      {
+        mg(tmp.X,tmp.Y,g1);
+        k--;
+      }
+    }
+    ll ct=0;
+    REP(i,n)if(g0[i]==i)ct++;
+    if(ct!=1)k=1;
+    if(k)cout<<"NIE"<<endl;
+    else cout<<"TAK"<<endl;
 }

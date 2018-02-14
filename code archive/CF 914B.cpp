@@ -48,13 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll ct[MAXn],d[MAXn];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      ct[t]++;
+    }
+    REP(i,MAXn)if(ct[i]&1){cout<<"Conan"<<endl;return 0;}
+    cout<<"Agasa"<<endl;
 }

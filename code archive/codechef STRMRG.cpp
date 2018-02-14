@@ -44,17 +44,47 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll dp[MAXn][MAXn];
+ll d[MAXn];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    string a,b;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n,m;
+      cin>>n>>m;
+      cin>>a>>b;
+      a="#"+a;
+      b="#"+b;
+      d[0]=0;dp[0][0]=0;
+      REP1(i,n)dp[i][0]=dp[i-1][0]+(a[i]!=a[i-1]);
+      REP1(i,m)d[i]=d[i-1]+(b[i]!=b[i-1]);
+      REP1(i,m)dp[0][i]=INF;
+      REP1(i,n)
+      {
+        ll mn=INF;
+        REP1(j,m)
+        {
+          dp[i][j]=dp[i-1][j]+(a[i]!=a[i-1]);
+          mn=min(mn,dp[i-1][j-1]-(d[j]-1)-(a[i-1]==b[j]));
+          dp[i][j]=min(dp[i][j],mn+(a[i]!=b[j])+d[j]);
+        }
+      }
+      ll ans=dp[n][m],tt=0;
+      for(int i=m;i>0;i--)
+      {
+        if(i==m||b[i]!=b[i+1])tt++;
+        ans=min(ans,dp[n][m-1]+tt-(b[i]==a[n]));
+      }
+      cout<<ans<<endl;
+      REP(i,n+1)REP(j,m+1)debug(i,j,dp[i][j]);
+    }
 }

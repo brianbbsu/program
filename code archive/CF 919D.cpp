@@ -44,17 +44,52 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll d[MAXn],dp[MAXn],vis[MAXn];
+vector<ll> v[MAXn];
+
+bool dfs(ll now,ll c)
+{
+  vis[now]=1;
+  ll t=(d[now]==c);
+  dp[now]=t;
+  for(ll k:v[now]){
+    if(vis[k]==1)return 1;
+    else if(vis[k]==0&&dfs(k,c))return 1;
+    dp[now]=max(dp[now],dp[k]+t);
+  }
+  vis[now]=2;
+  return 0;
+}
+
 int main()
 {
     IOS();
-    srand(time(NULL));
+    ll n,m;
+    cin>>n>>m;
     string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    cin>>s;
+    REP(i,n)d[i]=s[i]-'a';
+    REP(i,m)
+    {
+      ll a,b;
+      cin>>a>>b;
+      v[a-1].pb(b-1);
+    }
+    ll mx=0;
+    REP(i,26)
+    {
+      FILL(dp,0);
+      FILL(vis,0);
+      REP(j,n)if(!vis[j]&&dfs(j,i)){
+        cout<<-1<<endl;
+        return 0;
+      }
+      pary(dp,dp+n);
+      mx=max(mx,*max_element(dp,dp+n));
+    }
+    cout<<mx<<endl;
 }

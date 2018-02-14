@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,17 +44,72 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e2+5,MAXm=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll stk[MAXn],it=0;
+
+vector<ll> v[MAXn];
+ll from[MAXm],to[MAXm],nu[MAXm];
+ll vis[MAXn],instk[MAXn];
+vector<ll> dt;
+
+bool dfs(ll now)
+{
+  vis[now]=1;
+  instk[now]=1;
+  for(ll edg:v[now])
+  {
+    if(nu[edg])continue;
+    ll k = to[edg];
+    stk[it++]=edg;
+    if(instk[k])return 0;
+    else if(!vis[k]&&!dfs(k))return 0;
+    it--;
+  }
+  instk[now]=0;
+  return 1;
+}
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)cin>>from[i]>>to[i],v[from[i]].pb(i);
+    REP1(i,n)if(!vis[i])
+    {
+      if(!dfs(i))break;
+    }
+    if(it==0)
+    {
+      cout<<"YES"<<endl;
+      return 0;
+    }
+    REP(i,it)dt.pb(stk[i]);
+    debug(dt);
+    for(ll edg:dt)
+    {
+      nu[edg]=1;
+      FILL(vis,0);
+      FILL(instk,0);
+      it=0;
+      bool ok=1;
+      REP1(j,n)if(!vis[j])
+      {
+        if(!dfs(j))
+        {
+          ok=0;
+          break;
+        }
+      }
+      if(ok)
+      {
+        cout<<"YES"<<endl;
+        return 0;
+      }
+      nu[edg]=0;
+    }
+    cout<<"NO"<<endl;
 }

@@ -48,13 +48,53 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+set<ii> st;
+ll tt=0;
+void rm(ll l,ll r){//[l,r]
+  auto itl = st.lower_bound(ii(l,-1)),itpl=itl;
+  bool fg=0;
+  if(itpl!=st.begin())itpl=prev(itpl),fg=1;
+  for(auto it = itl;it!=st.end()&&it->X<=r;tt+=it->X,tt-=it->Y+1,it=st.erase(it))
+  {
+    if(it->Y>r)
+    {
+      ii tmp = *it;
+      st.erase(it);
+      st.insert(ii(r+1,tmp.Y));
+      tt-=r-tmp.X+1;
+      break;
+    }
+  }
+  if(fg&&itpl->Y>r)
+  {
+    ii tmp=*itpl;
+    st.erase(itpl);
+    st.insert(ii(tmp.X,l-1));
+    st.insert(ii(r+1,tmp.Y));
+    tt-=r-l+1;
+  }
+  else if(fg&&itpl->Y>=l)
+  {
+    ii tmp=*itpl;
+    st.erase(itpl);
+    st.insert(ii(tmp.X,l-1));
+    tt-=tmp.Y-l+1;
+  }
+}
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n,q;
+    cin>>n>>q;
+    REP(i,q)
+    {
+      ll l,r,k;
+      cin>>l>>r>>k;
+      rm(l,r);
+      debug(st,tt);
+
+      if(k==1)st.insert(ii(l,r)),tt-=l,tt+=r+1;
+      cout<<n-tt<<endl;
+    }
 }

@@ -48,13 +48,12 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n,a,b;
+    cin>>n>>a>>b;
+    if(abs(a-b)%2==0)cout<<"Alice"<<endl;
+    else cout<<"Borys"<<endl;
 }

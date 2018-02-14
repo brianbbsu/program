@@ -48,13 +48,26 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll T;
+    string S="chef";
+    sort(ALL(S));
+    cin>>T;
+    while(T--)
+    {
+      string s;
+      cin>>s;
+      ll ans=0;
+      REP(i,SZ(s)-3)
+      {
+        string tmp=s.substr(i,4);
+        sort(ALL(tmp));
+        if(tmp==S)ans++;
+      }
+      if(!ans)cout<<"normal"<<endl;
+      else cout<<"lovely "<<ans<<endl;
+    }
 }

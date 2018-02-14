@@ -44,17 +44,78 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+inline ll rnd(ll l,ll r)
+{
+  if(l>r)debug(l,r);
+  assert(l<=r);
+  return rand()%(r-l+1)+l;
+}
+
+
+ll l[MAXn],u[MAXn];
+ll d[MAXn][MAXn];
+ll ans[MAXn];
+ll caltt[MAXn];
+ll srt[MAXn],bit[MAXn];
+ll n,m;
+
+void ins(int x)
+{
+  while(x<=n)bit[x]++,x+=x&-x;
+}
+inline int qr(int x)
+{
+  int rt=0;
+  while(x)rt+=bit[x],x-=x&-x;
+  return rt;
+}
+
+ll cal_rev()
+{
+  REP1(i,n)srt[i]=n-i,bit[i]=0;
+  stable_sort(srt,srt+n,[](int a,int b){return caltt[a]>caltt[b];});
+  int tt=0;
+  for(int i=n-1;i>=0;i--)tt+=qr(srt[i]+1),ins(srt[i]+1);
+  return tt;
+}
+
+
+
+const ll K=7000,th=1000000;
+
 int main()
 {
     IOS();
     srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
-}
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      cin>>n>>m;
+      REP(i,m)cin>>l[i]>>u[i];
+      REP(i,n)REP(j,m)cin>>d[i][j];
+      REP(i,m)ans[i]=rnd(l[i],u[i]);
+      REP(i,n)caltt[i]=0;
+      REP(i,n)REP(j,m)caltt[i]+=ans[j]*d[i][j];
+
+      ll lt=cal_rev();
+
+      REP(_,K)
+      {
+        ll t=rnd(0,m-1);
+        ll dlt=rnd(l[t]-ans[t],u[t]-ans[t]);
+        REP(i,n)caltt[i]+=dlt*d[i][t];
+        ll tmp=cal_rev();
+        if(tmp<lt)lt=tmp,ans[t]+=dlt;
+        else REP(i,n)caltt[i]-=dlt*d[i][t];
+      }
+      REP(i,m)cout<<ans[i]<<" ";
+      cout<<endl;
+      pary(caltt,caltt+n);
+      debug(lt);
+    }
+} 

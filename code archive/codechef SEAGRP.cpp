@@ -44,17 +44,71 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+inline ll myrnd()
+{
+  return ((rand()<<16)+rand())%(MOD-1)+1;
+}
+inline ll pw(ll x,ll k)
+{
+  if(!k)return 1;
+  ll a=pw(x,k/2);
+  a=a*a%MOD;
+  if(k&1)return a*x%MOD;
+  else return a;
+}
+ll d[MAXn][MAXn];
+
 int main()
 {
     IOS();
     srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      FILL(d,0);
+      ll n,m;
+      cin>>n>>m;
+      REP(i,m)
+      {
+        ll a,b;
+        cin>>a>>b;
+        a--;b--;
+        if(a>b)swap(a,b);
+        ll t=myrnd();
+        d[a][b]=t;
+        d[b][a]=(MOD-t);
+      }
+      if(n%2!=0)
+      {
+        cout<<"NO"<<endl;
+        continue;
+      }
+      bool ans=1;
+      REP(i,n)
+      {
+        bool ok=0;
+        for(int j=i;j<n;j++)if(d[j][i]!=0)
+        {
+          ok=1;
+          if(j!=i)for(int k=i;k<n;k++)swap(d[i][k],d[j][k]);
+          break;
+        }
+        if(!ok)
+        {
+          ans=0;
+          break;
+        }
+        //if(d[i][i]<0)for(int k=i;k<n;k++)d[i][k]=-d[i][k];
+        ll inv=pw(d[i][i],MOD-2);
+        for(int k=i;k<n;k++)d[i][k]=d[i][k]*inv%MOD;
+        for(int j=n-1;j>i;j--)for(int k=n-1;k>=i;k--)d[j][k]=(d[j][k]-d[i][k]*d[j][i]%MOD+MOD)%MOD;
+      }
+      if(ans)cout<<"YES"<<endl;
+      else cout<<"NO"<<endl;
+    }
 }

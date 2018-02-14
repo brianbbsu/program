@@ -44,17 +44,35 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=15,MAXc=1e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+int d[MAXn];
+
+int dp[MAXc][(1<<MAXn)];
+vector<ll> dt[MAXc];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll n,x,y,kz=0;
+    while(cin>>n&&n)
+    {
+      kz++;
+      cin>>x>>y;
+      REP(i,n)cin>>d[i];
+      ll sum=0;
+      REP(i,n)sum+=d[i];
+      if(sum!=x*y)
+      {
+        cout<<"Case "<<kz<<": No"<<endl;
+        continue;
+      }
+      ll mx=max(x,y);
+      REP1(i,mx)dt[i].clear(),FILL(dp[i],-1);
+
+      
+    }
+
 }

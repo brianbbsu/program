@@ -48,13 +48,37 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll d[MAXn];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n,k;
+      cin>>n>>k;
+      REP(i,n)cin>>d[i];
+      ll mx=-INF,tt=0;
+      REP(i,n)
+      {
+        tt+=d[i];
+        mx=max(mx,tt);
+        tt=max(tt,0LL);
+      }
+      if(k==1)
+      {
+        cout<<mx<<endl;
+        continue;
+      }
+      ll mxa=-INF,mxb=-INF;
+      tt=0;
+      REP(i,n)tt+=d[i],mxa=max(mxa,tt);
+      tt=0;
+      for(int i=n-1;i>=0;i--)tt+=d[i],mxb=max(mxb,tt);
+      if(mxa>0&&mxb>0)mx=max(mx,mxa+mxb);
+      if(tt>0)mx=max(mx,mxa+mxb+tt*(k-2));
+      cout<<mx<<endl;
+    }
 }

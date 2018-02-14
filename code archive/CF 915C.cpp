@@ -48,13 +48,74 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+bool u[MAXn];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    string a,b;
+    cin>>a>>b;
+    assert(SZ(b)>=SZ(a));
+    if(SZ(b)>SZ(a))
+    {
+      sort(ALL(a),greater<char>());
+      cout<<a<<endl;
+      return 0;
+    }
+    else
+    {
+      string ans="";
+      REP(i,SZ(a))
+      {
+        bool ok=0;
+        REP(j,SZ(a))if(!u[j]&&a[j]==b[i]){
+          u[j]=1;
+          ans.pb(a[j]);
+          ok=1;break;
+        }
+        if(!ok)
+        {
+          ll mx=-1;
+          REP(j,SZ(a))
+          {
+            if(!u[j]&&a[j]<b[i]&&(mx==-1||a[j]>a[mx]))mx=j;
+          }
+          if(mx!=-1)
+          {
+            u[mx]=1;
+            ans.pb(a[mx]);
+            break;
+          }
+          for(int j=i-1;j>=0;j--)
+          {
+            REP(k,SZ(a))
+            {
+              if(u[k]&&a[k]==ans.back())
+              {
+                u[k]=0;
+                break;
+              }
+            }
+            ans.pop_back();
+            mx=-1;
+            REP(k,SZ(a))if(!u[k]&&a[k]<b[j]&&(mx==-1||a[k]>a[mx]))mx=k;
+            if(mx!=-1)
+            {
+              u[mx]=1;
+              ans.pb(a[mx]);
+              break;
+            }
+          }
+          break;
+        }
+        debug(ans);
+      }
+      string tmp="";
+      REP(i,SZ(a))if(!u[i])tmp.pb(a[i]);
+      sort(ALL(tmp),greater<char>());
+      ans+=tmp;
+      cout<<ans<<endl;
+
+
+    }
 }

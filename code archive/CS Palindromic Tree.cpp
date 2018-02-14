@@ -48,13 +48,44 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+
 int main()
 {
-    IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    IOS();/*
+    const ll n = 15;
+    ll mn=INF,mndt;
+    REP(I,(1<<n))
+    {
+      string s=bitset<n>(I).to_string();
+      unordered_set<string> st;
+      REP(i,n)REP(j,i+1)
+      {
+        string tmp,rtmp;
+        tmp=rtmp=s.substr(j,i-j+1);
+        reverse(ALL(rtmp));
+        if(tmp==rtmp)st.insert(tmp);
+      }
+      if(SZ(st)<mn)mn=SZ(st),mndt=I;
+    }
+    debug(mn,bitset<n>(mndt));*/
+    ll n;
+    cin>>n;
+    if(n<=7)cout<<n<<endl<<string(n,'1')<<endl;
+    else
+    {
+      if(n==8)cout<<7<<endl;
+      else cout<<8<<endl;
+      n-=2;
+      cout<<"00";
+      while(n)
+      {
+        REP(i,6)
+        {
+          cout<<"101100"[i];
+          n--;
+          if(!n)break;
+        }
+      }
+      cout<<endl;
+    }
 }

@@ -30,7 +30,7 @@ template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
     _s<<"}";
     return _s;
 }
-template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a> ostream &operator << (ostream &_s,const vector<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
@@ -44,17 +44,75 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<string> dt;
+ll cnt[MAXn];
+ll dt[MAXn][MAXn],gcd[MAXn][MAXn];
+
+const ll bs=880301;
+ll pw[MAXn];
+
+ll hs[MAXn];
+
+ll ans[MAXn],u[MAXn];
+map<ll,vector<ll> > mp;
+ll d[MAXn][MAXn];
+
 int main()
 {
     IOS();
-    srand(time(NULL));
-    string s;
-    while(getline(cin,s))dt.pb(s);
-    random_shuffle(ALL(dt));
-    for(string tmp:dt)cout<<tmp<<endl;
+    ll N=1000;
+    REP1(i,N)REP1(j,i)cnt[i]+=(i%j==0);
+    REP1(i,N)REP1(j,N)gcd[i][j]=__gcd(i,j);
+    REP1(i,N)REP1(j,N)if(i!=j)dt[i][j]=cnt[gcd[i][j]];
+
+    pw[1]=1;
+    for(int i=2;i<MAXn;i++)pw[i]=pw[i-1]*bs;
+
+    /*int mx=0;
+    for(auto &tmp:mp)mx=max(mx,SZ(tmp.Y));
+    debug(mx,mp);*/
+
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n;
+      cin>>n;
+      REP(i,n)REP(j,n)cin>>d[i][j];
+      REP(i,n)ans[i]=-1;
+      REP1(i,n)hs[i]=0;
+      mp.clear();
+
+      REP1(i,n)REP1(j,n)if(i!=j)hs[i]+=pw[dt[i][j]];
+      REP1(i,n)mp[hs[i]].pb(i);
+      REP1(i,n)u[i]=0;
+
+      REP(i,n)
+      {
+        ll tt=0;
+        REP(j,n)tt+=pw[d[i][j]];
+        vector<ll> &v=mp[tt];
+        for(ll t:v)
+        {
+          if(u[t])continue;
+          bool ok=1;
+          REP(j,i)if(cnt[gcd[t][ans[j]]]!=d[i][j])
+          {
+            ok=0;
+            break;
+          }
+          if(ok)
+          {
+            ans[i]=t;
+            u[t]=1;
+            break;
+          }
+        }
+        assert(ans[i]!=-1);
+      }
+      REP(i,n)cout<<ans[i]<<endl;
+    }
 }
