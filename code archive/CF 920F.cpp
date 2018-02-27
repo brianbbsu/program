@@ -44,36 +44,80 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXc=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+ll bit[MAXn];
+void ins(ll x,ll k)
+{
+  while(x<MAXn)bit[x]+=k,x+=x&-x;
+}
+ll qr(ll x)
+{
+  ll rt=0;
+  while(x)rt+=bit[x],x-=x&-x;
+  return rt;
+}
 
-map<string,int> mp;
+set<ll> st;
+ll mnpm[MAXc];
+vector<ll> pm;
+ll D[MAXc],d[MAXn];
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    for(ll i=2;i<MAXc;i++)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+      if(!mnpm[i])pm.pb(i);
+      for(int j=0;pm[j]*i<MAXc;j++)
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        mnpm[pm[j]*i]=pm[j];
+        if(i%pm[j]==0)break;
       }
     }
+    D[1]=1;
+    for(int i=2;i<MAXc;i++)
+    {
+      if(!mnpm[i])D[i]=2;
+      else
+      {
+        ll ct=0,tmp=i;
+        while(tmp%mnpm[i]==0)ct++,tmp/=mnpm[i];
+        D[i]=D[tmp]*(ct+1);
+      }
+    }
+    pary(D+1,D+10+1);
+    ll n,q;
+    cin>>n>>q;
+    REP1(i,n)
+    {
+      cin>>d[i];
+      ins(i,d[i]);
+      if(d[i]>2)st.insert(i);
+    }
+    debug(st);
+    while(q--)
+    {
+      ll tp,a,b;
+      cin>>tp>>a>>b;
+      if(tp==1)
+      {
+        while(1)
+        {
+          auto it=st.lower_bound(a);
+          if(it==st.end()||*it>b)break;
+          ll t=*it;
+          ins(t,D[d[t]]-d[t]);
+          d[t]=D[d[t]];
+          if(d[t]==2)st.erase(it);
+          a=t+1;
+        }
+        debug(st);
+        pary(d+1,d+1+n);
+      }
+      else cout<<qr(b)-qr(a-1)<<endl;
+    }
+
 }

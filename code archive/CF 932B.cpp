@@ -44,36 +44,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+ll d[MAXn];
 
-map<string,int> mp;
+ll cal(ll x)
+{
+  ll rt=1;
+  while(x)
+  {
+    if(x%10!=0)rt*=(x%10);
+    x/=10;
+  }
+  return rt;
+}
+
+ll dt[10][MAXn];
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    REP1(i,9)d[i]=i;
+    for(ll i=10;i<MAXn;i++)d[i]=d[cal(i)];
+    REP1(i,MAXn-1)dt[d[i]][i]++;
+    REP1(i,9)partial_sum(dt[i],dt[i]+MAXn,dt[i]);
+    ll q;
+    cin>>q;
+    while(q--)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
-      }
+      ll l,r,k;
+      cin>>l>>r>>k;
+      cout<<dt[k][r]-dt[k][l-1]<<endl;
     }
 }

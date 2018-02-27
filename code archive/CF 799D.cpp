@@ -48,32 +48,46 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+ll a,b,h,w,n;
+bool chk(ll x,ll y)
+{
+  debug(x,y);
+  x=min(x,MAXn),y=min(y,MAXn);
+  ll ta=x*h,tb=y*w;
+  if((ta>=a&&tb>=b)||(ta>=b&&tb>=a))return 1;
+  ta=x*w,tb=y*h;
+  if((ta>=a&&tb>=b)||(ta>=b&&tb>=a))return 1;
+  return 0;
+}
 
-map<string,int> mp;
+ll dp[40][MAXn+1];
+
+ll d[MAXn];
+
+void setmax(ll &a,ll b){a=max(a,b);};
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    cin>>a>>b>>h>>w>>n;
+    if(chk(1,1))
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
+      cout<<0<<endl;
+      return 0;
+    }
+    FILL(dp,-1);
+    REP1(i,n)cin>>d[i];
+    sort(d+1,d+1+n,greater<ll>());
+    dp[0][1]=1;
 
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+    REP1(i,n)
+    {
+      REP1(j,MAXn)if(dp[i-1][j]!=-1)dp[i][j]=min(MAXn,dp[i-1][j]*d[i]);
+      REP1(j,MAXn)if(dp[i-1][j]!=-1)setmax(dp[i][min(MAXn,j*d[i])],dp[i-1][j]);
+      REP1(j,MAXn)if(dp[i][j]!=-1&&chk(j,dp[i][j])){
+        cout<<i<<endl;
+        return 0;
       }
     }
+    cout<<-1<<endl;
 }

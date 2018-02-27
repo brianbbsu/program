@@ -44,36 +44,56 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+ll pw(ll x,ll k)
+{
+  if(!k)return 1;
+  ll a=pw(x,k/2);
+  a=a*a%MOD;
+  if(k&1)return a*x%MOD;
+  else return a;
+}
 
-map<string,int> mp;
+
+ll fac[MAXn],ifac[MAXn];
+ll d[MAXn];
+
+vector<ii> dt;
+
+ll h(ll a,ll b)
+{
+  debug(a,b);
+  return fac[a+b-1]*ifac[a-1]%MOD*ifac[b]%MOD;
+}
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    fac[0]=1;
+    REP1(i,MAXn-1)fac[i]=fac[i-1]*i%MOD;
+    ifac[MAXn-1]=pw(fac[MAXn-1],MOD-2);
+    for(ll i=MAXn-2;i>=0;i--)ifac[i]=ifac[i+1]*(i+1)%MOD;
+    debug(h(1,2),fac[MAXn-1]*ifac[MAXn-1]%MOD);
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    sort(d,d+n);
+    ll tt=0,mx=*max_element(d,d+n);
+    REP(i,n)if(!SZ(dt)||dt.back().X!=d[i])dt.pb(ii(d[i],1));else dt.back().Y++;
+    debug(dt);
+    ll pre=0;
+    REP(i,SZ(dt))if(dt[i].X!=mx)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
-      }
+      ll tmp=fac[pre]*fac[n-pre-1]%MOD;
+      debug(i,tmp);
+      tmp=tmp*h(pre+1,n-pre)%MOD*dt[i].Y%MOD*dt[i].X%MOD;
+      debug(i,tmp);
+      tt=(tt+tmp)%MOD;
+      pre+=dt[i].Y;
     }
+    cout<<tt<<endl;
+
 }

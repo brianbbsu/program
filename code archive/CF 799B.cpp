@@ -44,36 +44,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
-
-map<string,int> mp;
-
+vector<ll> q[5][5];
+ll p[MAXn],a[MAXn],b[MAXn];
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>p[i];
+    REP(i,n)cin>>a[i];
+    REP(i,n)cin>>b[i];
+    REP(i,n)q[a[i]][b[i]].pb(p[i]);
+    REP1(i,3)REP1(j,3)sort(ALL(q[i][j]),greater<ll>());
+    REP1(i,3)REP1(j,3)debug(q[i][j]);
+    ll m;
+    cin>>m;
+    REP(i,m)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
-      }
+      ll x;
+      cin>>x;
+      ll mn=INF;
+      REP1(j,3)REP1(k,3)if((j==x||k==x)&&SZ(q[j][k]))mn=min(mn,q[j][k].back());
+      if(mn==INF)cout<<-1<<" ";
+      else cout<<mn<<'\n';
+      REP1(j,3)REP1(k,3)if((j==x||k==x)&&SZ(q[j][k])&&q[j][k].back()==mn)q[j][k].pop_back();
     }
 }

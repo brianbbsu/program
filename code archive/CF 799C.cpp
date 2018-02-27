@@ -48,32 +48,50 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
 
-map<string,int> mp;
+ll bt[MAXn],p[MAXn],dtc[MAXn],dtd[MAXn];
+
+vector<ll> c,d,pc,pd;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,x,y;
+    cin>>n>>x>>y;
+    REP(i,n)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
-      }
+      char tp;
+      cin>>bt[i]>>p[i]>>tp;
+      if(tp=='C')c.pb(i),pc.pb(p[i]);
+      else d.pb(i),pd.pb(p[i]);
     }
+
+    sort(ALL(c),[](int a,int b){return p[a]<p[b];});
+    sort(ALL(d),[](int a,int b){return p[a]<p[b];});
+    sort(ALL(pc));
+    sort(ALL(pd));
+
+    ll mx=0;
+    REP(i,SZ(c))dtc[i]=mx=max(mx,bt[c[i]]);
+    mx=0;
+    REP(i,SZ(d))dtd[i]=mx=max(mx,bt[d[i]]);
+
+
+    mx=0;
+    int a,b;
+    a=upper_bound(ALL(pc),x)-pc.begin();
+    b=upper_bound(ALL(pd),y)-pd.begin();
+    if(a!=0&&b!=0)mx=max(mx,dtc[a-1]+dtd[b-1]);
+    debug(mx);
+    for(a=1;a<SZ(c)&&p[c[a]]<=x;a++)
+    {
+      b=upper_bound(pc.begin(),pc.begin()+a,x-p[c[a]])-pc.begin();
+      if(b!=0)mx=max(mx,bt[c[a]]+dtc[b-1]);
+    }
+    for(a=1;a<SZ(d)&&p[d[a]]<=y;a++)
+    {
+      b=upper_bound(pd.begin(),pd.begin()+a,y-p[d[a]])-pd.begin();
+      if(b!=0)mx=max(mx,bt[d[a]]+dtd[b-1]);
+    }
+    cout<<mx<<endl;
 }

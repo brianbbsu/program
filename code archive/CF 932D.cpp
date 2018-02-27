@@ -44,36 +44,67 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
-
-map<string,int> mp;
+ll par[MAXn][MAXlg],mx[MAXn][MAXlg],sum[MAXn][MAXlg],d[MAXn];
+ll nit=1;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    FILL(par,-1);
+    FILL(mx,-1);
+    FILL(sum,-1);
+    ll Q,last=0;
+    cin>>Q;
+    while(Q--)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+      ll tp,p,q;
+      cin>>tp>>p>>q;
+      p^=last;
+      q^=last;
+      debug(tp,p,q);
+      if(tp==1)
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        nit++;
+        ll t=nit;
+        d[t]=q;
+        ll nxt;
+        if(d[p]>=d[t])nxt=p;
+        else
+        {
+          ll now=p;
+          for(int i=MAXlg-1;i>=0;i--)if(mx[now][i]!=-1&&mx[now][i]<q)now=par[now][i];
+          nxt=par[now][0];
+        }
+        if(nxt!=-1)
+        {
+          par[t][0]=nxt;
+          mx[t][0]=d[nxt];
+          sum[t][0]=d[nxt];
+          for(int i=1;i<MAXlg;i++)if(par[par[t][i-1]][i-1]!=-1)
+          {
+            par[t][i]=par[par[t][i-1]][i-1];
+            mx[t][i]=max(mx[t][i-1],mx[par[t][i-1]][i-1]);
+            sum[t][i]=sum[t][i-1]+sum[par[t][i-1]][i-1];
+          }else break;
+        }
+      }
+      else{
+        if(d[p]>q)
+        {
+          cout<<0<<endl;
+          last=0;
+          continue;
+        }
+        q-=d[p];
+        ll tt=1,now=p;
+        for(int i=MAXlg-1;i>=0;i--)if(sum[now][i]!=-1&&sum[now][i]<=q)tt+=(1<<i),q-=sum[now][i],now=par[now][i];
+        debug(now);
+        cout<<tt<<endl;
+        last=tt;
       }
     }
 }

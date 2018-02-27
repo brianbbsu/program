@@ -48,9 +48,8 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+ll d[MAXn];
 
-map<string,int> mp;
 
 int main()
 {
@@ -59,21 +58,19 @@ int main()
     cin>>T;
     while(T--)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        ll n,k;
+        cin>>n>>k;
+        REP(i,k)cin>>d[i];
+        ll mx=0;
+        REP1(i,n)
+        {
+          ll mn=INF;
+          REP(j,k)
+          {
+          mn=min(mn,abs(d[j]-i)+1);
+        }
+        mx=max(mx,mn);
       }
+        cout<<mx<<endl;
     }
 }

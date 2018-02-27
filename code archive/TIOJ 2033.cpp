@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,36 +44,56 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+int d[MAXn],p[MAXn];
+int dt[MAXn];
+int n=0,m=0;
 
-map<string,int> mp;
+void inp(int *pt,int &x)
+{
+  string s;
+  getline(cin,s);
+  bool fg=1;
+  for(char c:s)
+  {
+    if(c==' '){if(!fg)x++;fg=1;continue;}
+    fg=0;
+    pt[x]=pt[x]*10+c-'0';
+  }
+  x++;
+}
+
+bool vis[MAXn];
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    inp(d,n);
+    inp(p,m);
+    debug(n,m);
+    pary(d,d+n);
+    pary(p,p+m);
+    if(n!=m){cout<<-1<<endl;return 0;}
+
+
+
+    REP(i,n)dt[d[i]]=i;
+    REP(i,n)p[i]=dt[p[i]];
+
+    int tt=0;
+    REP(i,n)if(!vis[i])
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+      tt++;
+      int now=i;
+      while(!vis[now])
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        vis[now]=1;
+        now=p[now];
       }
     }
+    cout<<n-tt<<endl;
+
 }

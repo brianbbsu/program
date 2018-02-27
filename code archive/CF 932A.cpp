@@ -48,32 +48,13 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
-
-map<string,int> mp;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
-    {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
-      {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
-      }
-    }
+    string s,ss;
+    cin>>s;
+    ss=s;
+    reverse(ALL(ss));
+    cout<<s+ss<<endl;
 }

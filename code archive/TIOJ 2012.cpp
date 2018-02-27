@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef double lf;
+typedef long double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,13 +44,11 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
-
-map<string,int> mp;
+lf d[MAXn][MAXn];
 
 int main()
 {
@@ -59,21 +57,26 @@ int main()
     cin>>T;
     while(T--)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+      ll n;
+      cin>>n;
+      REP(i,n)REP(j,n+1)cin>>d[i][j];
+      REP(i,n)
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        lf mx=0;
+        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
+        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
+        {
+          REP(k,n+1)swap(d[i][k],d[j][k]);
+          break;
+        }
+        lf t=d[i][i];
+        REP(j,n+1)d[i][j]/=t;
+        REP(j,n)if(j!=i)
+        {
+          t=d[j][i];
+          REP(k,n+1)d[j][k]-=d[i][k]*t;
+        }
       }
+      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
     }
 }

@@ -44,36 +44,77 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXc=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
+vector<ll> pm;
+ll mnpm[MAXc];
+vector<ll> dt;
 
-map<string,int> mp;
+
+ll cal(ll x)
+{
+  //debug(x);
+  ll tt=0,n=SZ(dt);
+  REP1(i,(1<<n)-1)
+  {
+    ll fg=-1,mu=1;
+    REP(j,n)if((1<<j)&i)fg=fg*-1,mu*=dt[j];
+    tt+=(x/mu)*fg;
+  }
+  //debug(x,tt);
+  return tt;
+}
 
 int main()
 {
     IOS();
+
+    for(ll i=2;i<MAXc;i++)
+    {
+      if(!mnpm[i])pm.pb(i),mnpm[i]=i;
+      for(int j=0;pm[j]*i<MAXc;j++)
+      {
+        mnpm[pm[j]*i]=pm[j];
+        if(i%pm[j]==0)break;
+      }
+    }
+
+    /*vector<ll> tmp={2,3,5,7,11,13,17};
+    ll tt=0;
+    REP1(i,1000000)
+    {
+      ll t=i;
+      for(ll k:tmp)while(t%k==0)
+      {
+        t/=k;
+      }
+      if(t==1)tt++;
+    }
+    debug(tt);*/
     ll T;
     cin>>T;
     while(T--)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+      dt.clear();
+      ll x,p,k;
+      cin>>x>>p>>k;
+      while(p!=1)
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        ll t=mnpm[p];
+        dt.pb(t);
+        while(p%t==0)p/=t;
       }
+      debug(dt);
+      ll tmptt=cal(x);
+      ll l=x,r=100000000;
+      while(l!=r-1)
+      {
+        ll h=(l+r)/2;
+        if(h-x-(cal(h)-tmptt)>=k)r=h;
+        else l=h;
+      }
+      cout<<r<<endl;
     }
 }

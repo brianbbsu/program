@@ -44,36 +44,48 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
-
-map<string,int> mp;
+ll d[MAXn];
+queue<ll> q[MAXn],all;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,m;
+    cin>>n>>m;
+    ll tt=0,cta=0;
+    REP(i,m)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
-
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+      ll c,t;
+      cin>>c>>t;
+      if(c==1)
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        q[t].push(i),all.push(i);
+        tt++;
       }
+      else if(c==2)
+      {
+        while(SZ(q[t]))
+        {
+          ll x=q[t].front();
+          q[t].pop();
+          if(!d[x])tt--,d[x]=1;
+        }
+      }
+      else
+      {
+        t-=cta;
+        while(t>0)
+        {
+          ll x=all.front();
+          all.pop();
+          if(!d[x])tt--,d[x]=1;
+          t--;cta++;
+        }
+      }
+      cout<<tt<<endl;
     }
 }

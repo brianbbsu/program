@@ -44,36 +44,41 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[30],gct[30];
 
-map<string,int> mp;
+ll d[MAXn];
+vector<ii> v[MAXn];
+
+priority_queue<ii,vector<ii>,greater<ii> > pq;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
     {
-      string a,s;
-      cin>>a>>s;
-      FILL(ct,0);
-      FILL(gct,0);
-      mp.clear();
+      ll a,b,c;
+      cin>>a>>b>>c;
+      a--;b--;
+      v[a].pb(ii(b,c));
+      v[b].pb(ii(a,c));
+    }
+    REP(i,n)cin>>d[i];
+    REP(i,n)pq.push(ii(d[i],i));
 
-      for(char c:a)gct[c-'a']++;
-
-      REP(i,SZ(s))
+    while(SZ(pq))
+    {
+      ll t=pq.top().Y,dis=pq.top().X;pq.pop();
+      if(d[t]!=dis)continue;
+      for(ii tmp:v[t])
       {
-        ct[s[i]-'a']++;
-        if(i>=SZ(a))ct[s[i-SZ(a)]-'a']--;
-        bool fg=1;
-        REP(j,26)if(ct[j]!=gct[j]){fg=0;break;}
-        if(fg)mp[s.substr()]
+        ll x=dis+2*tmp.Y;
+        if(x<d[tmp.X])d[tmp.X]=x,pq.push(ii(x,tmp.X));
       }
     }
+    REP(i,n)cout<<d[i]<<" ";
 }
