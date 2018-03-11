@@ -48,35 +48,22 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],bit[MAXn];
-vector<ll> dt[MAXn],uni;
-
-
-
-
-ll cal(ll x,ll t,ll dir)
-{
-  if(dir==0)//left
-  {
-    if(x<=dt[0])return INF;
-
-  }
-  else //right
-  {
-    if(x>dt[t].back())return INF;
-  }
-}
-
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP1(i,n)cin>>d[i],uni.pb(d[i]);
-    sort(ALL(uni));
-    uni.resize(unique(ALL(uni))-uni.begin());
-    REP1(i,n)d[i]=lower_bound(ALL(uni),d[i])-uni.begin();
-    REP1(i,n)dt[d[i]].pb(i);
-
+    ll n,q;
+    cin>>n>>q;
+    while(q--)
+    {
+      ll t;
+      cin>>t;
+      ll ct=n-t+t/2-1;
+      while(t%2==0)
+      {
+        t+=ct+1;
+        ct/=2;
+      }
+      cout<<t/2+1<<endl;
+    }
 }

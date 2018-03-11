@@ -48,35 +48,52 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],bit[MAXn];
-vector<ll> dt[MAXn],uni;
+vector<ll> v[MAXn],vr[MAXn];
+ll d[MAXn],out[MAXn],g[MAXn],ct[MAXn];
+ll vis[MAXn];
+vector<ll> tp;
 
-
-
-
-ll cal(ll x,ll t,ll dir)
+void dfs1(ll now)
 {
-  if(dir==0)//left
-  {
-    if(x<=dt[0])return INF;
-
-  }
-  else //right
-  {
-    if(x>dt[t].back())return INF;
-  }
+  vis[now]=1;
+  for(ll k:v[now])if(!vis[k])dfs1(k);
+  tp.pb(now);
 }
-
-
+void dfs2(ll now,ll gid)
+{
+  g[now]=gid;
+  vis[now]=1;
+  for(ll k:vr[now])if(!vis[k])dfs2(k,gid);
+}
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP1(i,n)cin>>d[i],uni.pb(d[i]);
-    sort(ALL(uni));
-    uni.resize(unique(ALL(uni))-uni.begin());
-    REP1(i,n)d[i]=lower_bound(ALL(uni),d[i])-uni.begin();
-    REP1(i,n)dt[d[i]].pb(i);
-
+    ll n,m,h;
+    cin>>n>>m>>h;
+    REP(i,n)cin>>d[i];
+    REP(i,m)
+    {
+      ll a,b;
+      cin>>a>>b;
+      a--;b--;
+      if((d[a]+1)%h==d[b])v[a].pb(b),vr[b].pb(a);
+      if((d[b]+1)%h==d[a])v[b].pb(a),vr[a].pb(b);
+    }
+    REP(i,n)if(!vis[i])dfs1(i);
+    FILL(vis,0);
+    ll nit=0;
+    while(SZ(tp))
+    {
+      if(!vis[tp.back()])dfs2(tp.back(),nit++);
+      tp.pop_back();
+    }
+    REP(i,n)
+    {
+      ct[g[i]]++;
+      for(ll k:v[i])if(g[i]!=g[k])out[g[i]]++;
+    }
+    ll mn=INF,id;
+    REP(i,nit)if(out[i]==0&&ct[i]<mn)mn=ct[i],id=i;
+    cout<<mn<<endl;
+    REP(i,n)if(g[i]==id)cout<<i+1<<" ";
 }

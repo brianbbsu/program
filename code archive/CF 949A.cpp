@@ -44,39 +44,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],bit[MAXn];
-vector<ll> dt[MAXn],uni;
 
+set<ll> sta,stb;
 
+vector<vector<ll> > ans;
 
-
-ll cal(ll x,ll t,ll dir)
+void qt()
 {
-  if(dir==0)//left
-  {
-    if(x<=dt[0])return INF;
-
-  }
-  else //right
-  {
-    if(x>dt[t].back())return INF;
-  }
+  cout<<-1<<endl;
+  exit(0);
 }
-
 
 int main()
 {
     IOS();
     ll n;
-    cin>>n;
-    REP1(i,n)cin>>d[i],uni.pb(d[i]);
-    sort(ALL(uni));
-    uni.resize(unique(ALL(uni))-uni.begin());
-    REP1(i,n)d[i]=lower_bound(ALL(uni),d[i])-uni.begin();
-    REP1(i,n)dt[d[i]].pb(i);
-
+    string s;
+    cin>>s;
+    n=SZ(s);
+    REP(i,n)
+    {
+      if(s[i]=='0')sta.insert(i);
+      else stb.insert(i);
+    }
+    while(SZ(stb))
+    {
+      vector<ll> dt;
+      if(!SZ(sta))qt();
+      dt.pb(*sta.begin());
+      sta.erase(sta.begin());
+      while(1)
+      {
+        auto it=stb.lower_bound(dt.back());
+        if(it==stb.end())break;
+        dt.pb(*it);
+        stb.erase(it);
+        it=sta.lower_bound(dt.back());
+        if(it==sta.end())qt();
+        dt.pb(*it);
+        sta.erase(it);
+      }
+      ans.pb(dt);
+    }
+    while(SZ(sta))
+    {
+      vector<ll> dt;
+      dt.pb(*sta.begin());
+      sta.erase(sta.begin());
+      ans.pb(dt);
+    }
+    cout<<SZ(ans)<<endl;
+    for(vector<ll> &d:ans)
+    {
+      cout<<SZ(d);
+      for(ll k:d)cout<<" "<<k+1;
+      cout<<endl;
+    }
 }
