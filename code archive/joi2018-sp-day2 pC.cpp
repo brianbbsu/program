@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,49 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(2e9);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+ll d[MAXn],p[MAXn],ct[MAXn],dis[MAXn];
+
+ll ans[MAXn];
+ll n,q;
+
+ll qr(ll t,ll x)
+{
+  ll l=-1,r=n+1;
+  while(l!=r-1)
+  {
+    ll h=(l+r)/2;
+    if((t/ct[h])*dis[h]-h>=x)l=h;
+    else r=h;
+  }
+  return l;
+}
 
 int main()
 {
     IOS();
-    srand(880301);
-    ll T;
-    cin>>T;
-    while(T--)
+    cin>>n>>q;
+    REP1(i,n)cin>>d[i],p[i]=-i;
+
+    ct[0]=1;
+    dis[0]=1;
+    REP1(i,n)
     {
-      ll n;
-      cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
-      REP(i,n)
-      {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
-        {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
-        }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
-        }
-      }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      ll tmp=(d[i]-1)/dis[i-1]+1;
+      debug(i,tmp);
+      ct[i]=ct[i-1]*tmp;
+      dis[i]=dis[i-1]*tmp;
+      dis[i]=min(dis[i],INF);
+      ct[i]=min(ct[i],INF);
+    }
+    REP(i,n+1)debug(i,ct[i],dis[i]);
+    REP(i,q)
+    {
+      ll t,l,r;
+      cin>>t>>l>>r;
+      cout<<qr(t,l)-qr(t,r+1)<<endl;
     }
 }

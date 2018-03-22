@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,61 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+vector<ll> v[MAXn];
+ii d[MAXn],p[MAXn];
+ll px[MAXn],py[MAXn],vy[MAXn];
+
+bool dfs(ll now)
+{
+  for(ll k:v[now])if(!vy[k])
+  {
+    vy[k]=1;
+    if(py[k]==-1||dfs(py[k]))
+    {
+      py[k]=now,px[now]=k;
+      return 1;
+    }
+  }
+  return 0;
+}
 
 int main()
 {
     IOS();
-    srand(880301);
     ll T;
     cin>>T;
     while(T--)
     {
-      ll n;
-      cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
+      ll n,m;
+      cin>>n>>m;
+      REP(i,n)v[i].clear();
+      REP(i,n)cin>>d[i].X>>d[i].Y;
+      REP(i,m)cin>>p[i].X>>p[i].Y;
+      REP(i,n-1)REP(j,m)
+      {
+        lf tmp=hypot(d[i].X-d[i+1].X,d[i].Y-d[i+1].Y),tmp2=hypot(d[i].X-p[j].X,d[i].Y-p[j].Y)+hypot(d[i+1].X-p[j].X,d[i+1].Y-p[j].Y);
+        if(tmp2<=2*tmp+1e-6)v[i].pb(j);
+      }
+      FILL(px,-1);FILL(py,-1);
       REP(i,n)
       {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
-        {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
-        }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
-        }
+        FILL(vy,0);
+        dfs(i);
       }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      vector<ii> ans;
+      REP(i,n-1)
+      {
+        ans.pb(d[i]);
+        if(px[i]!=-1)ans.pb(p[px[i]]);
+      }
+      ans.pb(d[n-1]);
+      debug(ans);
+      cout<<SZ(ans)<<endl;
+      REP(i,SZ(ans))cout<<ans[i].X<<" "<<ans[i].Y<<" \n"[i==SZ(ans)-1];
+      if(T)cout<<endl;
     }
 }

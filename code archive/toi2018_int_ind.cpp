@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,40 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
-
+struct seg{ll l,r,w;};
+seg d[MAXn];
+priority_queue<ii,vector<ii>,greater<ii> > pq;
 int main()
 {
     IOS();
-    srand(880301);
     ll T;
     cin>>T;
     while(T--)
     {
       ll n;
       cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
+      REP(i,n)cin>>d[i].l>>d[i].r>>d[i].w;
+      sort(d,d+n,[](seg &a,seg &b){return a.l<b.l;});
+      ll mx=0;
+      while(SZ(pq))pq.pop();
       REP(i,n)
       {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
+        while(SZ(pq)&&pq.top().X<=d[i].l)
         {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
+          mx=max(mx,pq.top().Y);
+          pq.pop();
         }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
-        }
+        pq.push(ii(d[i].r,mx+d[i].w));
       }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      while(SZ(pq))
+      {
+        mx=max(mx,pq.top().Y);
+        pq.pop();
+      }
+      cout<<mx<<endl;
     }
 }

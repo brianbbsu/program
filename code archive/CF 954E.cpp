@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,63 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+ll d[MAXn],t[MAXn];
+
+vector<ll> neg,pos;
 
 int main()
 {
     IOS();
-    srand(880301);
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,T;
+    cin>>n>>T;
+    REP(i,n)cin>>d[i];
+    REP(i,n)cin>>t[i],t[i]-=T;
+
+    ll tt=0;
+    lf ans;
+
+    REP(i,n)
     {
-      ll n;
-      cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
-      REP(i,n)
+      if(t[i]<0)neg.pb(i);
+      else if(t[i]>0)pos.pb(i);
+      tt+=d[i];
+    }
+    ans=tt;
+    sort(ALL(neg),[](int a,int b){return t[a]<t[b];});
+    sort(ALL(pos),[](int a,int b){return t[a]>t[b];});
+    ll diff=0;
+    REP(i,n)diff+=d[i]*t[i];
+    if(diff>0)
+    {
+      for(ll k:pos)
       {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
+        debug(k);
+        if(d[k]*t[k]<diff)tt-=d[k],diff-=d[k]*t[k];
+        else
         {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
+          debug(tt);
+          ans=(lf)tt-(lf)diff/(lf)t[k];
+          debug(tt);
           break;
         }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
+      }
+    }
+    else if(diff<0)
+    {
+      for(ll k:neg)
+      {
+        if(d[k]*t[k]>diff)tt-=d[k],diff-=d[k]*t[k];
+        else
         {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
+          ans=(lf)tt-(lf)diff/(lf)t[k];
+          break;
         }
       }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
     }
+    cout<<fixed<<setprecision(12)<<ans<<endl;
+
 }

@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
-
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+/*
+ll dp[MAXn][MAXn];
 
 int main()
 {
     IOS();
-    srand(880301);
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,k;
+    cin>>n>>k;
+    dp[0][1] = 1;
+    REP1(i,n)REP1(j,k)
     {
-      ll n;
-      cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
-      REP(i,n)
-      {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
-        {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
-        }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
-        }
-      }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      if(j>i)continue;
+      dp[i][j]=dp[i-1][j]*j%MOD;
+      if(j!=0)dp[i][j]=(dp[i][j]+dp[i-1][j-1]*(i-(j-1)))%MOD;
     }
+    cout<<dp[n][k]<<endl;
+
+}*/
+
+ll fac[MAXn];
+
+ll pw(ll x,ll k)
+{
+  if(!k)return 1;
+  ll a=pw(x,k/2);
+  a=a*a%MOD;
+  if(k&1)return a*x%MOD;
+  else return a;
+}
+
+ll c(ll a,ll b)
+{
+  return fac[a]*pw(fac[b],MOD-2)%MOD*pw(fac[a-b],MOD-2)%MOD;
+}
+
+int main()
+{
+  IOS();
+  fac[0]=1;
+  REP1(i,MAXn-1)fac[i]=fac[i-1]*i%MOD;
+  ll n,k,tt=0,neg=-1;
+  cin>>n>>k;
+  k--;
+  for(ll i=0;i<=k+1;i++)
+  {
+    neg*=-1;
+    ll tmp=neg*c(n+1,i)*pw(k+1-i,n)%MOD;
+    tt=(tt+tmp+MOD)%MOD;
+  }
+  cout<<tt<<endl;
 }

@@ -1,8 +1,8 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
-typedef long double lf;
+typedef int ll;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,68 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e9);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+const ll K = 250;
+
+int vis[MAXn];
+
+void add(vector<ii> &a,vector<ii> &b)
+{
+  vector<ii> tmp;
+  tmp.resize(SZ(a)+SZ(b));
+  merge(ALL(a),ALL(b),tmp.begin(),greater<ii>());
+  a.clear();
+  for(ii &p:tmp)if(!vis[p.Y])vis[p.Y]=1,a.pb(p);
+  for(ii &p:a)vis[p.Y]=0;
+  a.resize(min(SZ(a),K));
+}
+
+vector<ii> dt[MAXn];
+vector<ll> v[MAXn];
+ll h[MAXn],qr[MAXn],frb[MAXn];
 
 int main()
 {
     IOS();
-    srand(880301);
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,m,q;
+    cin>>n>>m>>q;
+    REP(i,m)
     {
-      ll n;
-      cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
-      REP(i,n)
+      ll a,b;cin>>a>>b;
+      v[a].pb(b);
+    }
+
+    REP1(i,n)dt[i].pb(ii(-1,i));
+    REP1(i,n)
+    {
+      for(ii &p:dt[i])p.X++;
+      for(ll k:v[i])add(dt[k],dt[i]);
+    }
+    while(q--)
+    {
+      ll f,ct;
+      cin>>f>>ct;
+      REP(i,ct)cin>>qr[i];
+      if(ct<K)
       {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
-        {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
-        }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
-        }
+        REP(i,ct)frb[qr[i]]=1;
+        ll ans=-1;
+        for(ii &p:dt[f])if(!frb[p.Y]){ans=p.X;break;}
+        cout<<ans<<endl;
+        REP(i,ct)frb[qr[i]]=0;
       }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      else
+      {
+        REP1(i,n)h[i]=-INF;
+        h[f]=0;
+        for(int i=n;i>0;i--)for(ll k:v[i])h[i]=max(h[i],h[k]+1);
+        REP(i,ct)h[qr[i]]=-INF;
+        ll mx=*max_element(h+1,h+1+n);
+        if(mx>=0)cout<<mx<<endl;
+        else cout<<-1<<endl;
+      }
     }
 }

@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,100 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+map<string,ll> mp;
+ll tpp[MAXn],tpd[MAXn],ok[MAXn][MAXn];
+vector<ll> pv[MAXn],v[MAXn];
+ll vy[MAXn],py[MAXn],vis[MAXn];
+
+void dfs(ll now)
+{
+  vis[now]=1;
+  for(ll k:pv[now])if(!vis[k])dfs(k);
+}
+
+bool dfs2(ll now)
+{
+  for(ll k:v[now])
+  {
+    if(!vy[k])
+    {
+      vy[k]=1;
+      if(py[k]==-1||dfs2(py[k]))
+      {
+        py[k]=now;
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
+void add(string c)
+{
+  if(mp.count(c))return;
+  ll t=SZ(mp);
+  mp[c]=t;
+}
 
 int main()
 {
     IOS();
-    srand(880301);
     ll T;
     cin>>T;
     while(T--)
     {
-      ll n;
-      cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
+      mp.clear();
+      ll n;cin>>n;
       REP(i,n)
       {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
-        {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
-        }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
-        }
+        string s;
+        cin>>s;
+        add(s);
+        tpp[i]=mp[s];
       }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      ll m;cin>>m;
+      REP(i,m)
+      {
+        string s;
+        cin>>s>>s;
+        add(s);
+        tpd[i]=mp[s];
+      }
+      REP(i,MAXn)pv[i].clear();
+      REP(i,MAXn)v[i].clear();
+      ll k;
+      cin>>k;
+      REP(i,k)
+      {
+        string a,b;
+        cin>>a>>b;
+        if(a==b)continue;
+        add(a);add(b);
+        pv[mp[a]].pb(mp[b]);
+      }
+      REP(i,SZ(mp))
+      {
+        FILL(vis,0);
+        dfs(i);
+        REP(j,SZ(mp))ok[i][j]=vis[j];
+      }
+      ll tt=0;
+      REP(i,m)REP(j,n)
+      {
+        if(ok[tpd[i]][tpp[j]])v[i].pb(j);
+      }
+      FILL(py,-1);
+      REP(i,m)
+      {
+        FILL(vy,0);
+        if(dfs2(i))tt++;
+      }
+      REP(i,n)debug(i,py[i]);
+      cout<<m-tt<<endl;
+      if(T)cout<<endl;
     }
 }

@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
-typedef long double lf;
+typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,44 +44,66 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=6e2+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e1+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-lf d[MAXn][MAXn],tmpd[MAXn][MAXn];
-ll dt[MAXn];
+vector<ll> v[MAXn];
+string d[MAXn][MAXn];
+int vy[MAXn],py[MAXn],px[MAXn];
+
+bool dfs(ll now)
+{
+  for(ll k:v[now])
+  {
+    if(!vy[k])
+    {
+      vy[k]=1;
+      if(py[k]==-1||dfs(py[k]))
+      {
+        px[now]=k;py[k]=now;
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
 
 int main()
 {
     IOS();
-    srand(880301);
     ll T;
     cin>>T;
-    while(T--)
+    REP1(kz,T)
     {
       ll n;
       cin>>n;
-      REP(i,n)REP(j,n+1)cin>>tmpd[i][j];
-      REP(i,n)dt[i]=i;
-      random_shuffle(dt,dt+n);
-      REP(i,n)REP(j,n+1)d[i][j]=tmpd[dt[i]][j];
+      REP(i,n)v[i].clear();
       REP(i,n)
       {
-        lf mx=0;
-        for(int j=i;j<n;j++)mx=max(mx,fabs(d[j][i]));
-        for(int j=i;j<n;j++)if(fabs(d[j][i])==mx)
+        ll k;
+        cin>>k;
+        REP(j,k)
         {
-          REP(k,n+1)swap(d[i][k],d[j][k]);
-          break;
-        }
-        lf t=d[i][i];
-        REP(j,n+1)d[i][j]/=t;
-        REP(j,n)if(j!=i)
-        {
-          t=d[j][i];
-          REP(k,n+1)d[j][k]-=d[i][k]*t;
+          string s;
+          cin>>s;
+          for(char &c:s)c=tolower(c);
+          s[0]=toupper(s[0]);
+          if(toupper(s[0])-'A'>=n)continue;
+          d[i][toupper(s[0])-'A']=s;
+          v[i].pb(toupper(s[0])-'A');
         }
       }
-      REP(i,n)cout<<fixed<<setprecision(25)<<d[i][n]/d[i][i]<<endl;
+      FILL(px,-1);FILL(py,-1);
+      REP(i,n)
+      {
+        FILL(vy,0);
+        dfs(i);
+      }
+      cout<<"Case #"<<kz<<":"<<endl;
+      //REP(i,n)debug(i,py[i]);
+      REP(i,n)cout<<d[py[i]][i]<<endl;
+
     }
 }
