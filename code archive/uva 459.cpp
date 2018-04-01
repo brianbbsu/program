@@ -48,10 +48,37 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+vector<ll> v[MAXn];
+ll vis[MAXn];
+
+void dfs(ll now)
+{
+  vis[now]=1;
+  for(ll k:v[now])if(!vis[k])dfs(k);
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      char n;
+      cin>>n;
+      n-='A';
+      n++;
+      REP(i,n)vis[i]=0,v[i].clear();
+      cin.ignore();
+      string s;
+      while(getline(cin,s)&&s!="")
+      {
+        v[s[0]-'A'].pb(s[1]-'A');
+        v[s[1]-'A'].pb(s[0]-'A');
+      }
+      ll tt=0;
+      REP(i,n)if(!vis[i])dfs(i),tt++;
+      cout<<tt<<endl;
+      if(T)cout<<endl;
+    }
 }

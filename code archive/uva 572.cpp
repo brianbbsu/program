@@ -44,14 +44,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+
+ll d[MAXn][MAXn];
+
+void dfs(ll x,ll y)
+{
+  d[x][y]=0;
+  ll dx[]={-1,-1,-1,0,0,1,1,1},dy[]={1,0,-1,1,-1,1,0,-1};
+  REP(i,8)
+  {
+    ll xx=x+dx[i],yy=y+dy[i];
+    if(d[xx][yy])dfs(xx,yy);
+  }
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll n,m;
+    while(cin>>n>>m&&(n||m))
+    {
+      REP1(i,n)
+      {
+        string s;
+        cin>>s;
+        REP1(j,m)d[i][j]=s[j-1]=='@';
+      }
+      ll tt=0;
+      REP1(i,n)REP1(j,m)if(d[i][j])dfs(i,j),tt++;
+      cout<<tt<<endl;
+    }
 }

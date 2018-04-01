@@ -44,14 +44,76 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+ll cnt[MAXn][30],clrcnt[MAXn];
+bool u[MAXn];
+
+queue<ii> q;
+
+vector<ii> a;
+
+ll fd(ll x)
+{
+  REP(i,26)if(cnt[x][i])return i;
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n)
+    {
+      string s;
+      cin>>s;
+      REP(j,m)
+      {
+        cnt[i][s[j]-'a']++;
+        if(cnt[i][s[j]-'a']==1)clrcnt[i]++;
+        cnt[n+j][s[j]-'a']++;
+        if(cnt[n+j][s[j]-'a']==1)clrcnt[n+j]++;
+      }
+    }
+
+    REP(i,n)if(clrcnt[i]==1)q.push(ii(i,fd(i))),u[i]=1;
+    REP(i,m)if(clrcnt[i+n]==1)q.push(ii(i+n,fd(i+n))),u[i+n]=1;
+
+    while(SZ(q))
+    {
+      ii tmp = q.front();q.pop();
+      if(tmp.X < n)
+      {
+        REP(i,m)if(!u[i+n])
+        {
+          cnt[i+n][tmp.Y]--;
+          if(cnt[i+n][tmp.Y]==0)clrcnt[i+n]--;
+          if(clrcnt[i+n]==1)q.push(ii(i+n,fd(i+n))),u[i+n]=1;
+        }
+      }
+      else
+      {
+        REP(i,n)if(!u[i])
+        {
+          cnt[i][tmp.Y]--;
+          if(cnt[i][tmp.Y]==0)clrcnt[i]--;
+          if(clrcnt[i]==1)q.push(ii(i,fd(i))),u[i]=1;
+        }
+      }
+      a.pb(tmp);
+    }
+    reverse(ALL(a));
+    for(ii tmp:a)
+    {
+      if(tmp.X < n)
+      {
+          cout<<"row "<<tmp.X+1<<" "<<char(tmp.Y+'a')<<endl;
+      }
+      else
+      {
+        cout<<"column "<<tmp.X-n+1<<" "<<char(tmp.Y+'a')<<endl;
+      }
+    }
 }

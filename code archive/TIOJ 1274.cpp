@@ -48,10 +48,12 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll n;
+    cin>>n;
+    vector<ll> d={3,4,14};
+    cout<<d[n-1]<<endl;
 }

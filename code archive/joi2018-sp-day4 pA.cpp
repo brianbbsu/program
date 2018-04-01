@@ -30,9 +30,9 @@ template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
     _s<<"}";
     return _s;
 }
-template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a> ostream &operator << (ostream &_s,const vector<_a> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
-template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a,typename _b> ostream &operator << (ostream &_s,const map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
 template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #define IOS()
 #else
@@ -44,14 +44,56 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+map<ii,vector<ll> > mp;
+
+vector<ll> mg(vector<ll> l,vector<ll> r)
+{
+  vector<ll> rt;
+  debug(l,r,rt);
+  for(int i=SZ(l)-1;i>0;i--)l[i]-=l[i-1];
+  for(int i=SZ(r)-1;i>0;i--)r[i]-=r[i-1];
+  rt.resize(SZ(l)+SZ(r));
+  merge(ALL(l),ALL(r),rt.begin(),greater<ll>());
+  REP1(i,SZ(rt)-1)rt[i]+=rt[i-1];
+  return rt;
+}
+
+ll d[MAXn];
+
+void dfs(ll l,ll r)
+{
+  if(mp.count(ii(l,r)))return;
+  vector<ll> &v = mp[ii(l,r)];
+  if(l==r)return;
+  else if(l==r-1)
+  {
+    v.pb(d[l]);
+    return;
+  }
+  ll h=(l+r)/2;
+  dfs(l,h);dfs(h,r);
+  dfs(l,h-1);dfs(h+1,r);
+  v = mg(mp[ii(l,h)],mp[ii(h+1,r)]);
+  vector<ll> tmp = mg(mp[ii(l,h-1)],mp[ii(h,r)]);
+  debug(l,r,h,v,tmp);
+  if(SZ(tmp)>SZ(v))v.swap(tmp);
+  REP(i,SZ(tmp))v[i]=max(v[i],tmp[i]);
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    dfs(0,n);
+    debug(mp);
+    vector<ll> &ans = mp[ii(0,n)];
+    //debug(ans);
+    assert(SZ(ans)==(n-1)/2+1);
+    REP(i,SZ(ans))cout<<ans[i]<<endl;
 }

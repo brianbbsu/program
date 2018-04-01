@@ -5,6 +5,13 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)//{
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef double lf;
+typedef pair<ll,ll> ii;
+#define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
@@ -44,14 +51,48 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+
+ll d[MAXn][MAXn];
+
+void dfs(ll x,ll y,ll c)
+{
+  d[x][y]=-1;
+  ll dx[]={1,-1,0,0},dy[]={0,0,1,-1};
+  REP(i,4)
+  {
+    ll xx=x+dx[i],yy=y+dy[i];
+    if(d[xx][yy]==c)dfs(xx,yy,c);
+  }
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll T;cin>>T;
+    ll n,m;
+    FILL(d,-1);
+    ll kz=0;
+    while(T--&&cin>>n>>m)
+    {
+      kz++;
+      REP1(i,n)
+      {
+        string s;
+        cin>>s;
+        REP1(j,m)d[i][j]=s[j-1]-'a';
+      }
+      map<ll,ll> mp;
+
+      REP1(i,n)REP1(j,m)if(d[i][j]!=-1)mp[d[i][j]]++,dfs(i,j,d[i][j]);
+      vector<ii> ans;
+      for(auto tmp:mp)ans.pb(ii(tmp.Y,-tmp.X));
+      sort(ALL(ans),greater<ii>());
+      cout<<"World #"<<kz<<endl;
+      for(auto tmp:ans)cout<<char('a'-tmp.Y)<<": "<<tmp.X<<endl;
+
+    }
 }

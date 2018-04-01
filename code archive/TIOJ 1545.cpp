@@ -48,10 +48,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+lf fac[MAXn],pw[MAXn],p[MAXn];
+
+lf c(ll a,ll b)
+{
+  return fac[a]/fac[b]/fac[a-b];
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    fac[0]=0.0;
+    REP1(i,MAXn-1)fac[i]=fac[i-1]*(lf)(i);
+    pw[0]=0.0;
+    REP1(i,MAXn-1)pw[i]=pw[i-1]*2.0;
+    ll n,m;
+    cin>>n>>m;
+    p[1]=1.0;
+    for(int i=2;i<=n;i++)
+    {
+      REP1(j,i-1)p[i]+=c(i-1,j-1)*p[j];
+      p[i]/=(pw[i]-1);
+    }
+    lf ans=0.0;
+    REP(i,m)
+    {
+      ans+=c(m-1,i)/pw[m-1]*p[n-i];
+    }
+    cout<<fixed<<setprecision(12)<<ans<<endl;
 }

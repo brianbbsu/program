@@ -44,14 +44,43 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+int d[MAXn],a[MAXn],b[MAXn],p[MAXn],vis[MAXn];
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll n,x;
+    cin>>n;
+    REP1(i,n)cin>>d[i];
+    REP1(i,n)cin>>a[i];
+    REP1(i,n)cin>>x,p[x]=a[i];
+    REP1(i,n)debug(i,p[i]);
+    vector<ii> dt;
+    ll ans=0;
+    REP1(i,n)
+    {
+      if(!vis[i])
+      {
+        ll mn=INF,s=0,ct=0;
+        ll now = i;
+        while(!vis[now])
+        {
+          vis[now]=1;
+          mn=min(mn,(ll)d[now]);
+          s+=d[now];
+          ct++;
+          now = p[now];
+        }
+        ans+=s-mn;
+        dt.pb(ii(mn,ct-1));
+      }
+    }
+    sort(ALL(dt));
+    debug(dt,ans);
+    for(ii tmp:dt)ans+=min(tmp.X*tmp.Y,2*(tmp.X+dt[0].X)+dt[0].X*tmp.Y);
+    cout<<ans<<endl;
 }

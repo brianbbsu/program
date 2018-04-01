@@ -44,14 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e14);
 
-#include "lib1820.h"
+vector<ii> v[MAXn];
+
+ll ln[MAXn],dis[MAXn];
+vector<ll> dt;
+
+ll n,m,L,s,t;
+void bfs()
+{
+  REP1(i,n)dis[i]=-1;
+  
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    cin>>n>>m>>L>>s>>t;
+    REP(i,m)
+    {
+      ll a,b,dis[i];
+      cin>>a>>b>>dis[i];
+      if(dis[i]==0)dt.pb(i),dis[i]=INF;
+    }
 }

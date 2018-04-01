@@ -44,14 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+
+ll d[MAXn][MAXn],vis[MAXn][MAXn];
+
+
+ll tt=0;
+void dfs(ll x,ll y)
+{
+  tt++;
+  vis[x][y]=1;
+  ll dx[]={-1,-1,-1,0,0,1,1,1},dy[]={1,0,-1,1,-1,1,0,-1};
+  REP(i,8)
+  {
+    ll xx=x+dx[i],yy=y+dy[i];
+    if(d[xx][yy]&&!vis[xx][yy])dfs(xx,yy);
+  }
+}
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll T;
+    cin>>T;
+    cin.ignore();
+    cin.ignore();
+    while(T--)
+    {
+      ll n=0,m;
+      string s;
+      while(getline(cin,s)&&s!="")
+      {
+
+        if(!isdigit(s[0]))
+        {
+          n++,m=SZ(s);
+          REP1(j,m)d[n][j]=s[j-1]=='W';
+        }
+        else
+        {
+          stringstream ss(s);
+          ll a,b;
+          ss>>a>>b;
+          REP1(i,n)REP1(j,m)vis[i][j]=0;
+          tt=0;
+          dfs(a,b);
+          cout<<tt<<endl;
+        }
+      }
+      if(T)cout<<endl;
+    }
 }

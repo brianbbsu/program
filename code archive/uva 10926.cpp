@@ -48,10 +48,51 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "lib1820.h"
+vector<ll> v[MAXn];
+ll vis[MAXn],dp[MAXn];
+ll tt=0;
+void dfs(ll now)
+{
+  tt++;
+  vis[now]=1;
+  for(ll k:v[now])
+  {
+    if(!vis[k])dfs(k);
+  }
+}
+
 
 int main()
 {
     IOS();
-    cout<<"Hello Tmt World XD!"<<endl;
+    ll n;
+    while(cin>>n&&n)
+    {
+      REP1(i,n)v[i].clear();
+      REP1(i,n)
+      {
+        ll t;
+        cin>>t;
+        while(t--)
+        {
+          ll x;
+          cin>>x;
+          v[i].pb(x);
+        }
+      }
+      REP1(i,n)
+      {
+        tt=0;
+        REP1(j,n)vis[j]=0;
+        dfs(i);
+        dp[i]=tt-1;
+      }
+
+      ll mx=*max_element(dp+1,dp+1+n);
+      REP1(i,n)if(dp[i]==mx)
+      {
+        cout<<i<<endl;
+        break;
+      }
+    }
 }
