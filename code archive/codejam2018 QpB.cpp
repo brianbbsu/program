@@ -44,21 +44,46 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ll> dt[2];
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    srand(time(0));
-    REP(i,100000000)
+    ll T,kz=0;
+    cin>>T;
+    while(T--)
     {
-      int k = rand()%96;
-      k+=32;
-      if(k==127)k=10;
-      cout<<(char)(k);
+      kz++;
+      cout<<"Case #"<<kz<<": ";
+      dt[0].clear();
+      dt[1].clear();
+      ll n;
+      cin>>n;
+      REP(i,n)
+      {
+        ll t;
+        cin>>t;
+        dt[i%2].pb(t);
+      }
+      sort(ALL(dt[0]));
+      sort(ALL(dt[1]));
+      REP(i,SZ(dt[0]))d[i*2]=dt[0][i];
+      REP(i,SZ(dt[1]))d[i*2+1]=dt[1][i];
+      bool fg=0;
+      REP(i,n-1)
+      {
+        if(d[i]>d[i+1])
+        {
+          fg=1;
+          cout<<i<<endl;
+          break;
+        }
+      }
+      if(!fg)cout<<"OK"<<endl;
     }
-    cout<<'\n';
 }

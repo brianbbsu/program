@@ -44,7 +44,7 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
@@ -52,13 +52,6 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    srand(time(0));
-    REP(i,100000000)
-    {
-      int k = rand()%96;
-      k+=32;
-      if(k==127)k=10;
-      cout<<(char)(k);
-    }
-    cout<<'\n';
+    ll n;
+    cin>>n;
 }

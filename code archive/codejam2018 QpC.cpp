@@ -1,4 +1,5 @@
 //{
+#undef brian
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -38,27 +39,43 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-#define endl '\n'
+//#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn][20];
 
 int main()
 {
     IOS();
-    srand(time(0));
-    REP(i,100000000)
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      int k = rand()%96;
-      k+=32;
-      if(k==127)k=10;
-      cout<<(char)(k);
+      ll g;
+      cin>>g;
+      REP(i,MAXn)for(int j=2;j<10;j++)d[i][j]=0;
+      ll it=2,p=4;
+      g-=9;
+      while(1)
+      {
+        if(g>0&&d[it-1][p]&&d[it-1][p-1]&&d[it-1][p+1])
+        {
+          g-=3;
+          it++;
+          continue;
+        }
+        cout<<it<<" "<<p<<endl;
+        ll x,y;
+        cin>>x>>y;
+        if(x==0&&y==0)break;
+        else d[x][y]=1;
+      }
     }
-    cout<<'\n';
 }

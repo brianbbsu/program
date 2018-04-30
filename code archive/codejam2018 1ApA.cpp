@@ -44,21 +44,70 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn][MAXn],dt[MAXn],g[MAXn][MAXn],tmp2[MAXn];
 
 int main()
 {
     IOS();
-    srand(time(0));
-    REP(i,100000000)
+    ll T;cin>>T;
+    ll kz=0;
+    while(T--)
     {
-      int k = rand()%96;
-      k+=32;
-      if(k==127)k=10;
-      cout<<(char)(k);
+      kz++;
+      cout<<"Case #"<< kz <<": ";
+      ll r,c,h,v;
+      cin>>r>>c>>h>>v;
+      ll tt=0;
+      REP(i,r)
+      {
+        string s;
+        cin>>s;
+        REP(j,c)d[i][j] = (s[j] == '@');
+      }
+      REP(i,r)REP(j,c)tt+=d[i][j];
+      if(tt%((h+1)*(v+1))!=0)
+      {
+        cout<<"IMPOSSIBLE"<<endl;
+        continue;
+      }
+      tt /= ((h+1)*(v+1));
+      bool fg=1;
+      ll tmptt=0,itr=0;
+      REP(i,c)dt[i]=0;
+      REP(i,r)
+      {
+        REP(j,c)dt[j]+=d[i][j],tmptt+=d[i][j];
+        if(tmptt>tt*(v+1))
+        {
+          fg=0;
+          break;
+        }
+        if(tmptt == tt*(v+1))
+        {
+          REP(j,c)g[itr][j] = dt[j],dt[j]=0;
+          itr++;tmptt=0;
+        }
+      }
+      if(fg)
+      {
+        REP(i,h+1)tmp2[i]=0;
+        REP(i,c)
+        {
+          REP(j,h+1)tmp2[j] += g[j][i];
+          bool ok=1;
+          REP(j,h+1)
+          {
+            if(tmp2[j]<tt)ok=0;
+            if(tmp2[j]>tt)fg=0;
+          }
+          if(ok)REP(j,h+1)tmp2[j]=0;
+        }
+      }
+      if(fg)cout<<"POSSIBLE"<<endl;
+      else cout<<"IMPOSSIBLE"<<endl;
     }
-    cout<<'\n';
 }

@@ -48,17 +48,52 @@ const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+unordered_map<string,int> mp;
+string dt[MAXn];
+
+vector<ii> d;
+
+ll g[2*MAXn];
+ll fd(ll x){return g[x] = (g[x] == x?x:fd(g[x]));}
+void mg(ll a,ll b){g[fd(a)] = fd(b);}
+
+ll f[MAXn],b[MAXn],a[2*MAXn];
 
 int main()
 {
     IOS();
-    srand(time(0));
-    REP(i,100000000)
+    REP(i,2*MAXn)g[i]=i;
+    string s;
+    while(cin>>s)
     {
-      int k = rand()%96;
-      k+=32;
-      if(k==127)k=10;
-      cout<<(char)(k);
+      ll fg=0;
+      if(s.back() == ',')fg=1,s.pop_back();
+      else if(s.back() == '.')fg = 2,s.pop_back();
+      auto it = mp.find(s);
+      ll t;
+      if(it == mp.end())
+      {
+        t = SZ(mp);
+        dt[t] = s;
+        mp[s] = t;
+      }
+      else t = it->Y;
+      if(SZ(d)&&d.back().Y!=2)mg(2*d.back().X+1,2*t);
+      if(SZ(d)&&d.back().Y==1)f[t] = 1;
+      if(fg==1)b[t] = 1;
+      d.pb(ii(t,fg));
     }
-    cout<<'\n';
+    REP(i,SZ(mp))
+    {
+      if(f[i])a[fd(2*i)]=1;
+      if(b[i])a[fd(2*i+1)]=1;
+    }
+    REP(i,SZ(d))
+    {
+      cout<<dt[d[i].X];
+      if(d[i].Y==2)cout<<'.';
+      else if(a[fd(2*d[i].X+1)])cout<<',';
+      if(i!=SZ(d)-1)cout<<" ";
+    }
+    cout<<endl;
 }
