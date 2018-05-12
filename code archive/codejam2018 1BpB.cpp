@@ -49,10 +49,27 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+ll a[MAXn],b[MAXn],la[MAXn],lb[MAXn];
+ll dt[MAXn];
+vector<ll> v[ll(1e6)+5];
+
 int main()
 {
-    string s;
-    while(cin>>s)
-    for(char c:s)cout<<int(c)<<endl;
-
+    IOS();
+    ll T;
+    cin>>T;
+    ll kz=0;
+    while(T--)
+    {
+      kz++;
+      ll n;
+      cin>>n;
+      REP(i,n)
+      {
+        ll t;
+        cin>>t>>a[i]>>b[i];
+        a[i]+=t;
+        b[i]-=t;
+      }
+    }
 }

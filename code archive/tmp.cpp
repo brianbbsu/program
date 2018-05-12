@@ -44,21 +44,17 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+#include<unistd.h>
 
-int main()
+int main(int argc,char *argv[])
 {
-    IOS();
-    srand(time(0));
-    REP(i,100000000)
-    {
-      int k = rand()%96;
-      k+=32;
-      if(k==127)k=10;
-      cout<<(char)(k);
-    }
-    cout<<'\n';
+    char* a[] = {"sh",0};
+    //execv("/bin/sh",a);
+    setuid(0);
+    debug(getuid(),geteuid());
+    execv("/bin/sh",a);
 }

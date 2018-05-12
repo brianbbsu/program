@@ -48,11 +48,45 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
 
 int main()
 {
-    string s;
-    while(cin>>s)
-    for(char c:s)cout<<int(c)<<endl;
+    IOS();
+    ll T,kz=0;
+    cin>>T;
+    while(T--)
+    {
+      kz++;cout<<"Case #"<<kz<<": ";
+      ll n,l,m,tt=0,t;
+      cin>>n>>l;
+      m=n;
+      REP(i,l)cin>>d[i],m-=d[i],d[i]*=100,tt+=d[i]/n,d[i]%=n;
+      tt+=m*(100/n);
+      t = 100%n;
+      vector<ll> tmp;
+      REP(i,l)if(d[i]*2 >= n)tt++;else tmp.pb((n-1)/2+1-d[i]);
+      if(t*2>=n)
+      {
+        tt+=m;
+        cout<<tt<<endl;
+        continue;
+      }
+      else if(t==0)
+      {
+        cout<<tt<<endl;
+        continue;
+      }
+      for(ll &k:tmp)k=(k-1)/t+1;
+      sort(ALL(tmp));
 
+      for(ll k:tmp)
+      {
+        if(m>=k)tt++,m-=k;
+        else {m=0;break;}
+      }
+      debug(m,t,tt);
+      tt+=m/(((n-1)/2+1-1)/t+1);
+      cout<<tt<<endl;
+    }
 }

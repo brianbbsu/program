@@ -48,11 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn],th[MAXn],tw[MAXn],dt[MAXn];
 
 int main()
 {
-    string s;
-    while(cin>>s)
-    for(char c:s)cout<<int(c)<<endl;
-
+    IOS();
+    ll n;cin>>n;
+    REP(i,n)cin>>d[i],dt[i]=i;
+    REP(i,n)
+    {
+      ll t = d[i];
+      while(t%2==0)t/=2,tw[i]++;
+      while(t%3==0)t/=3,th[i]++;
+    }
+    sort(dt,dt+n,[](int a,int b){return ii(-th[a],tw[a])< ii(-th[b],tw[b]);});
+    REP(i,n)cout<<d[dt[i]]<<" ";
 }

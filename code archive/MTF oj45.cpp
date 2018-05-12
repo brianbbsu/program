@@ -44,15 +44,67 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
+priority_queue<ii,vector<ii>,greater<ii>> pq[MAXn];
+
+ll d[MAXn],a[MAXn];
+vector<ll> v[MAXn];
+
+void dfs(ll now)
+{
+  for(ll k:v[now])
+  {
+    dfs(k);
+    if(SZ(pq[k])>SZ(pq[now]))pq[now].swap(pq[k]);
+    while(SZ(pq[k]))
+    {
+      pq[now].push(pq[k].top());
+      pq[k].pop();
+    }
+  }
+  while(SZ(pq[now])&&pq[now].top().X < d[now])
+  {
+    a[pq[now].top().Y] = d[now];
+    pq[now].pop();
+  }
+  pq[now].push(ii(d[now],now));
+}
+
 int main()
 {
-    string s;
-    while(cin>>s)
-    for(char c:s)cout<<int(c)<<endl;
+    IOS();
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll n;
+      cin>>n;
+      REP(i,n)
+      {
+        while(SZ(pq[i]))pq[i].pop();
+        v[i].clear();
+      }
+      REP1(i,n-1)
+      {
+        ll p;
+        cin>>p;
+        v[p].pb(i);
+      }
+      REP(i,n)cin>>d[i];
+      dfs(0);
+      while(SZ(pq[0]))
+      {
+        a[pq[0].top().Y] = n;
+        pq[0].pop();
+      }
+      ll tt=0;
+      REP(i,n)tt=(tt+a[i]*(i+1))%MOD;
+      cout<<tt<<endl;
+      REP(i,n)debug(i,d[i],a[i]);
+    }
 
 }

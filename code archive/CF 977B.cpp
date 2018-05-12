@@ -51,8 +51,19 @@ const ll INF=ll(1e15);
 
 int main()
 {
+    IOS();
+    ll n;
+    cin>>n;
     string s;
-    while(cin>>s)
-    for(char c:s)cout<<int(c)<<endl;
+    cin>>s;
+    map<string,ll> mp;
+    REP(i,n-1)mp[s.substr(i,2)]++;
+    ll mx=0;
+    for(auto x:mp)mx=max(mx,x.Y);
+    for(auto x:mp)if(x.Y==mx)
+    {
+      cout<<x.X;
+      return 0;
+    }
 
 }

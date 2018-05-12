@@ -51,8 +51,13 @@ const ll INF=ll(1e15);
 
 int main()
 {
-    string s;
-    while(cin>>s)
-    for(char c:s)cout<<int(c)<<endl;
-
+    IOS();
+    ll n,k;
+    cin>>n>>k;
+    REP(i,k)
+    {
+      if(n%10==0)n/=10;
+      else n--;
+    }
+    cout<<n<<endl;
 }
