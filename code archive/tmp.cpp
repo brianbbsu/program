@@ -1,25 +1,26 @@
-//{
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
-#define REP(i,n) for(ll i=0;i<n;i++)
+#define REP(i,n) for(int i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
-#define FILL(i,n) memset(i,n,sizeof i)
-#define X first
-#define Y second
-#define SZ(_a) (int)_a.size()
-#define ALL(_a) _a.begin(),_a.end()
+#define FOR(i,j,n,m) for(int i=j;i<n;i+=m)
+#define RST(i,n) memset(i,n,sizeof i)
+#define SZ(a) (int)a.size()
+#define ALL(a) a.begin(),a.end()
+#define F first
+#define S second
 #define pb push_back
-#ifdef brian
+#define pob pop_back
+#ifdef cold66
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
     _do(__VA_ARGS__);\
 }while(0)
 template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
 template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<" ,";_do(_t...);}
-template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
+template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.F<<","<<_p.S<<")";}
 template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
 {
     _s<<"{";
@@ -40,21 +41,65 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #define pary(...)
 #define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
-#endif // brian
+#endif // cold66
 //}
 
+template<class T> inline bool chkmax(T &a, const T &b) { return b > a ? a = b, true : false; }
+template<class T> inline bool chkmin(T &a, const T &b) { return b < a ? a = b, true : false; }
+template<class T> using MaxHeap = priority_queue<T>;
+template<class T> using MinHeap = priority_queue<T, vector<T>, greater<T>>;
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=(ll)1e18;
 
-#include<unistd.h>
-
-int main(int argc,char *argv[])
-{
-    char* a[] = {"sh",0};
-    //execv("/bin/sh",a);
-    setuid(0);
-    debug(getuid(),geteuid());
-    execv("/bin/sh",a);
+struct trie{
+  map<int,trie*> dt;
+  int cnt;
+  trie(){
+    dt.clear();
+    cnt=0;
+  }
+};
+void ins(string s,trie* root){
+  trie* cur = root;
+  int i=0;
+  while(i<SZ(s)){
+    if(!cur->dt[s[i]-'a']) cur->dt[s[i]-'a'] = new trie();
+    cur = cur->dt[s[i]-'a'];
+    i++;
+    cur->cnt++;
+  }
+}
+int qr(string s,trie* root){
+  trie* cur = root;
+  int i=0,ret=0;
+  while(i<SZ(s)){
+    ret++;
+    cur = cur->dt[s[i]-'a'];
+    if(cur->cnt==1) return ret;
+    i++;
+  }
+  return ret;
+}
+int n,sum;
+int main(){
+  IOS();
+  int t,c=1;
+  cin>>t;
+  while(t--){
+    trie *root = new trie();
+    cout<<"Case #"<<c<<": ";
+    c++;
+    sum=0;
+    cin>>n;
+    string s;
+    REP(i,n){
+      cin>>s;
+      ins(s,root);
+      sum+=qr(s,root);
+      debug(sum,qr(s,root));
+    }
+    cout<<sum<<endl;
+  }
 }

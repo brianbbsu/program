@@ -44,13 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll a[MAXn][MAXn];
+
+ll d[MAXn],g[MAXn];
 
 int main()
 {
     IOS();
+    ll T,kz=0;
+    cin>>T;
+    while(T--)
+    {
+      kz++;
+      cout<<"Case #"<<kz<<": ";
+      ll n;
+      cin>>n;
+      REP(i,n)cin>>d[i];
+      FILL(a,0);
+      if(d[0]==0||d[n-1]==0){cout<<"IMPOSSIBLE"<<endl;continue;}
+      int it = 0;
+      ll mx=1;
+      REP(i,n)
+      {
+        while(d[it]==0)it++;
+        g[i]=it;
+        d[it]--;
+        mx=max(mx,abs(g[i]-i)+1);
+      }
+      REP(i,n)
+      {
+        if(g[i]<i)for(int j=0;i-j-1>=g[i];j++)a[j][i-j]=1;
+        else if(g[i]>i)for(int j=0;i+j+1<=g[i];j++)a[j][i+j]=2;
+      }
+      cout<<mx<<endl;
+      REP(i,mx)
+      {
+        REP(j,n)
+        {
+          if(a[i][j]==0)cout<<'.';
+          else if(a[i][j]==1)cout<<'/';
+          else cout<<"\\";
+        }
+        cout<<endl;
+      }
 
+    }
 }

@@ -7,7 +7,7 @@ providers: [
           project: "/home/bb/program/code archive"
           source: "/home/bb/program/code archive/.build-tools.cson"
           name: "make"
-          command: "g++ \"%f\" -O2 -std=c++11 -Wall -fexceptions -Wshadow -Wextra -Dbrian -o \"%e.exe\" -g"
+          command: "g++ \"%f\" -O2 -std=c++14 -Wall -fexceptions -Wshadow -Wextra -Dbrian -o \"%e.exe\" -g"
           wd: "%d"
           env: {}
           modifier:
