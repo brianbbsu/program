@@ -44,35 +44,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
-vector<ll> d;
+vector<ll> v[MAXn],his;
+ll d[MAXn],w[MAXn],mk[MAXn];
+queue<ll> q;
 
 int main()
 {
     IOS();
-    ll n,k;
-    cin>>n>>k;
-    REP(i,n)
+    ll n;
+    cin>>n;
+    REP(i,n-1)
     {
-      int x;
-      cin>>x;
-      d.pb(x);
+      ll a,b;
+      cin>>a>>b;
+      v[a].pb(b);
+      v[b].pb(a);
     }
-    ll tt = 0;
-    while(SZ(d) >= k)
+    REP(i,n)cin>>d[i];
+    REP(i,n)w[d[i]] = i;
+    REP1(i,n)sort(ALL(v[i]),[](int a,int b){return w[a] < w[b];});
+    mk[1] = 1;
+    q.push(1);
+    while(SZ(q))
     {
-      vector<ll> tmp;
-      for(int i = 0;i + k <= SZ(d);i++){
-        ll mx = 0;
-        REP(j,k)mx=max(mx,d[i+j]);
-        tt += mx;
-        tmp.pb(mx);
-      }
-      d = tmp;
+        ll t = q.front();
+        his.pb(t);
+        q.pop();
+        for(ll k:v[t])if(!mk[k])
+        {
+          q.push(k);
+          mk[k] = 1;
+        }
     }
-    cout<<tt<<endl;
+    REP(i,n)if(his[i] != d[i]){
+      cout<<"NO"<<endl;
+      return 0;
+    }
+    cout<<"Yes"<<endl;
 }

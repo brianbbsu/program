@@ -48,31 +48,61 @@ const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll cnt[MAXn],tmpcnt[MAXn];
+ll k,mx = 0;
 
-vector<ll> d;
+bool chk(ll n,ll m,ll x,ll y)
+{
+  debug(n,m,x,y);
+  ll tmp = n * m;
+  REP(i,tmp+1)tmpcnt[i] = 0;
+  REP1(i,n)REP1(j,m)tmpcnt[abs(x-i) + abs(y-j)] += 1;
+  REP(i,tmp+1)if(tmpcnt[i] != cnt[i])return 0;
+  return 1;
+}
 
 int main()
 {
     IOS();
-    ll n,k;
-    cin>>n>>k;
-    REP(i,n)
+    cin>>k;
+    REP(i,k)
     {
-      int x;
+      ll x;
       cin>>x;
-      d.pb(x);
+      cnt[x]++;
+      mx = max(mx,x);
     }
-    ll tt = 0;
-    while(SZ(d) >= k)
+    if(cnt[0] != 1){
+      cout<<-1<<endl;
+      return 0;
+    }
+    ll fg = 0,a,x,det;
+    for(int i=1;;i+=1)
     {
-      vector<ll> tmp;
-      for(int i = 0;i + k <= SZ(d);i++){
-        ll mx = 0;
-        REP(j,k)mx=max(mx,d[i+j]);
-        tt += mx;
-        tmp.pb(mx);
+      ll tmp = 4 * i;
+      if(!fg&&tmp != cnt[i])
+      {
+        a = i - 1;
+        fg = 1;det = 1;
       }
-      d = tmp;
+      if(fg&&tmp-det != cnt[i])
+      {
+        x = i - 1;
+        break;
+      }
+      if(fg)det += 2;
     }
-    cout<<tt<<endl;
+    debug(a,b);
+    for(int b = 0;b+1+a <= k && b <= mx;b++)
+    {
+      if(k % (b + 1 + a) != 0)continue;
+      ll c = mx - b,d = k / (b + 1 + a) - c - 1;
+      if(b != x && c != x && d != x)continue;
+      if(chk(a+b+1,c+d+1,a+1,c+1)){
+        cout<<a+b+1<<" "<<c+d+1<<endl;
+        cout<<a+1<<" "<<c+1<<endl;
+        return 0;
+      }
+    }
+    cout<<-1<<endl;
 }

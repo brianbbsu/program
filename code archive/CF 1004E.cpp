@@ -44,16 +44,76 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll n;
-string s;
+vector<ii> v[MAXn];
+ll h[MAXn][2],mxdis[MAXn],mn,dg[MAXn],tp[MAXn];
+priority_queue<ii,vector<ii>,greater<ii> > pq;
+
+void hdfs(ll now,ll f)
+{
+  h[now][0] = h[now][1] = 0;
+  for(ii k:v[now])if(k.X != f)
+  {
+    tp[k.X] = k.Y;
+    hdfs(k.X,now);
+    ll x = h[k.X][0] + k.Y;
+    if(x > h[now][0])h[now][1] = h[now][0],h[now][0] = x;
+    else if(x>h[now][1])h[now][1] = x;
+  }
+}
+
+void disdfs(ll now,ll f,ll top)
+{
+  mxdis[now] = max(top,h[now][0]);
+  for(ii k:v[now])if(k.X != f)
+  {
+    disdfs(k.X,now,max(top,(h[k.X][0] + k.Y == h[now][0]?h[now][1]:h[now][0])) + k.Y);
+  }
+  mn = min(mn,mxdis[now]);
+}
+
 
 int main()
 {
     IOS();
-    cin>>n>>s;
-    
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n-1)
+    {
+      ll a,b,c;
+      cin>>a>>b>>c;
+      v[a].pb({b,c});
+      v[b].pb({a,c});
+      dg[a]++;
+      dg[b]++;
+    }
+    hdfs(1,-1);
+    mn=INF;
+    disdfs(1,-1,0);
+    ll rt=-1;
+    REP1(i,n)if(mxdis[i] == mn)
+    {
+      rt = i;
+      break;
+    }
+    tp[rt] = 0;
+    hdfs(rt,-1);
+    ll tt = n,mx=0;
+    REP1(i,n)if(dg[i] == 1)pq.push({h[i][0] + tp[i],i});
+    while(SZ(pq) > 2 || tt > k)
+    {
+      tt -- ;
+      ll x = pq.top().Y;
+      mx = max(mx,pq.top().X);
+      pq.pop();
+      for(ii p:v[x])
+      {
+        dg[p.X]--;
+        if(dg[p.X] == 1)pq.push({h[p.X][0] + tp[p.X],p.X});
+      }
+    }
+    cout<<mx<<endl;
 }

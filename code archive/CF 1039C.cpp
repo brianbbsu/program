@@ -44,35 +44,78 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll mypow(ll x,ll a){
+  if(a==0)return 1LL;
+  ll t = mypow(x,a/2);
+  t = t * t % MOD;
+  if(a & 1)return t * x % MOD;
+  else return t;
+}
 
-vector<ll> d;
+ll g[MAXn],ans,ct;
+ll fd(ll x){return g[x] = (g[x] == x?x:fd(g[x]));}
+void mg(ll a,ll b){
+  a = fd(a),b = fd(b);
+  g[a] = b;
+  ct --;
+}
+
+
+ll d[MAXn],ev[MAXn];
+
+vector<ii> e;
+vector<ll> his;
+
+ll dt[MAXn];
+
+void add(ll x){
+  ans = (ans + x % MOD + MOD) % MOD;
+}
+
 
 int main()
 {
     IOS();
-    ll n,k;
-    cin>>n>>k;
-    REP(i,n)
+    ll n,m,k;
+    cin>>n>>m>>k;
+    REP1(i,n)cin>>d[i],g[i] = i;
+    ct = n;
+    REP(i,m)
     {
-      int x;
-      cin>>x;
-      d.pb(x);
+      ll a,b;
+      cin>>a>>b;
+      e.pb(ii(a,b));
+      ev[i] = (d[a] ^ d[b]);
+      dt[i] = i;
     }
-    ll tt = 0;
-    while(SZ(d) >= k)
+    sort(dt,dt+m,[](int a,int b){return ev[a] < ev[b];});
+    ll usd = 0,lt = 0,it = 0;
+
+    while(it < m)
     {
       vector<ll> tmp;
-      for(int i = 0;i + k <= SZ(d);i++){
-        ll mx = 0;
-        REP(j,k)mx=max(mx,d[i+j]);
-        tt += mx;
-        tmp.pb(mx);
+      while(it < m && ev[dt[it]] == ev[dt[lt]])tmp.pb(it),it++;
+      lt = it;
+      usd++;
+      for(ll x : tmp)
+      {
+        ll a = e[dt[x]].X, b = e[dt[x]].Y;
+        his.pb(a);
+        his.pb(b);
+        if(fd(a)!=fd(b))mg(a,b);
       }
-      d = tmp;
+      add(mypow(2, ct));
+      for(ll x: his){
+        g[x] = x;
+      }
+      his.clear();
+      ct = n;
     }
-    cout<<tt<<endl;
+
+    add((mypow(2,k) - usd + MOD) * mypow(2,n) % MOD);
+    cout<<ans<<endl;
 }

@@ -38,41 +38,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-#define endl '\n'
+//#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+void guess(ll l,ll r){
+  ll t = rand() % (r-l) + l;
+  cout<<t<<" "<<t<<'\n';
+  cout.flush();
+  string a;
+  cin>>a;
+  if(a=="Yes" || a == "Bad")exit(0);
+}
 
-vector<ll> d;
+bool ask(ll l,ll r){
+  cout<<l<<" "<<r<<'\n';
+  cout.flush();
+  string s;
+  cin>>s;
+  if(s=="Bad")exit(0);
+  else if(s=="Yes" && l == r)exit(0);
+  else if(s=="Yes")return true;
+  else return false;
+}
 
 int main()
 {
-    IOS();
+    srand(time(0));
     ll n,k;
     cin>>n>>k;
-    REP(i,n)
+    ll l = 1,r = n + 1;
+    while(1)
     {
-      int x;
-      cin>>x;
-      d.pb(x);
-    }
-    ll tt = 0;
-    while(SZ(d) >= k)
-    {
-      vector<ll> tmp;
-      for(int i = 0;i + k <= SZ(d);i++){
-        ll mx = 0;
-        REP(j,k)mx=max(mx,d[i+j]);
-        tt += mx;
-        tmp.pb(mx);
+      if(r - l <= 6 * k || l==r-1){
+        guess(l,r);
+      }else{
+        ll h = (l+r) / 2;
+        if(ask(l,h-1))r=h;
+        else l=h;
       }
-      d = tmp;
+      l=max(1LL,l-k);
+      r=min(n+1,r+k);
     }
-    cout<<tt<<endl;
+
 }

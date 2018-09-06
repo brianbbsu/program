@@ -44,35 +44,41 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=3LL * ll(1e18);
 
+ll a[MAXn],b[MAXn],x[MAXn],mn[MAXn],mx[MAXn];
 
-vector<ll> d;
+void qt(){
+  cout<<"No"<<endl;
+  exit(0);
+}
 
 int main()
 {
     IOS();
-    ll n,k;
-    cin>>n>>k;
-    REP(i,n)
-    {
-      int x;
-      cin>>x;
-      d.pb(x);
+    ll n,t;
+    cin>>n>>t;
+    REP1(i,n)cin>>a[i];
+    REP1(i,n)cin>>x[i];
+    REP1(i,n)mn[i] = 1,mx[i] = INF;
+    ll tmpr = 0;
+    REP1(i,n){
+      tmpr = max(tmpr,x[i]);
+      if(tmpr <= i)mn[i] = a[i] + t;
+      else mn[i] = a[i+1] + t;
+      if(x[i] < i)qt();
+      if(x[i] == n)continue;
+      mx[x[i]] = min(mx[x[i]],a[x[i] + 1] + t - 1);
     }
-    ll tt = 0;
-    while(SZ(d) >= k)
-    {
-      vector<ll> tmp;
-      for(int i = 0;i + k <= SZ(d);i++){
-        ll mx = 0;
-        REP(j,k)mx=max(mx,d[i+j]);
-        tt += mx;
-        tmp.pb(mx);
-      }
-      d = tmp;
+    REP1(i,n){
+      debug(i,mn[i],mx[i]);
+      if(mn[i] > mx[i])qt();
+      if(mx[i] <= b[i-1])qt();
+      b[i] = max(b[i-1] + 1,mn[i]);
     }
-    cout<<tt<<endl;
+    cout<<"Yes"<<endl;
+    REP1(i,n)cout<<b[i]<<" ";
+
 }

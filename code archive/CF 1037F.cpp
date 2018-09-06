@@ -48,31 +48,60 @@ const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn],tt,l[MAXn],r[MAXn];
 
-vector<ll> d;
+vector<ll> stk;
 
 int main()
 {
     IOS();
     ll n,k;
     cin>>n>>k;
-    REP(i,n)
+    REP1(i,n)cin>>d[i];
+    d[0] = d[n+1] = INF;
+    stk.pb(0);
+    REP1(i,n)
     {
-      int x;
-      cin>>x;
-      d.pb(x);
+      while(d[stk.back()] < d[i])stk.pop_back();
+      l[i] = stk.back();
+      stk.pb(i);
     }
-    ll tt = 0;
-    while(SZ(d) >= k)
+    stk.clear();
+    stk.pb(n + 1);
+    for(int i = n;i > 0;i--)
     {
-      vector<ll> tmp;
-      for(int i = 0;i + k <= SZ(d);i++){
-        ll mx = 0;
-        REP(j,k)mx=max(mx,d[i+j]);
-        tt += mx;
-        tmp.pb(mx);
+      while(d[stk.back()] <= d[i])stk.pop_back();
+      r[i] = stk.back();
+      stk.pb(i);
+    }
+    stk.clear();
+    REP1(i,n)
+    {
+      ll a = i - l[i],b = r[i] - i, ct = 0, now = 0;
+      if(a > b)swap(a,b);
+      debug(i,a,b);
+      if(a >= k)
+      {
+        now = (a - k) / (k - 1) + 1;
+        ct += (k + now * (k - 1) + 1) * now / 2;
       }
-      d = tmp;
+      debug(ct);
+      if(b >= now * (k-1) + k)
+      {
+        ll tmp = (b - k) / (k-1) + 1;
+        ct += a * (tmp - now);
+        now = tmp;
+      }
+      debug(ct);
+      if(a + b > now * (k-1) + k)
+      {
+        ll tmp = (a + b - 1 - k) / (k - 1) + 1, x = a + b - now * (k-1) - k;
+        debug(now,tmp,x);
+        ct += ((2 * x) - (tmp - now - 1) * (k - 1)) * (tmp - now) / 2;
+      }
+      debug(i,ct);
+      tt += ct % MOD * d[i] % MOD;
     }
+    tt %= MOD;
     cout<<tt<<endl;
 }
