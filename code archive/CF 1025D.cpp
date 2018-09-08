@@ -44,20 +44,39 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=7e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "bb_rnd.h"
+int d[MAXn],g[MAXn][MAXn],l[MAXn][MAXn],r[MAXn][MAXn];
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    ll n;
+    cin>>n;
+    REP1(i,n)cin>>d[i];
+    for(int i = 1;i<=n;i++)for(int j = 1;j < i;j++)g[i][j] = g[j][i] = __gcd(d[i],d[j]);
+    REP1(i,n){
+      if(g[i][i-1] > 1)r[i-1][i] = 1;
+      if(g[i][i+1] > 1)l[i+1][i] = 1;
+      l[i][i] = r[i][i] = 1;
+    }
+    for(int len = 2;len <= n;len++){
+      for(int i = 1;i + len - 1 <= n;i++)
+      {
+        for(int j = i;j < i + len;j++)
+        {
+          if(l[j][i] && r[j][i+len-1]){
+            if(g[j][i-1] > 1)r[i-1][i + len - 1] = 1;
+            if(g[j][i + len] > 1)l[i+len][i] = 1;
+          }
+        }
+      }
+    }
+    REP1(i,n)if(l[i][1] && r[i][n]){
+      cout<<"Yes"<<endl;
+      return 0;
+    }
+    cout<<"No"<<endl;
 }

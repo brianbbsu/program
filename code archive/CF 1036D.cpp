@@ -44,20 +44,36 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "bb_rnd.h"
+ll a[MAXn],b[MAXn];
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>a[i];
+    ll m;
+    cin>>m;
+    REP(i,m)cin>>b[i];
+    ll ta=0,tb=0;
+    REP(i,n)ta += a[i];
+    REP(i,m)tb += b[i];
+    if(ta != tb){
+      cout<<-1<<endl;
+      return 0;
+    }
+    ll ita = 0,itb = 0;
+    ta = tb = 0;
+    ll ct = 0;
+    while(ita != n || itb != m){
+      if(ta > tb)tb += b[itb++];
+      else ta += a[ita++];
+      if(ta == tb)ct++,ta = 0,tb = 0;
+      debug(ita,itb);
+    }
+    cout<<ct<<endl;
 }

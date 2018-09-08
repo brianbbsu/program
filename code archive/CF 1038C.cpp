@@ -48,16 +48,47 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "bb_rnd.h"
+vector<ll> a,b;
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    ll n;
+    cin>>n;
+    a.pb(0);
+    b.pb(0);
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      a.pb(t);
+    }
+    REP(i,n)
+    {
+      ll t;
+      cin>>t;
+      b.pb(t);
+    }
+    sort(ALL(a));
+    sort(ALL(b));
+    ll ta = 0,tb = 0;
+    REP(i,2*n)
+    {
+      if(a.back() > b.back())
+      {
+        if(!(i&1))ta += a.back();
+        a.pop_back();
+      }
+      else if(a.back() < b.back())
+      {
+        if((i&1))tb += b.back();
+        b.pop_back();
+      }
+      else
+      {
+        if(i&1)tb += b.back(),b.pop_back();
+        else ta += a.back(),a.pop_back();
+      }
+    }
+    cout<<ta - tb<<endl;
 }

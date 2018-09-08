@@ -44,20 +44,54 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e18+5,MAXlg=__lg(MAXn)+1;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+const double EPS = 1e-9;
 
-#include "bb_rnd.h"
+ll d[MAXlg + 2];
+vector<ii> v[MAXlg];
+
+ll solve(ll x){
+  d[2] = sqrt(x + 0.5);
+  for(int i = 3;i < MAXlg;i++)d[i] = prev(lower_bound(ALL(v[i]),ii(x+1,-1)))->Y;
+  /*for(int i = 2;i < MAXlg;i++)d[i] = 1;
+  for(ll i = 2;i <= 30;i ++)
+  {
+    ll tmp = 1,ct = 0;
+    while(x / i >= tmp)tmp *= i,ct += 1;
+    d[ct] = max(d[ct],i);
+  }
+  for(ll i = 2;i <= 13;i++)d[i] = min(d[i],ll(pow(x,1.0L/i)));
+  for(int i = 3;i < MAXlg;i++)d[i] = min(d[i],d[i-1]);*/
+  //for(int i = 2;i < MAXlg;i++)debug(x,i,d[i]);
+  for(int i = 2;i < MAXlg;i++)d[i] -= 1;
+  for(int i = MAXlg - 1;i >= 2;i--)for(int j = 2;j<i;j++)if(i % j == 0)d[i / j] -= d[i];
+  //for(int i = 2;i < MAXlg;i++)for(int j = 2;i * j < MAXlg;j ++)d[i * j] -= d[i];
+  //for(int i = 2;i < MAXlg;i++)debug(x,i,d[i]);
+  ll tt = x - 1;
+  for(int i = 2;i < MAXlg;i++)tt -= d[i];
+  return tt;
+}
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    for(int i=3;i<MAXlg;i++)v[i].pb(ii(1,1));
+    for(ll i = 2;i <= 1000000;i++)
+    {
+      ll now = i,ct = 1;
+      while(1000000000000000000LL / i >= now){
+        now *= i;ct++;
+        v[ct].pb(ii(now,i));
+      }
+    }
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      ll x;
+      cin>>x;
+      cout<<solve(x)<<endl;
+    }
 }

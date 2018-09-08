@@ -48,16 +48,54 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "bb_rnd.h"
+ll dp[20][4][2];
+
+ll cal(ll x)
+{
+  if(x == 0)return 1;
+  FILL(dp,0);
+  ll tt = 0;
+  string s = to_string(x);
+  //debug(s);
+  REP(i,SZ(s)){
+    if(i==0)
+    {
+      dp[i][0][0] = 1;
+      dp[i][1][0] = s[i] - '0' - 1;
+      dp[i][1][1] = 1;
+    }
+    else {
+      if(s[i] == '0')REP(j,4)dp[i][j][1] = dp[i-1][j][1];
+      else REP1(j,3)dp[i][j][1] = dp[i-1][j-1][1];
+      REP(j,4){
+        if(j != 0)
+        {
+          dp[i][j][0] += max(0LL,s[i] - '0' - 1LL) * dp[i-1][j-1][1];
+          dp[i][j][0] += 9 * dp[i-1][j-1][0];
+        }
+        if(s[i] != '0')dp[i][j][0] += dp[i-1][j][1];
+        dp[i][j][0] += dp[i-1][j][0];
+      }
+    }
+
+  }
+  REP(j,4)tt += dp[SZ(s) - 1][j][0] + dp[SZ(s) - 1][j][1];
+  //REP(i,SZ(s))REP(j,4)debug(s,i,j,dp[i][j][0],dp[i][j][1]);
+  //debug(tt);
+  return tt;
+}
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    ll q;
+    cin>>q;
+    while(q--)
+    {
+      ll l,r;
+      cin>>l>>r;
+      //debug(l-1,cal(l-1));
+      //debug(r,cal(r));
+      cout<<cal(r) - cal(l-1)<<endl;
+    }
 }

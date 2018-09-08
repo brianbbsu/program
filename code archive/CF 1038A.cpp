@@ -48,16 +48,17 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "bb_rnd.h"
+ll ct[MAXn];
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    ll n,k;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    REP(i,n)ct[s[i]-'A']++;
+    ll mn = INF;
+    REP(i,k)mn=min(mn,ct[i]);
+    cout<<mn * k<<endl;
 }

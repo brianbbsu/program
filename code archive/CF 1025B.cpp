@@ -44,20 +44,62 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-#include "bb_rnd.h"
+ll a[MAXn],b[MAXn],fg[MAXn];
+vector<ll> p;
+vector<ll> tg;
+
+void cal(ll x)
+{
+
+  for(ll c:p){
+    if(c * c > x)break;
+    if(x % c == 0)tg.pb(c);
+    while(x % c == 0)x /= c;
+  }
+  if(x > 1)tg.pb(x);
+}
+
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    for(ll i = 2;i < 100000;i++)
+    {
+      if(!fg[i])p.pb(i);
+      for(int j = 0;p[j] * i < 100000;j++)
+      {
+        fg[p[j] * i] = 1;
+        if(i % p[j] == 0)break;
+      }
+    }
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>a[i]>>b[i];
+    cal(a[0]);
+    cal(b[0]);
+    sort(ALL(tg));
+    tg.resize(unique(ALL(tg)) - tg.begin());
+    REP(i,20)debug(p[i]);
+    for(ll c:tg)
+    {
+      ll ok = 1;
+      REP(i,n)
+      {
+        if(a[i] % c != 0 && b[i] % c != 0){
+          ok = 0;
+          break;
+        }
+      }
+      if(ok)
+      {
+        cout<<c<<endl;
+        return 0;
+      }
+    }
+    cout<<-1<<endl;
+
 }

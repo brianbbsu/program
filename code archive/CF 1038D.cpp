@@ -44,20 +44,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e17);
 
-#include "bb_rnd.h"
+ll d[MAXn],dp[MAXn][2][2];
 
 int main()
 {
     IOS();
-		ll n = 700;
-		cout<<n<<endl;
-		vector<ll> tmp;
-		REP(i,n)tmp.pb(rnd(2,1000000000 + 1));
-		sort(ALL(tmp));
-		REP(i,n)cout<<tmp[i]<<" ";
-		cout<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    dp[0][0][0] = dp[0][0][1] = d[0];
+    dp[0][1][0] = dp[0][1][1] = d[0];
+    REP1(i,n-1)
+    {
+      dp[i][0][0] = min(d[i] - dp[i-1][1][1],dp[i-1][0][0] - d[i]);
+      dp[i][1][0] = min(d[i] + dp[i-1][1][0],dp[i][0][0]);
+      dp[i][0][1] = max(d[i] - dp[i-1][1][0],dp[i-1][0][1] - d[i]);
+      dp[i][1][1] = max(d[i] + dp[i-1][1][1],dp[i][0][1]);
+    }
+    REP(i,n)debug(i,dp[i][0][0],dp[i][0][1],dp[i][1][0],dp[i][1][1]);
+    cout<<dp[n-1][0][1]<<endl;
 }
