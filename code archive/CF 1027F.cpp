@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -38,55 +38,70 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-//#define endl '\n'
+#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e9) + 10;
 
-ll dt[6] = {0,10000,100020000LL,1000300030000LL,10004000600040000LL};
-
-ll dfs(ll x,ll k){ //start from x, using k move
-    if(k == 1)return x + min(x,10000LL) - 1;
-    if(x >= 10000)return x + dt[k] - 1;
-    ll lst = x - 2;
-    REP(_,x+1){
-      lst = dfs(lst + 2,k-1);
-    }
-    return lst;
-}
-
-ll doask(vector<ll> v,ll s){
-  cout<<SZ(v);
-  for(ll k:v)cout<<" "<<k;
-  cout<<endl;
-  ll t;
-  cin>>t;
-  if(t < 0)exit(0);
-  if(t == 0)return s;
-  return v[t-1] + 1;
-}
-
+ll a[MAXn],b[MAXn],vis[MAXn],egs[MAXn];
+vector<ll> uni,v[MAXn];
 int main()
 {
     IOS();
-    //cout<<dfs(1,5)<<endl;
-    ll lst = 1;
-    for(int k = 5;;k--){
-      vector<ll> ask;
-      if(k == 1){
-        REP(i,min(lst,10000LL))ask.pb(i + lst);
-      }else{
-        ll now = lst;
-        REP(i,min(lst,10000LL)){
-          now = dfs(now,k - 1) + 2;
-          ask.pb(now - 1);
+    ll n;
+    cin>>n;
+    //n = 1000000;
+    REP(i,n)cin>>a[i]>>b[i];//a[i] = (9487234 ^ i), b[i] = (381245401 ^ i);
+    REP(i,n)uni.pb(a[i]),uni.pb(b[i]);
+    sort(ALL(uni));
+    uni.resize(unique(ALL(uni)) - uni.begin());
+    debug(uni);
+    REP(i,n)a[i] = lower_bound(ALL(uni),a[i]) - uni.begin(),b[i] = lower_bound(ALL(uni),b[i]) - uni.begin(),v[a[i]].pb(b[i]),v[b[i]].pb(a[i]),egs[a[i]]++;
+    ll l = -1,r = SZ(uni);
+    REP(i,n)debug(i,a[i],b[i]);
+    while(l!=r-1)
+    {
+      ll h = (l + r)/2,ok=1;
+      debug(l,r,h,uni[h]);
+      REP(i,n)if(a[i] > h){
+        l = h;
+        ok=0;
+        break;
+      }
+      debug(ok);
+      if(!ok)continue;
+      memset(vis,0,sizeof(ll) * (h+1));
+      vector<ll> stk;
+      REP(i,n)if(!vis[i]){
+        stk.pb(i);
+        vis[i] = 1;
+        ll pt = 0,eg = 0;
+        while(SZ(stk))
+        {
+          ll t = stk.back();
+          stk.pop_back();
+          eg += egs[t];
+          pt++;
+          for(ll k:v[t])if(k <= h && !vis[k]){
+            vis[k] = 1;
+            stk.pb(k);
+          }
+        }
+        debug(h,uni[h],i,uni[i],pt,eg);
+        if(pt < eg){
+          ok = 0;
+          break;
         }
       }
-      lst = doask(ask,lst);
+
+      if(!ok)l = h;
+      else r = h;
     }
+    if(r == SZ(uni))cout<<-1<<endl;
+    else cout<<uni[r]<<endl;
 }

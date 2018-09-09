@@ -38,55 +38,56 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-//#define endl '\n'
+#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=4e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll dt[6] = {0,10000,100020000LL,1000300030000LL,10004000600040000LL};
 
-ll dfs(ll x,ll k){ //start from x, using k move
-    if(k == 1)return x + min(x,10000LL) - 1;
-    if(x >= 10000)return x + dt[k] - 1;
-    ll lst = x - 2;
-    REP(_,x+1){
-      lst = dfs(lst + 2,k-1);
-    }
-    return lst;
+void mul2(ll &a){
+  a += a;
+  if(a >= MOD) a -= MOD;
 }
 
-ll doask(vector<ll> v,ll s){
-  cout<<SZ(v);
-  for(ll k:v)cout<<" "<<k;
-  cout<<endl;
-  ll t;
-  cin>>t;
-  if(t < 0)exit(0);
-  if(t == 0)return s;
-  return v[t-1] + 1;
-}
+set<ll> st;
+
 
 int main()
 {
     IOS();
-    //cout<<dfs(1,5)<<endl;
-    ll lst = 1;
-    for(int k = 5;;k--){
-      vector<ll> ask;
-      if(k == 1){
-        REP(i,min(lst,10000LL))ask.pb(i + lst);
+    ll n;
+    cin>>n;
+    ll tt = 1;
+    ll mx = -1,mn = INF;
+    ll ndet = 0;
+    REP(i,n)
+    {
+      string s;
+      ll t;
+      cin>>s>>t;
+      if(s == "ADD"){
+        if(t > mx && t < mn)ndet ++;
+        st.insert(t);
       }else{
-        ll now = lst;
-        REP(i,min(lst,10000LL)){
-          now = dfs(now,k - 1) + 2;
-          ask.pb(now - 1);
+        if(t < mx || t > mn){
+          tt = 0;
+          break;
         }
+        else if(t > mx && t < mn)mul2(tt);
+        auto it = st.lower_bound(t);
+        if(next(it) != st.end())mn = *next(it);
+        else mn = INF;
+        if(it != st.begin())mx = *prev(it);
+        else mx = -1;
+        st.erase(t);
+        ndet = 0;
       }
-      lst = doask(ask,lst);
     }
+    tt = tt * (ndet + 1) % MOD;
+    cout<<tt<<endl;
 }

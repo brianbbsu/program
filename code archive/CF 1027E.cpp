@@ -38,55 +38,51 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-//#define endl '\n'
+#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=5e2+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=998244353;
 const ll INF=ll(1e15);
 
-ll dt[6] = {0,10000,100020000LL,1000300030000LL,10004000600040000LL};
-
-ll dfs(ll x,ll k){ //start from x, using k move
-    if(k == 1)return x + min(x,10000LL) - 1;
-    if(x >= 10000)return x + dt[k] - 1;
-    ll lst = x - 2;
-    REP(_,x+1){
-      lst = dfs(lst + 2,k-1);
-    }
-    return lst;
+void add(ll &a,ll b)
+{
+    a += b;
+    if(a >= MOD)
+    a-= MOD;
 }
 
-ll doask(vector<ll> v,ll s){
-  cout<<SZ(v);
-  for(ll k:v)cout<<" "<<k;
-  cout<<endl;
-  ll t;
-  cin>>t;
-  if(t < 0)exit(0);
-  if(t == 0)return s;
-  return v[t-1] + 1;
+void sub(ll &a,ll b){
+  a-=b;
+  if(a < 0) a += MOD;
 }
+
+
+ll dp[MAXn][MAXn][2];
+ll dt[MAXn],pre[MAXn];
+
 
 int main()
 {
     IOS();
-    //cout<<dfs(1,5)<<endl;
-    ll lst = 1;
-    for(int k = 5;;k--){
-      vector<ll> ask;
-      if(k == 1){
-        REP(i,min(lst,10000LL))ask.pb(i + lst);
-      }else{
-        ll now = lst;
-        REP(i,min(lst,10000LL)){
-          now = dfs(now,k - 1) + 2;
-          ask.pb(now - 1);
-        }
-      }
-      lst = doask(ask,lst);
+    ll n,k;
+    cin>>n>>k;
+    dp[0][0][0] = dp[0][0][1] = 1;
+    REP(i,n)for(ll j = 0;j <= i;j++)REP(c,2)for(ll l = 1;i+l <= n;l++)
+    {
+      add(dp[i+l][max(j,l)][!c],dp[i][j][c]);
     }
+    REP(i,n+1)debug(i,dp[n][i][0],dp[n][i][1]);
+    REP(i,n+1)add(dt[i],dp[n][i][0]),add(dt[i],dp[n][i][1]),add(pre[i],dp[n][i][0]);
+    REP1(i,n)add(pre[i],pre[i-1]);
+    ll tt = 0;
+    REP1(i,n){
+    if(i >= k)break;
+    ll tmp = min(n,(k-1) / i);
+    add(tt,dt[i]*pre[tmp] % MOD);
+  }
+  cout<<tt<<endl;
 }
