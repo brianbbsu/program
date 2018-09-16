@@ -44,31 +44,29 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
-
+ll c[MAXn];
+queue<ll> q;
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n)cin>>c[i];
+    REP(i,m)
+    {
+      ll t;
+      cin>>t;
+      q.push(t);
     }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
-      }
+    ll tt = 0;
+    REP(i,n)
+    {
+      if(SZ(q) && q.front() >= c[i])q.pop(),tt++;
     }
+    cout<<tt<<endl;
 }

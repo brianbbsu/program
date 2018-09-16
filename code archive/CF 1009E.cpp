@@ -44,31 +44,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=998244353;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+ll dp[MAXn],d[MAXn];
 
+void add(ll &a,ll b){
+  a += b;
+  if(a>=MOD) a-= MOD;
+}
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
+    REP1(i,n)cin>>d[i],add(d[i],d[i-1]);
+    ll sum = 0,wsum = 0;
+    REP1(i,n)
+    {
+      dp[i] = d[i];
+      add(dp[i],sum);
+      add(dp[i],wsum);
+      add(sum,dp[i]);
+      add(wsum,wsum);
+      add(wsum,d[i]);
     }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
-      }
-    }
+    REP(i,n+1)debug(i,dp[i]);
+    cout<<dp[n]<<endl;
 }

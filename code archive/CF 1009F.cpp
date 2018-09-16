@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,31 +44,89 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+struct node{
+  ll dph,ct;
+  node *nxt;
+};
 
+vector<ll> v[MAXn];
+ll dph[MAXn],p[MAXn],h[MAXn];
+node *nd[MAXn];
+ii mx[MAXn];
+ll ans[MAXn];
+
+
+ii mg(node *&a,node *b)
+{
+  ii rt = {0,0};
+  if(a)debug(a->dph);
+  if(b)debug(b->dph);
+  if(!a){
+    a=b;
+    return rt;
+  }
+  node * ta = a,* tb = b;
+  while(ta && tb){
+    ta->ct += tb->ct;
+    debug(ta->ct);
+    rt = max(rt,{ta->ct,-ta->dph});
+    if(!ta->nxt){
+      ta->nxt = tb->nxt;
+      break;
+    }
+    ta = ta->nxt;
+    tb = tb->nxt;
+  }
+  return rt;
+}
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
+    REP(i,n-1)
+    {
+      ll a,b;
+      cin>>a>>b;
+      v[a].pb(b);
+      v[b].pb(a);
     }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    FILL(dph,-1);
+    queue<ll> q;
+    q.push(1);
+    dph[1] = 0;
+    p[1] = -1;
+    while(SZ(q))
+    {
+      ll t = q.front();q.pop();
+      for(ll k:v[t])if(dph[k] == -1)
+      {
+        dph[k] = dph[t] + 1;
+        q.push(k);
+        p[k] = t;
       }
     }
+    vector<ll> dt;
+    REP1(i,n)dt.pb(i);
+    sort(ALL(dt),[](int a,int b){return dph[a] > dph[b];});
+    debug(dt);
+    for(ll t : dt){
+      nd[t] = new node{dph[t],1,0};
+      mx[t] = ii(1,-dph[t]);
+      //if(p[t]!=-1)h[p[t]] = h[t] + 1;
+      for(ll k : v[t])if(dph[k] == dph[t] + 1)
+      {
+        debug(t,k,mx[t],mx[k]);
+        mx[t] = max(mx[t],mx[k]);
+        mx[t] = max(mx[t],mg(nd[t]->nxt,nd[k]));
+      }
+      ans[t] = -mx[t].Y - dph[t];
+    }
+    REP1(i,n)debug(i,mx[i]);
+    REP1(i,n)cout<<ans[i]<<endl;
 }

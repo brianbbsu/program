@@ -48,27 +48,23 @@ const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
-
+ll pre[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
-    }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
-      }
+    ll n,m,q;
+    cin>>n>>m>>q;
+    string a,b;
+    cin>>a>>b;
+    for(int i = 0;i + SZ(b) <= n;i++)if(a.substr(i,SZ(b)) == b)pre[i+1] = 1;
+    REP1(i,n)pre[i] += pre[i-1];
+    while(q--)
+    {
+      ll l,r;
+      cin>>l>>r;
+      r -= m-1;
+      if(r < l)cout<<0<<endl;
+      else cout<<pre[r] - pre[l-1]<<endl;
     }
 }

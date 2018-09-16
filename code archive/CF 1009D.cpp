@@ -44,31 +44,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+vector<ll> v[MAXn],pm;
+ll is[MAXn];
+ll n,m;
 
+void fin()
+{
+  cout<<"Possible"<<endl;
+  REP1(i,n)for(ll tmp:v[i])cout<<i<<" "<<tmp<<endl;
+  exit(0);
+}
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
-    }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    cin>>n>>m;
+    for(ll i = 2;i <= n;i ++)
+    {
+      if(!is[i])pm.pb(i);
+      for(ll j = 0;i * pm[j] <= n;j++)
+      {
+        is[i * pm[j]] = 1;
+        if(i % pm[j] == 0)break;
       }
     }
+    if(m < n-1 || m > n * (n-1) / 2){
+      cout<<"Impossible"<<endl;
+      return 0;
+    }
+    for(int i = 2;i<=n;i++)v[1].pb(i),m--;
+    if(m==0)fin();
+    for(int i = n;i > 1;i--)if(!is[i])
+    {
+      for(int j = i-1;j>1;j--)if(__gcd(i,j) == 1)
+      {
+        v[j].pb(i);
+        m--;
+        if(m==0)fin();
+      }
+    }
+    for(int i = n;i > 1;i--)if(is[i])
+    {
+      for(int j = i-1;j>1;j--)if(__gcd(i,j) == 1)
+      {
+        v[j].pb(i);
+        m--;
+        if(m==0)fin();
+      }
+    }
+    cout<<"Impossible"<<endl;
 }

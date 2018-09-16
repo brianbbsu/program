@@ -44,31 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
-
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
-
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
-    }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    ll n,h,a,b,T;
+    cin>>n>>h>>a>>b>>T;
+    while(T--)
+    {
+      ll ta,fa,tb,fb;
+      cin>>ta>>fa>>tb>>fb;
+      ll ans = 0;
+      if(ta==tb)ans=abs(fa-fb);
+      else
+      {
+        ans = abs(ta - tb);
+        if(fa < a)ans+=a-fa,fa = a;
+        if(fa > b)ans+=fa - b,fa = b;
+        if(fb < a)ans+=a-fb,fb = a;
+        if(fb > b)ans+=fb - b,fb = b;
+        ans += abs(fa - fb);
       }
+      cout<<ans<<endl;
     }
 }

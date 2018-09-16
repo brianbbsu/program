@@ -44,31 +44,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+ll p[MAXn],c[MAXn],u[MAXn],dt[MAXn];
+
+vector<ll> v[MAXn];
 
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
-    }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    ll n,m;
+    cin>>n>>m;
+    REP1(i,n)cin>>p[i]>>c[i],dt[i-1] = i;
+    sort(dt,dt+n,[](int a,int b){return c[a] < c[b];});
+
+    ll ct = 0,pct = 0,tt = 0;
+    REP1(i,n)if(p[i] == 1)ct++;else v[p[i]].pb(i);
+    for(ll i = 2;i<=m;i++)sort(ALL(v[i]),[](int a,int b){return c[a] > c[b];});
+    ll mn = INF;
+    for(ll i = n;i>=max(1LL,ct);i--)
+    {
+      if((i-1) * m + 1 < n)break;
+      for(ll j = 2;j<=m;j++)while(SZ(v[j]) >= i)
+      {
+        tt += c[v[j].back()];
+        u[v[j].back()] = 1;
+        v[j].pop_back();
+        pct ++;
       }
+      ll tmpct = 0,tmptt = 0;
+      for(ll j = 0;tmpct + ct + pct < i;j++)
+      {
+        if(p[dt[j]] != 1 && !u[dt[j]])tmpct++,tmptt += c[dt[j]];
+      }
+      debug(i,ct,pct,tt,tmpct,tmptt);
+      mn = min(mn,tmptt + tt);
     }
+    cout<<mn<<endl;
+
 }

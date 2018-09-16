@@ -44,31 +44,38 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e17);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+ll d[MAXn],dp[MAXn];
 
+inline ll sq(ll x){
+  return x * x;
+}
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
-    }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    ll n,X;
+    cin>>n>>X;
+    REP1(i,n)cin>>d[i],dp[i] = INF;
+    dp[0] = 0;
+    REP1(i,n)
+    {
+      ll tt = 0;
+      for(ll j = i;j>0;j--)
+      {
+        if(j==i)tt = 4 * d[i];
+        else
+        {
+          tt -= sq(i-j + 1) * d[j];
+          tt += sq(i-j + 1 + 1) * d[j];
+        }
+        debug(i,j,tt);
+        dp[i] = min(dp[i],dp[j-1] + (i-j+1+1) * X + d[i] + tt);
       }
     }
+    pary(dp,dp+n+1);
+    cout<<dp[n]<<endl;
 }

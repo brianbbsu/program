@@ -44,31 +44,80 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+const lf eps = 1e-9;
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+vector<ii> f;
+ll pre[MAXn];
 
+ll sy,a,b,n;
+
+lf proj(ll x,ll y,ll p){
+  return lf(p - x) * lf(y-sy) / lf(y) + lf(x);
+}
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
+    cin>>sy>>a>>b>>n;
+    REP1(i,n)
+    {
+      ll l,r;
+      cin>>l>>r;
+      f.pb({l,r});
+      pre[i] = r-l;
+      pre[i] += pre[i-1];
     }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    ll Q;
+    cin>>Q;
+    while(Q--)
+    {
+      ll x,y;
+      cin>>x>>y;
+      lf pa = lf(a - x) * lf(y) / lf(y-sy) + lf(x);
+      lf pb = lf(b - x) * lf(y) / lf(y-sy) + lf(x);
+      ll l = -1,r = n;
+      while(l!=r-1)
+      {
+        ll h = (l+r)/2;
+        if(f[h].Y > pa)r = h;
+        else l = h;
       }
+      ll p = r;
+      //ll p = upper_bound(ALL(f),make_pair(pa,pa),[](pair<lf,lf> a,pair<lf,lf> b){return pair<lf,lf>(a.Y,a.X) < pair<lf,lf>(b.Y,b.X);}) - f.begin();
+      if(p == n)
+      {
+        cout<<0<<endl;
+        continue;
+      }
+      l = p-1,r = n;
+      while(l!=r-1)
+      {
+        ll h = (l+r)/2;
+        if(f[h].X >= pb)r = h;
+        else l = h;
+      }
+      ll q = r;
+      //ll q = lower_bound(f.begin() + p,f.end(),make_pair(pb,pb)) - f.begin();
+      if(p == q)
+      {
+        cout<<"0.0000000000000"<<endl;
+        continue;
+      }
+      lf tt = 0;
+      q--;
+      if(p!=q)
+      {
+        tt = lf(pre[q] - pre[p+1]) * lf(y - sy) / y;
+        tt += min(lf(b),proj(x,y,f[p].Y)) -  max(lf(a),proj(x,y,f[p].X));
+        tt += min(lf(b),proj(x,y,f[q].Y)) -  max(lf(a),proj(x,y,f[q].X));
+
+      }else{
+        tt += min(lf(b),proj(x,y,f[p].Y)) -  max(lf(a),proj(x,y,f[p].X));
+      }
+      //tt = proj()
+      cout<<fixed<<setprecision(12)<<tt<<endl;
     }
 }

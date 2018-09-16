@@ -44,31 +44,55 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ii a[MAXn],b[MAXn];
-set<ii> st;
-ll tt = 0;
+ll dg[MAXn][2],c[MAXn],u[MAXn];
+vector<ll> v[MAXn];
+
 
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>a[i].X>>a[i].Y>>b[i].X>>b[i].Y;
-    REP(i,n){
-      if(a[i].X == b[i].X)tt += abs(a[i].Y - b[i].Y + 1);
-      else if(a[i].Y == b[i].Y)tt += abs(a[i].X - b[i].X + 1);
-      else tt += __gcd(abs(a[i].X - b[i].X),abs(a[i].Y - b[i].Y)) + 1;
+    ll n,m;
+    cin>>n>>m;
+    string s;
+    cin>>s;
+    REP1(i,n)c[i] = (s[i-1] == 'B');
+    REP(i,m)
+    {
+      ll a,b;
+      cin>>a>>b;
+      v[a].pb(b);
+      v[b].pb(a);
+      dg[a][c[a]==c[b]]++;
+      dg[b][c[a]==c[b]]++;
     }
-    REP(i,n)REP(j,i){
-      if(a[i] > b[i])swap(a[i],b[i]);
-      if(a[j] > b[j])swap(a[j],b[j]);
-      if(max(a[i].X,a[j].X) <= min(b[i].X,b[j].X)){
-        
+    queue<ll> q;
+    REP1(i,n)if(!min(dg[i][0],dg[i][1]))
+    {
+      u[i] = 1;
+      q.push(i);
+    }
+    while(SZ(q))
+    {
+      ll t = q.front();q.pop();
+      for(ll k:v[t])if(!u[k])
+      {
+        dg[k][c[t] == c[k]]--;
+        if(!min(dg[k][0],dg[k][1]))
+        {
+          u[k] = 1;
+          q.push(k);
+        }
       }
     }
+    REP1(i,n)if(!u[i])
+    {
+      cout<<"Yes"<<endl;
+      return 0;
+    }
+    cout<<"No"<<endl;
 }
