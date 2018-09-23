@@ -51,5 +51,10 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    ll a,b,x,y;
+    cin>>a>>b>>x>>y;
+    ll gc = __gcd(x,y);
+    x /= gc,y /= gc;
+    a/=x,b/=y;
+    cout<<min(a,b)<<endl;
 }

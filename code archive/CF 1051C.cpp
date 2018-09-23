@@ -48,11 +48,54 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
-
+ll d[MAXn],ct[MAXn],ans[MAXn];
 
 int main()
 {
     IOS();
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i],ct[d[i]] ++;
+    ll ct1 = 0,ct2 = 0,ct3 = 0;
+    for(int i = 1;i <= 100;i++)
+    {
+      if(ct[i] > 2)ct3++;
+      else if(ct[i] == 1)ct1++;
+      else if(ct[i] == 2)ct2++;
+    }
+    if(ct3 == 0 && ct1 % 2 == 1)
+    {
+      cout<<"NO"<<endl;
+      return 0;
+    }
+    cout<<"YES"<<endl;
+    ll tt;
+    if(ct1 % 2 == 0)tt = ct1 / 2;
+    else tt = ct1 / 2 + 1;
+    debug(ct1,ct2,ct3,tt);
+    map<ll,ll> mp;
+    if(ct1 < tt * 2)
+    {
+      for(int i = 1;i <= 100;i++)if(ct[i] > 2){
+        mp[i] = ct[i] - 1;
+        debug(i);
+        break;
+      }
+    }
+    for(int i = 1;i <= 100 && tt != 0;i++)if(ct[i] == 1)
+    {
+      mp[i]++,tt--;
+      debug(i);
+    }
+    REP(i,n)
+    {
+      if(mp[d[i]])
+      {
+        mp[d[i]] --;
+        ans[i] = 0;
+      }
+      else ans[i] = 1;
+    }
+    REP(i,n)if(ans[i])cout<<"A";else cout<<"B";
 
 }

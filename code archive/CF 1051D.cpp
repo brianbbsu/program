@@ -44,13 +44,44 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=2e3+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=998244353;
 const ll INF=ll(1e15);
 
+ll dp[MAXn][MAXn][2][2];
+
+void add(ll &a,ll b)
+{
+  a += b;
+  if(a >= MOD)a-=MOD;
+}
 
 int main()
 {
     IOS();
-
+    ll n,k;
+    cin>>n>>k;
+    dp[1][1][0][0] = 1;
+    dp[1][2][0][1] = 1;
+    dp[1][2][1][0] = 1;
+    dp[1][1][1][1] = 1;
+    for(int i = 2;i <= n;i++)for(int j = 1;j <= k;j++)REP(p,2)REP(q,2)
+    {
+      if(p == q)
+      {
+        add(dp[i][j][p][q],dp[i-1][j][p][q]);
+        add(dp[i][j][p][q],dp[i-1][j][!p][q]);
+        add(dp[i][j][p][q],dp[i-1][j][p][!q]);
+        add(dp[i][j][p][q],dp[i-1][j - 1][!p][!q]);
+      }
+      else {
+        add(dp[i][j][p][q],dp[i-1][j][p][q]);
+        add(dp[i][j][p][q],dp[i-1][j-1][!p][q]);
+        add(dp[i][j][p][q],dp[i-1][j-1][p][!q]);
+        if(j>=2)add(dp[i][j][p][q],dp[i-1][j - 2][!p][!q]);
+      }
+    }
+    ll tt = 0;
+    REP(p,2)REP(q,2)add(tt,dp[n][k][p][q]);
+    cout<<tt<<endl;
 }

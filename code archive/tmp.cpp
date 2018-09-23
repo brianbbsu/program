@@ -1,74 +1,128 @@
-#include <iostream>
+#include <bits/stdc++.h>
+#pragma GCC optimize("unroll-loops")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
 using namespace std;
-int main() {
-  int t,flag=0,cat=0;
-  int n=0,m=0;
-  cin >> t;
-  for(int i=0;i<t;i++){
-    cin >> n >> m;
-    int road[2][106]={0},temp=0;
-    int fac[15]={0};
-    for(int j=0;j<m;j++){
-        cin >> road[0][j] >> road[1][j];
+typedef long long ll;
+typedef double lf;
+typedef pair<ll,ll> ii;
+#define REP(i,n) for(int i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
+#define RST(i,n) memset(i,n,sizeof i)
+#define SZ(a) (int)a.size()
+#define ALL(a) a.begin(),a.end()
+#define X first
+#define Y second
+#define mkp make_pair
+#define pb push_back
+#define eb emplace_back
+#define pob pop_back
+#ifdef cold66
+#define debug(...) do{\
+    fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
+    _do(__VA_ARGS__);\
+}while(0)
+template<typename T>void _do(T &&_x){cerr<<_x<<endl;}
+template<typename T,typename ...S> void _do(T &&_x,S &&..._t){cerr<<_x<<", ";_do(_t...);}
+template<typename _a,typename _b> ostream& operator << (ostream &_s,const pair<_a,_b> &_p){return _s<<"("<<_p.X<<","<<_p.Y<<")";}
+template<typename It> ostream& _OUTC(ostream &_s,It _ita,It _itb)
+{
+    _s<<"{";
+    for(It _it=_ita;_it!=_itb;_it++)
+    {
+        _s<<(_it==_ita?"":",")<<*_it;
     }
-    for(int k=0;k<m;k++){
-      for (int j=0; j<n; j++) {
-          if(road[0][k]==fac[j]||road[1][k]==fac[j]){
-            flag=1;
-            break;
-          }
-      }
-      if(flag==0){
-        if (road[0][k]<road[1][k]) {
-          fac[cat]=road[0][k];
-          cat++;
-        }
-        else{
-          fac[cat]=road[1][k];
-          cat++;
-        }
-      }
-      flag=0;
+    _s<<"}";
+    return _s;
+}
+template<typename _a> ostream &operator << (ostream &_s,vector<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a> ostream &operator << (ostream &_s,set<_a> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _a,typename _b> ostream &operator << (ostream &_s,map<_a,_b> &_c){return _OUTC(_s,ALL(_c));}
+template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
+#define IOS()
+#else
+#define debug(...)
+#define pary(...)
+#define endl '\n'
+#define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
+#endif // cold66
+//}
+template<class T> inline bool chkmax(T &a, const T &b) { return b > a ? a = b, true : false; }
+template<class T> inline bool chkmin(T &a, const T &b) { return b < a ? a = b, true : false; }
+template<class T> using MaxHeap = priority_queue<T>;
+template<class T> using MinHeap = priority_queue<T, vector<T>, greater<T>>;
+
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=1000000007;
+const ll INF=0x3f3f3f3f;
+
+int main(){
+  IOS();
+  int t;
+  cin>>t;
+  while(t--){
+    string s;
+    cin>>s;
+    int up=0,l=0,dig=0;
+    int n = SZ(s);
+    REP(i,n){
+      if( isupper(s[i]) ) up++;
+      if( islower(s[i]) ) l++;
+      if( isdigit(s[i]) ) dig++;
     }
-    for (int check=0; check<cat; check++) {
-      int chearray[106]={0};
-      int countt=0;
-      int flag1=0;
-      for (int check1=0; check1<m; check1++) {
-        if (fac[check]==road[0][check1]) {
-          chearray[countt]=road[1][check1];
-          countt++;
-        }
-        else if (fac[check]==road[1][check1]) {
-          chearray[countt]=road[0][check1];
-          countt++;
-        }
-      }
-      for (int b=0; b<countt; b++) {
-        for (int c=0; c<cat; c++) {
-          if(chearray[b]==fac[c]){
-            flag1=1;
-            break;
-          }
-          else{
-            flag1=0;
-          }
-        }
-        if(flag1==0) break;
-      }
-      if(flag1==1){
-        temp++;
-        fac[check]=0;
-      }
+    if( !up && !l ){
+      s[0] = 'A';
+      s[1] = 'a';
+      cout<<s<<endl;
     }
-    cout << cat-temp << "\n";
-    for (int z=0; z<cat; z++) {
-      if(fac[z]!=0){
-        cout << fac[z] << " ";
-      }
+    else if( !up && !dig ){
+      s[0] = 'A';
+      s[1] = '1';
+      cout<<s<<endl;
     }
-    cout << "\n";
-    cat=0;
+    else if( !dig && !l ){
+      s[0] = '1';
+      s[1] = 'a';
+      cout<<s<<endl;
+    }
+    else if( !up ){
+      REP(i,n){
+        if( islower(s[i]) && l>1 ){
+          s[i] = 'A';
+          break;
+        }
+        else if( isdigit(s[i]) && dig>1 ){
+          s[i] = 'A';
+          break;
+        }
+      }
+      cout<<s<<endl;
+    }
+    else if( !l ){
+      REP(i,n){
+        if( isupper(s[i]) && up>1 ){
+          s[i] = 'a';
+          break;
+        }
+        else if( isdigit(s[i]) && dig>1 ){
+          s[i] = 'a';
+          break;
+        }
+      }
+      cout<<s<<endl;
+    }
+    else if( !dig ){
+      REP(i,n){
+        if( islower(s[i]) && l>1 ){
+          s[i] = '1';
+          break;
+        }
+        else if( isupper(s[i]) && up>1 ){
+          s[i] = '1';
+          break;
+        }
+      }
+      cout<<s<<endl;
+    }
+    else cout<<s<<endl;
   }
-  return 0;
 }

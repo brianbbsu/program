@@ -1,5 +1,18 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
+#include<queue>
+#include<stack>
+
 using namespace std;
 typedef long long ll;
 typedef double lf;
@@ -52,5 +65,9 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-
+    IOS();
+    ll n;
+    cin>>n;
+    if(n > 0)cout<<"yes"<<endl;
+    else cout<<"no"<<endl;
 }

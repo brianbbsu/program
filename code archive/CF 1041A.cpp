@@ -48,9 +48,18 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    ll mn=INF,mx = 0;
+    REP(i,n)
+    {
+      ll x;
+      cin>>x;
+      mn=min(mn,x);
+      mx=max(mx,x);
+    }
+    cout<<mx-mn+1-n<<endl;
 }

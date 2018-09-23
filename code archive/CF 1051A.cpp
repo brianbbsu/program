@@ -48,8 +48,76 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn],ct[5];
+
+char get(ll x)
+{
+  if(x == 0)return 'a';
+  else if(x==1)return 'A';
+  else return '1';
+}
+
 int main()
 {
     IOS();
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      string s;
+      cin>>s;
+      REP(i,SZ(s))
+      {
+        if(islower(s[i]))d[i] = 0;
+        else if(isupper(s[i]))d[i] = 1;
+        else d[i] = 2;
+      }
+      FILL(ct,0);
+      REP(i,SZ(s))ct[d[i]]++;
+      if(min({ct[0],ct[1],ct[2]}) > 0){
+        cout<<s<<endl;
+        continue;
+      }
+      bool ok = 0;
+      REP(i,SZ(s))REP(j,3)
+      {
+        if(ok)continue;
+        ct[d[i]]--;
+        ct[j]++;
+        if(min({ct[0],ct[1],ct[2]}) > 0)
+        {
+          s[i] = get(j);
+          ok = 1;
+          break;
+        }
+        ct[j]--;
+        ct[d[i]]++;
+      }
+      if(ok)
+      {
+        cout<<s<<endl;
+        continue;
+      }
+      else REP(i,SZ(s)-1)REP(k,3)REP(l,3)
+      {
+        if(ok)continue;
+        ct[d[i]]--;
+        ct[d[i+1]]--;
+        ct[k]++;
+        ct[l]++;
+        if(min({ct[0],ct[1],ct[2]}) > 0)
+        {
+          s[i] = get(k);
+          s[i+1] = get(l);
+          ok = 1;
+          break;
+        }
+        ct[d[i]]++;
+        ct[d[i+1]]++;
+        ct[k]--;
+        ct[l]--;
+      }
+      cout<<s<<endl;
 
+    }
 }

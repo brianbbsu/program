@@ -48,7 +48,7 @@ const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e17);
 
-ll d[MAXn],dp[MAXn];
+ll d[MAXn],dp[MAXn],pre[MAXn];
 
 inline ll sq(ll x){
   return x * x;
@@ -59,23 +59,27 @@ int main()
     IOS();
     ll n,X;
     cin>>n>>X;
-    REP1(i,n)cin>>d[i],dp[i] = INF;
-    dp[0] = 0;
-    REP1(i,n)
+    REP1(i,n)cin>>d[i],pre[i] = d[i] + pre[i-1];
+    ll mn = INF;
+    for(ll i = n;i > 0;i--)
     {
-      ll tt = 0;
-      for(ll j = i;j>0;j--)
+      ll tt = X * i + X * n,it = n;
+      for(ll j = 0;;j++)
       {
-        if(j==i)tt = 4 * d[i];
-        else
-        {
-          tt -= sq(i-j + 1) * d[j];
-          tt += sq(i-j + 1 + 1) * d[j];
+        ll ct = i;
+        if(j==0)ct += i;
+        if(ct >= it){
+          tt += (pre[it] - pre[0]) * (2 * j + 5);
+          break;
         }
-        debug(i,j,tt);
-        dp[i] = min(dp[i],dp[j-1] + (i-j+1+1) * X + d[i] + tt);
+        else{
+          tt += (pre[it] - pre[it - ct]) * (2 * j + 5);
+          it -= ct;
+        }
+        if(tt > INF)
+        break;
       }
+      mn = min(mn,tt);
     }
-    pary(dp,dp+n+1);
-    cout<<dp[n]<<endl;
+    cout<<mn<<endl;
 }

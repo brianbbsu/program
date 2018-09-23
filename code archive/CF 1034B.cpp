@@ -48,8 +48,42 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+
+void qt(ll ans)
+{
+  cout<<ans<<endl;
+  exit(0);
+}
+
 int main()
 {
     IOS();
+    ll n,m;
+    cin>>n>>m;
 
+    if(n > m)swap(n,m);
+    if(n == 1)
+    {
+      ll tmp = m / 6;
+      m %= 6;
+      if(m <= 3)qt(6LL * tmp);
+      else if(m == 4)qt(6LL * tmp + 2);
+      else if(m == 5)qt(6LL * tmp + 4);
+    }
+    else if(n == 2)
+    {
+      if(m == 2)qt(0);
+      else if(m == 3)qt(4);
+      else if(m == 7)qt(12);
+      else qt(n * m);
+    }else if(n==3)
+    {
+      if(m % 2 == 1)qt(n * m - 1);
+      else qt(n * m);
+    }
+    else
+    {
+      if((n * m) % 2 == 0)qt(n * m);
+      else qt(n * m - 1);
+    }
 }

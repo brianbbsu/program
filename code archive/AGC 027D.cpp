@@ -44,12 +44,62 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+
+ll ispm[10000];
+vector<ll> pm;
+ll d[MAXn][MAXn];
+
+
+ll lcm(vector<ll> v)
+{
+  ll res = 1;
+  for(ll x:v)
+  {
+    ll g = __gcd(x,res);
+    res = (res / g) * x;
+  }
+  return res;
+}
 
 int main()
 {
     IOS();
+    for(int i = 2;SZ(pm) < 1010;i++)
+    {
+      if(!ispm[i])pm.pb(i);
+      for(int j = 0;pm[j] * i < 10000;j++)
+      {
+        ispm[pm[j] * i] = 1;
+        if(i % pm[j] == 0)break;
+      }
+    }
+    debug(pm.back());
+    ll n;
+    cin>>n;
+    REP(i,n + 2)REP(j,n + 2)
+    {
+      if((i + j) % 2 != 0)continue;
+      ll a = (i + j) / 2 ,b = (i + n + 1 - j) / 2 + n + 2 + 1;
+      d[i][j] = pm[a] * pm[b];
+      debug(i,j,a,b);
+    }
+    REP1(i,n)REP1(j,n)
+    {
+      if((i + j) % 2 == 0)continue;
+      vector<ll> tmp;
+      tmp.pb(d[i-1][j]);
+      tmp.pb(d[i][j - 1]);
+      tmp.pb(d[i+1][j]);
+      tmp.pb(d[i][j + 1]);
+      d[i][j] = lcm(tmp) + 1;
+    }
+
+    REP1(i,n)
+    {
+      REP1(j,n)cout<<d[i][j]<<" \n"[j==n];
+    }
 
 }

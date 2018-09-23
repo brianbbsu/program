@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,13 +44,49 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn = 3e5 + 5,MAXc=15000000+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+
+ll ispm[MAXc];
+vector<ll> pm;
+
+ll d[MAXn],ct[MAXc];
 
 
 int main()
 {
     IOS();
-
+    for(ll i = 2;i<MAXc;i++)
+    {
+      if(!ispm[i])pm.pb(i),ispm[i] = i;
+      for(int j = 0;pm[j] * i < MAXc;j++)
+      {
+        ispm[pm[j] * i] = pm[j];
+        if(i % pm[j] == 0)break;
+      }
+    }
+    debug("hihi");
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    ll gc = d[0];
+    REP(i,n)gc = __gcd(gc,d[i]);
+    REP(i,n)d[i]/=gc;
+    REP(i,n)
+    {
+      while(d[i] > 1)
+      {
+        ll t = ispm[d[i]];
+        while(d[i] % t == 0)d[i]/=t;
+        ct[t]++;
+      }
+    }
+    ll mx = 0;
+    for(int i = 2;i<MAXc;i++)mx=max(mx,ct[i]);
+    if(mx == 0)
+    {
+      cout<<-1<<endl;
+    }
+    else cout<<n - mx<<endl;
 }
