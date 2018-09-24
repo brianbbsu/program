@@ -48,89 +48,103 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-string its[2*MAXn];
-
-
-vector<string> d[2];
-
-set<string> st[2],tst[2],tmpst;
-
-vector<string> dt[2][2];//to 0 or to 1 / inside another?
-
-void mv(string a,string b)
+bool isnum(string s)
 {
-  cout<<"move"<<" "<<a<<" "<<b<<endl;
+  if(SZ(s) == 1 && isdigit(s[0]))return 1;
+  else if(s[0] == '0')return 0;
+  for(char c:s)if(!isdigit(c))return 0;
+  return 1;
 }
 
+ll usd[MAXn];
 
+string d[MAXn];
+ll tp[MAXn];
+
+vector<ll> v[2][2]; // 0,1 = ex or reg , 0,1 = in another?
+queue<ll> exq,regq;
+
+vector<pair<string,string> > op;
 
 int main()
 {
     IOS();
-    REP1(i,2*MAXn-1)
-    {
-      stringstream ss("");
-      ss<<i;
-      ss>>its[i];
-    }
-    ll n;
+    ll n,ctex=0;
     cin>>n;
+    REP(i,n)cin>>d[i]>>tp[i],tp[i] = !tp[i];
+    REP(i,n)if(tp[i] == 0)ctex++;
+
     REP(i,n)
     {
-      string s;
-      cin>>s;
-      ll t;
-      cin>>t;
-      d[!t].pb(s);
-    }
-    REP1(i,SZ(d[0]))st[0].insert(its[i]),tst[0].insert(its[i]);
-    REP1(i,SZ(d[1]))st[1].insert(its[i+SZ(d[0])]),tst[1].insert(its[i+SZ(d[0])]);
-
-    REP(k,2)
-    {
-      REP(i,SZ(d[k]))
-      {
-        if(st[k].count(d[k][i]))
+      if(isnum(d[i])){
+        ll tmp = stoll(d[i]);
+        if(tp[i] == 0)
         {
-          st[k].erase(d[k][i]);
-          continue;
+          if(tmp >=1 && tmp <= ctex)usd[tmp] = 1;
+          else if(tmp > ctex && tmp <= n)usd[tmp] = 1,v[0][1].pb(i);
+          else v[0][0].pb(i);
+        }else{
+          if(tmp >=1 && tmp <= ctex)usd[tmp] = 1,v[1][1].pb(i);
+          else if(tmp > ctex && tmp <= n)usd[tmp] = 1;
+          else v[1][0].pb(i);
         }
-        if(tst[!k].count(d[k][i]))dt[k][1].pb(d[k][i]);
-        else dt[k][0].pb(d[k][i]);
+      }
+      else{
+        if(tp[i] == 0)v[0][0].pb(i);
+        else v[1][0].pb(i);
       }
     }
-
-    REP(i,2)REP(j,2)debug(i,j,SZ(dt[i][j]),dt[i][j]);
-    debug(st[0],st[1]);
-
-    ll cc=min(SZ(dt[0][1]),SZ(dt[1][1]));
-
-    cout<<SZ(st[0])+SZ(st[1])+(cc?1:0)<<endl;
-
-    if(cc)
+    REP1(i,n)if(!usd[i])
     {
-      for(int i=n+1;i<=2*n+3;i++)tmpst.insert(its[i]);
-      for(string &s:d[0])tmpst.erase(s);
-      for(string &s:d[1])tmpst.erase(s);
-      mv(dt[0][1][0],*tmpst.begin());
-      REP(i,cc-1)
+      if(i <= ctex)exq.push(i);
+      else regq.push(i);
+    }
+    bool wt = 0;
+    while(SZ(v[0][0]) || SZ(v[0][1]) || SZ(v[1][0]) || SZ(v[1][1])){
+      debug(v[0][0],v[0][1],v[1][0],v[1][1],SZ(exq),SZ(regq),op);
+      if(!SZ(exq) && !SZ(regq))
       {
-        mv(dt[1][1][i],dt[0][1][i]);
-        mv(dt[0][1][i+1],dt[1][1][i]);
+        assert(SZ(v[0][1]) && SZ(v[1][1]));
+        ll a = v[0][1].back(),b = v[1][1].back();
+        v[0][1].pop_back();v[1][1].pop_back();
+        op.pb({d[a],"bbb123"});
+        op.pb({d[b],d[a]});
+        wt = 1;
+        exq.push(stoll(d[b]));
       }
-      mv(dt[1][1][cc-1],dt[0][1][cc-1]);
-      mv(*tmpst.begin(),dt[1][1][cc-1]);
-      REP(i,cc)st[0].erase(dt[1][1][i]),st[1].erase(dt[0][1][i]);
+      else if(SZ(exq))
+      {
+        ll t = exq.front();
+        exq.pop();
+        if(SZ(v[0][1]))
+        {
+          ll a = v[0][1].back();v[0][1].pop_back();
+          op.pb({d[a],to_string(t)});
+          regq.push(stoll(d[a]));
+        }else{
+          ll a = v[0][0].back();v[0][0].pop_back();
+          op.pb({d[a],to_string(t)});
+        }
+      }
+      else{
+        ll t = regq.front();
+        regq.pop();
+        if(SZ(v[1][1]))
+        {
+          ll a = v[1][1].back();v[1][1].pop_back();
+          op.pb({d[a],to_string(t)});
+          exq.push(stoll(d[a]));
+        }else{
+          ll a = v[1][0].back();v[1][0].pop_back();
+          op.pb({d[a],to_string(t)});
+        }
+      }
     }
-    REP(k,2)for(int i=cc;i<SZ(dt[k][1]);i++)
-    {
-      mv(dt[k][1][i],*st[k].begin());
-      st[k].erase(*st[k].begin());
+    if(wt){
+      ll t = exq.front();
+      exq.pop();
+      op.pb({"bbb123",to_string(t)});
     }
-    REP(k,2)for(int i=0;i<SZ(dt[k][0]);i++)
-    {
-      mv(dt[k][0][i],*st[k].begin());
-      st[k].erase(*st[k].begin());
-    }
-    debug(st[0],st[1]);
+    cout<<SZ(op)<<endl;
+    for(auto &pr:op)cout<<"move "<<pr.X<<" "<<pr.Y<<endl;
 }

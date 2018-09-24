@@ -44,40 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e17);
-
-ll d[MAXn];
+const ll INF=ll(1e15);
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i];
-    if(n == 1)
+    ll n,m,k;
+    cin>>n>>m>>k;
+    ll nm = n * m;
+    ll g = __gcd(nm,k);
+    nm /= g;
+    k /= g;
+    if(k != 1 && k != 2)
     {
-      cout<<d[0]<<endl;
+      cout<<"NO"<<endl;
       return 0;
     }
-    ll tt = 0,fgneg = 0,fgpos = 0;
-    REP(i,n)
-    {
-      if(d[i] < 0)tt -= d[i],fgneg = 1;
-      else tt += d[i],fgpos = 1;
-    }
-    if(!fgneg)
-    {
-      ll mn = INF;
-      REP(i,n)if(d[i] >= 0)mn=min(mn,d[i]);
-      tt -= 2 * mn;
-    }
-    else if(!fgpos)
-    {
-      ll mx = -INF;
-      REP(i,n)if(d[i] < 0)mx=max(mx,d[i]);
-      tt += 2 * mx;
-    }
-    cout<<tt<<endl;
+    if(k == 1)nm *= 2;
+    ll tmp = (nm - 1) / n + 1;
+    nm = tmp * n - nm;
+    debug(ii(n,nm),ii(1,tmp));
+    cout<<"YES"<<endl;
+    cout<<0<<" "<<0<<endl;
+    cout<<n<<" "<<nm<<endl;
+    cout<<1<<" "<<tmp<<endl;
 }

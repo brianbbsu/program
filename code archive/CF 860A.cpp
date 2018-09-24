@@ -50,9 +50,13 @@ const ll INF=ll(1e15);
 
 
 
+int isval(char c){
+  string val = "aeiou";
+  for(char x:val)if(c == x)return 1;
+  return 0;
+}
 
-
-ll p[MAXn],ct[MAXn];
+ll dp[MAXn],lst[MAXn];
 
 int main()
 {
@@ -60,41 +64,34 @@ int main()
     string s;
     cin>>s;
     ll n=SZ(s);
-    p[0]=-1;
-    ct[0]=0;
+    REP1(i,n)dp[i] = INF;
+    dp[0] = 0;
     REP(i,n)
     {
-      ct[i+1]=INF;
-      set<char> st;
-      bool ok=1;
-      ll tct=0;
-
-      for(int j=i;j>=0;j--)
+      ll tt=0,fg=0;
+      for(int j = i;j>=0;j--)
       {
-        if(!(s[j]=='a'||s[j]=='e'||s[j]=='i'||s[j]=='o'||s[j]=='u'))tct++;
-        else tct=0;
-        if(tct>=3)ok=0;
-        st.insert(s[j]);
-
-        if(!ok&&SZ(st)>1)break;
-        if(ct[j]+1<ct[i+1])
+        if(isval(s[j]))tt=0,fg=0;
+        else
         {
-          ct[i+1]=ct[j]+1;
-          p[i+1]=j;
+          tt ++;
+          if(tt != 1 && s[j] != s[j+1])fg=1;
+          if(tt >= 3 && fg)break;
+        }
+        if(dp[j] + 1 < dp[i+1])
+        {
+          dp[i+1] = dp[j] + 1;
+          lst[i+1] = j;
         }
       }
     }
-    ll it=n;
-    vector<string> ans;
-    pary(p,p+n+1);
-    while(p[it]!=-1)
+    vector<string> v;
+    ll now = n;
+    while(now != 0)
     {
-      debug(it,p[it]);
-      ans.pb(s.substr(p[it],it-p[it]));
-      it=p[it];
+      v.pb(s.substr(lst[now],now - lst[now]));
+      now = lst[now];
     }
-    reverse(ALL(ans));
-    REP(i,SZ(ans))cout<<(i?" ":"")<<ans[i];
-    cout<<endl;
-
+    reverse(ALL(v));
+    for(string tmp:v)cout<<tmp<<" ";
 }

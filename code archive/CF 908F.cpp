@@ -44,40 +44,67 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e17);
+const ll INF=ll(1e15);
 
-ll d[MAXn];
+#define G 0
+#define B 1
+#define R 2
+
+vector<ii> v;
+
+
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    if(n == 1)
-    {
-      cout<<d[0]<<endl;
-      return 0;
-    }
-    ll tt = 0,fgneg = 0,fgpos = 0;
     REP(i,n)
     {
-      if(d[i] < 0)tt -= d[i],fgneg = 1;
-      else tt += d[i],fgpos = 1;
+      ll p;
+      char c;
+      cin>>p>>c;
+      if(c == 'G')v.pb({p,G});
+      if(c == 'R')v.pb({p,R});
+      if(c == 'B')v.pb({p,B});
     }
-    if(!fgneg)
+
+    ll mxr = 0,mxb = 0,fgr = 0,fgb = 0,lstb = -1,lstr = -1,lstg = -1,ttr = 0,ttb = 0,tt = 0;
+    for(ii pr:v)
     {
-      ll mn = INF;
-      REP(i,n)if(d[i] >= 0)mn=min(mn,d[i]);
-      tt -= 2 * mn;
+      ll p = pr.X,clr = pr.Y;
+      if(clr == R)
+      {
+        if(lstr != -1)mxr = max(mxr,p - lstr),ttr += p - lstr;
+        lstr = p;
+        fgr = 1;
+      }
+      else if(clr == B)
+      {
+        if(lstb != -1)mxb = max(mxb,p - lstb),ttb += p - lstb;
+        lstb = p;
+        fgb = 1;
+      }
+      else // clr == G
+      {
+          if(fgr)mxr = max(mxr,p - lstr),ttr += p - lstr;
+          if(fgb)mxb = max(mxb,p - lstb),ttb += p - lstb;
+
+          if(lstg == -1)tt += ttr + ttb;
+          else if(!fgr || !fgb)
+          {
+            tt += p - lstg;
+            if(fgr)tt += ttr - mxr;
+            if(fgb)tt += ttb - mxb;
+          }
+          else{
+            tt += min(p - lstg + ttr - mxr + ttb - mxb,2 * (p-lstg));
+          }
+          mxr = 0,mxb = 0,fgr = 0,fgb = 0,lstb = p,lstr = p,lstg = p,ttr = 0,ttb = 0;
+      }
     }
-    else if(!fgpos)
-    {
-      ll mx = -INF;
-      REP(i,n)if(d[i] < 0)mx=max(mx,d[i]);
-      tt += 2 * mx;
-    }
+    tt += ttr + ttb;
     cout<<tt<<endl;
 }

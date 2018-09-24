@@ -44,40 +44,51 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e17);
+const ll INF=ll(1e15);
 
-ll d[MAXn];
+ll d[MAXn],pre[MAXn],prect[2][MAXn];
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    if(n == 1)
+    REP1(i,n)
     {
-      cout<<d[0]<<endl;
-      return 0;
+      ll x,c = 0;
+      cin>>x;
+      while(x > 0)
+      {
+        if(x & 1)c++;
+        x /= 2;
+      }
+      d[i] = c;
+      pre[i] = c + pre[i-1];
+      prect[pre[i] & 1][i]++;
+      REP(j,2)prect[j][i] += prect[j][i-1];
     }
-    ll tt = 0,fgneg = 0,fgpos = 0;
-    REP(i,n)
+    pary(d+1,d+1+n);
+    pary(pre+1,pre+1+n);
+    pary(prect[0]+1,prect[0]+1+n);
+    pary(prect[1]+1,prect[1]+1+n);
+    ll tt = 0;
+    REP1(i,n)
     {
-      if(d[i] < 0)tt -= d[i],fgneg = 1;
-      else tt += d[i],fgpos = 1;
-    }
-    if(!fgneg)
-    {
-      ll mn = INF;
-      REP(i,n)if(d[i] >= 0)mn=min(mn,d[i]);
-      tt -= 2 * mn;
-    }
-    else if(!fgpos)
-    {
-      ll mx = -INF;
-      REP(i,n)if(d[i] < 0)mx=max(mx,d[i]);
-      tt += 2 * mx;
+      ll tmp = 0,mx = 0;
+      for(int j = 0;j<=60 && i + j <= n;j++)
+      {
+        tmp += d[i + j];
+        mx = max(mx,d[i + j]);
+        debug(i,j,tmp,mx);
+        if(mx * 2 <= tmp && tmp % 2 == 0)tt++;
+      }
+      if(i + 60 < n)
+      {
+        if(pre[i-1] & 1)tt += prect[1][n] - prect[1][i + 60];
+        else tt += prect[0][n] - prect[0][i + 60];
+      }
     }
     cout<<tt<<endl;
 }
