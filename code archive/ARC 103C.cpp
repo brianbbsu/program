@@ -44,59 +44,30 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll bit[MAXn],ct[MAXn];
-void add(ll x,ll k,ll c)
-{
-  while(x < MAXn)bit[x] += k,ct[x] += c,x += x & -x;
-}
-void rem(ll x,ll k,ll c)
-{
-  while(x < MAXn)bit[x] += k,ct[x] -= c,x += x & -x;
-}
-ii qr(ll x)
-{
-  ll rt = 0,c = 0;
-  while(x)rt+=bit[x],c += ct[x],x -= x & -x;
-  return ii(rt,c);
-}
-
-ll d[MAXn],ans[MAXn],qrl[MAXn],qrr[MAXn];
-vector<ll> stk;
-vector<ii> dt;
+map<ll,ll> mp[2];
+vector<ii> dt[2];
 
 int main()
 {
     IOS();
-    ll n,q,it;
-    cin>>n>>q;
-    REP1(i,n)cin>>d[i];
-    REP(i,q)cin>>qrl[i]>>qrr[i],ans[i] = 1;
-
-    stk.clear();
-    dt.clear();
-    REP1(i,n)
+    ll n;
+    cin>>n;
+    REP(i,n)
     {
-      while(SZ(stk) && d[stk.back()] <= d[i])stk.pop_back();
-      if(!SZ(stk))dt.pb(ii(1,i));
-      else dt.pb(ii(stk.back(),i));
-      stk.pb(i);
+      ll x;
+      cin>>x;
+      mp[i&1][x]++;
     }
-    sort(ALL(dt));
-    FILL(bit,0);
-    FILL(ct,0);
-    for(ii tmp:dt)ins(tmp.Y,tmp.Y - tmp.X,0);
-    it = 0;
-    REP1(i,n)
-    {
-      while(it != SZ(dt) && dt[it].X <= i){
-        rem(dt[it].Y,dt[it].Y - dt[it].X,0);
-        ins(dt[it].Y,dt[it].Y,1);
-        it++;
-      }
-    }
-
+    for(auto tmp:mp[0])dt[0].pb(ii(tmp.Y,tmp.X));
+    for(auto tmp:mp[1])dt[1].pb(ii(tmp.Y,tmp.X));
+    dt[0].pb(ii(0,-1));
+    dt[1].pb(ii(0,-1));
+    sort(ALL(dt[0]),greater<ii>());
+    sort(ALL(dt[1]),greater<ii>());
+    if(dt[0][0].Y != dt[1][0].Y)cout<<n - dt[0][0].X - dt[1][0].X<<endl;
+    else cout<<min(n - dt[0][0].X - dt[1][1].X,n - dt[0][1].X - dt[1][0].X)<<endl;
 }

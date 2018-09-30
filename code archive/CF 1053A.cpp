@@ -54,20 +54,29 @@ int main()
     ll n,m,k;
     cin>>n>>m>>k;
     ll nm = n * m;
-    ll g = __gcd(nm,k);
-    nm /= g;
-    k /= g;
+    ll gn = __gcd(n,k);
+    n /= gn,k/=gn;
+    ll gm = __gcd(m,k);
+    m /= gm;
+    k /= gm;
     if(k != 1 && k != 2)
     {
       cout<<"NO"<<endl;
       return 0;
     }
-    if(k == 1)nm *= 2;
-    ll tmp = (nm - 1) / n + 1;
-    nm = tmp * n - nm;
-    debug(ii(n,nm),ii(1,tmp));
+    if(k == 1)
+    {
+      if(gn > 1)n *=2;
+      else m *= 2;
+    }
     cout<<"YES"<<endl;
     cout<<0<<" "<<0<<endl;
+    cout<<n<<" "<<0<<endl;
+    cout<<0<<" "<<m<<endl;
+    /*ll tmp = (nm - 1) / n + 1;
+    nm = tmp * n - nm;
+    debug(ii(n,nm),ii(1,tmp));
+    cout<<0<<" "<<0<<endl;
     cout<<n<<" "<<nm<<endl;
-    cout<<1<<" "<<tmp<<endl;
+    cout<<1<<" "<<tmp<<endl;*/
 }

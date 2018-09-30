@@ -44,59 +44,35 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll bit[MAXn],ct[MAXn];
-void add(ll x,ll k,ll c)
-{
-  while(x < MAXn)bit[x] += k,ct[x] += c,x += x & -x;
-}
-void rem(ll x,ll k,ll c)
-{
-  while(x < MAXn)bit[x] += k,ct[x] -= c,x += x & -x;
-}
-ii qr(ll x)
-{
-  ll rt = 0,c = 0;
-  while(x)rt+=bit[x],c += ct[x],x -= x & -x;
-  return ii(rt,c);
-}
-
-ll d[MAXn],ans[MAXn],qrl[MAXn],qrr[MAXn];
-vector<ll> stk;
-vector<ii> dt;
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    ll n,q,it;
-    cin>>n>>q;
-    REP1(i,n)cin>>d[i];
-    REP(i,q)cin>>qrl[i]>>qrr[i],ans[i] = 1;
-
-    stk.clear();
-    dt.clear();
-    REP1(i,n)
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    ll g = d[0];
+    REP(i,n)g = __gcd(d[i],g);
+    if(g > 1)
     {
-      while(SZ(stk) && d[stk.back()] <= d[i])stk.pop_back();
-      if(!SZ(stk))dt.pb(ii(1,i));
-      else dt.pb(ii(stk.back(),i));
-      stk.pb(i);
+      cout<<"YES"<<endl;
+      cout<<0<<endl;
+      return 0;
     }
-    sort(ALL(dt));
-    FILL(bit,0);
-    FILL(ct,0);
-    for(ii tmp:dt)ins(tmp.Y,tmp.Y - tmp.X,0);
-    it = 0;
-    REP1(i,n)
+    ll tt = 0, now = 0;
+    REP(i,n)
     {
-      while(it != SZ(dt) && dt[it].X <= i){
-        rem(dt[it].Y,dt[it].Y - dt[it].X,0);
-        ins(dt[it].Y,dt[it].Y,1);
-        it++;
-      }
+      if(d[i] & 1)now++;
+      else if(now & 1)tt+=(now+1)/2 + 1,now=0;
+      else tt += now/2,now=0;
     }
-
+    if(now & 1)tt+=(now+1)/2 + 1,now=0;
+    else tt += now/2,now=0;
+    cout<<"YES"<<endl;
+    cout<<tt<<endl;
 }
