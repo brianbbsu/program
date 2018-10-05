@@ -48,27 +48,21 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
+
+struct DriveTheCarEasy{
+  ll calculateDistance(int s,int N,vector<int> sp,vector<int> mom)
   {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
-
-int main()
-{
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    vector<ll> dt;
+    REP(i,N)dt.pb(i);
+    sort(ALL(dt),[&](int a,int b){return mom[a] < mom[b];});
+    ll tt = 0,p = 0,now = 0;
+    for(ll t : dt)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      tt += (mom[t] - p) * now;
+      p = mom[t];
+      now += sp[t];
     }
-    cout<<mx<<'\n';
-
-}
+    tt += now * (s+1-p);
+    return tt;
+  }
+};

@@ -48,27 +48,26 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
-
+vector<ll> v;
+ll d[MAXn];
 int main()
 {
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    IOS();
+    ll n,B;
+    cin>>n>>B;
+    REP(i,n)cin>>d[i];
+    ll e=0,o=0;
+    REP(i,n-1)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      if(d[i]&1)o++;
+      else e++;
+      if(o==e)v.pb(i);
     }
-    cout<<mx<<'\n';
-
+    sort(ALL(v),[](int a,int b){return abs(d[a+1]-d[a]) < abs(d[b+1]-d[b]);});
+    ll tt = 0;
+    for(ll x:v)
+    {
+      if(abs(d[x+1] - d[x]) <= B)tt++,B -= abs(d[x+1] - d[x]);
+    }
+    cout<<tt<<endl;
 }

@@ -44,31 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
+struct MovingByPoints{
+    vector<ii> d;
+    ll g[MAXn];
+    ll fd(ll x){return g[x] = (g[x] == x?x:fd(g[x]));}
+    void mg(ll a,ll b)
+    {
+      a = fd(a);b=fd(b);
+      g[a] = b;
+    }
+    map<ii,ll> mp;
+    ll mat[MAXn][MAXn];
+    ll dis[MAXn];
+    int countMinimumPoints(int n, vector <int> X, vector <int> Y){
+      REP(i,n)d.pb({X[i],Y[i]});
+      REP(i,n)
+      {
+        if(!mp.count(d[i]))g[i] = i,mp[d[i]] = i;
+        else g[i] = g[mp[d[i]]];
+      }
+      REP(i,n)
+      {
+        if(mp.count(ii(d[i].X,d[i].Y+1)))mg(i,mp[ii(d[i].X,d[i].Y+1)]);
+        if(mp.count(ii(d[i].X+1,d[i].Y)))mg(i,mp[ii(d[i].X+1,d[i].Y)]);
+      }
+      REP(i,n)REP(j,n)
+      {
+        if(fd(i) == fd(j))mat[i][j] = 0;
+        else mat[i][j] = abs(d[i].X - d[j].X) + abs(d[i].Y - d[j].Y) - 1;
+      }
+      REP(i,n)dis[i] = INF;
+      dis[0] = 0;
+      REP(k,n)REP(i,n)REP(j,n)if(i!=j)if(dis[i] + mat[i][j] < dis[j])dis[j] = dis[i] + mat[i][j];
+      //debug(mp);
+      //pary(dis,dis+n);
+      return dis[n-1];
+    }
+};
 
+#ifdef brian
 int main()
 {
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
-    {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
-    }
-    cout<<mx<<'\n';
-
+    IOS();
+    MovingByPoints test;
+    debug(test.countMinimumPoints(2,{2,2},{2,2}));
 }
+#endif

@@ -48,23 +48,56 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-set<ll> st;
+ll cal(ll x)
+{
+  ll tt = 0;
+  while(x)
+  {
+    tt += x % 10;
+    x /= 10;
+  }
+  return tt;
+}
 
-ll d[MAXn];
+ll nn(ll x)
+{
+    ll res = 0;
+    while(x/10)
+    {
+      res += 9;
+      res *=10;
+      x /= 10;
+    }
+    res /= 10;
+    return res;
+}
 
+int dig(ll x)
+{
+  ll ans = 0;
+  while(x > 0)
+  {
+    ans = ans + (x % 10);
+    x /= 10;
+  }
+  return ans;
+}
+
+int n,m,f[MAXn],g[MAXn],a[MAXn];
+char str[MAXn];
 int main()
 {
-    IOS();
-    string dt="";
-    REP(i,26)dt.pb(i+'a');
-    dt.pb('_');
-    map<char,char> mp;
-    REP(i,SZ(dt))
-    {
-      ll j = (i*4 + 15)%SZ(dt);
-      mp[dt[j]] = dt[i];
-    }
-    string s = "ifpmluglesecdlqp_rclfrseljpkq";
-    for(char &c:s)c=mp[c];
-    cout<<s<<endl;
+  scanf("%s",str + 1);
+  n = strlen(str+1);
+  for(int i = 1;i<=n;i++)a[i] = str[i] - '0';
+  g[n+1] = -100000005;
+  for(int i = n;i>=1;i--)
+  {
+    f[i] = f[i+1] + a[i];
+    if(a[i] != 0)f[i] = max(f[i],g[i+1]+a[i]-1);
+    g[i] = f[i+1] + a[i] + 10;
+    if(a[i] == 0)g[i] = max(g[i],g[i+1]+a[i] + 9);
+    else g[i] = max(g[i],g[i+1]+a[i] +9);
+  }
+  cout<<f[1]<<endl;
 }

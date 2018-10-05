@@ -46,29 +46,42 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e17);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
+ll a[MAXn],b[MAXn];
+
+ll mna[MAXn],mnb[MAXn];
 
 int main()
 {
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    IOS();
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n)cin>>a[i];
+    REP(i,m)cin>>b[i];
+    REP1(i,n)mna[i] = INF;
+    REP1(i,m)mnb[i] = INF;
+    REP(i,n)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      ll tt = 0;
+      for(int j = i;j<n;j++)
+      {
+        tt += a[j];
+        mna[j-i+1] = min(mna[j-i+1],tt);
+      }
     }
-    cout<<mx<<'\n';
-
+    REP(i,m)
+    {
+      ll tt = 0;
+      for(int j = i;j<m;j++)
+      {
+        tt += b[j];
+        mnb[j-i+1] = min(mnb[j-i+1],tt);
+      }
+    }
+    ll mx = 0;
+    ll x;
+    cin>>x;
+    REP1(i,n)REP1(j,m)if(mna[i] * mnb[j] <= x)mx=max(mx,i * j);
+    cout<<mx<<endl;
 }

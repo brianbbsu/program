@@ -48,27 +48,20 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
-
 int main()
 {
+    IOS();
     ll n;
     cin>>n;
+    string s;
+    cin>>s;
+    ll ct=0;
+    for(char c:s)if(c=='8')ct++;
     ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    REP1(i,n)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
-    }
-    cout<<mx<<'\n';
+      if(i <= ct && n-i >= 10*i)mx=max(mx,i);
 
+    }
+    cout<<mx<<endl;
 }

@@ -48,27 +48,17 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
+ll a[MAXn],b[MAXn];
 
 int main()
 {
+    IOS();
     ll n;
     cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
-    {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
-    }
-    cout<<mx<<'\n';
-
+    REP(i,n)cin>>a[i]>>b[i];
+    sort(a,a+n);
+    sort(b,b+n);
+    ll tt = n;
+    REP(i,n)tt+=max(a[i],b[i]);
+    cout<<tt<<endl;
 }

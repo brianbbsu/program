@@ -48,27 +48,42 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
+ll h(ll a,ll b)
 {
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
+  ll x = a+b-1, y = b;
+  y = min(y,x-y);
+  ll tmp = 1;
+  for(ll p = x;p>x-y;p--)tmp *= p;
+  REP1(i,y)tmp/=i;
+  return tmp;
 }
 
 int main()
 {
+    IOS();
+    ll tt = 0;
     ll n;
     cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    // i => 50, j => 10
+    REP(i,2)REP(j,5)if(i+j <= n)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      if(i < 1 && j < 4)
+      {
+        tt += h(2,n-i-j);
+      }
+      else if(i < 1 && j == 4)
+      {
+        REP(k,5)if(i+j+k <= n)tt+= h(2,n-i-j-k);
+      }
+      else if(i == 1 && j < 4)
+      {
+        REP(k,5)REP(l,8)if(i + j + k + l <= n)tt+= h(1,n-i-j-k-l);
+      }
+      else
+      {
+        REP(k,5)REP(l,8)if(i + j + k + l <= n)tt+= h(2,n-i-j-k-l);
+      }
+      debug(i,j,tt);
     }
-    cout<<mx<<'\n';
-
+    cout<<tt<<endl;
 }

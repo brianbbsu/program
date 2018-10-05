@@ -44,31 +44,48 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=90+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
-
-int main()
-{
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+struct EnergySource{
+  set<vector<ll> > st;
+  queue<vector<ll> > q;
+  vector<long long> countDifferentSources(int number){
+    ll ct = 1,prodsum = number;
+    q.push({number});
+    st.insert({number});
+    while(SZ(q))
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      auto now = q.front();q.pop();
+      REP(i,SZ(now))if(i==0||now[i]!=now[i-1])for(int j = 2;j<=now[i];j++)if(now[i] % j == 0)
+      {
+        vector<ll> tmp;
+        REP(k,SZ(now))if(k!=i)tmp.pb(now[k]);
+        REP(k,j)tmp.pb(now[i]/j);
+        sort(ALL(tmp));
+        if(!st.count(tmp))
+        {
+          st.insert(tmp);
+          q.push(tmp);
+          ll prod = 1;
+          for(ll k:tmp)prod *= k;
+          ct++;
+          prodsum += prod;
+        }
+      }
     }
-    cout<<mx<<'\n';
+    return vector<ll>({ct,prodsum});
+  }
+
+};
+
+#ifdef brian
+int main(){
+  EnergySource e;
+  debug(e.countDifferentSources(13));
+  for(auto v: e.st)debug(v);
 
 }
+
+#endif

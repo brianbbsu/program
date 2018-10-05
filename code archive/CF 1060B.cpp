@@ -48,27 +48,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
-
 int main()
 {
+    IOS();
     ll n;
     cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    ll a = 0,fg = 1,tmp = n;
+    while(9 * fg + a <= n)a += fg * 9,fg *= 10;
+    ll b = n-a;
+    ll tt = 0;
+    debug(a,b);
+    while(a)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      tt += a%10;
+      a/=10;
     }
-    cout<<mx<<'\n';
-
+    while(b)
+    {
+      tt+=b%10;
+      b/=10;
+    }
+    cout<<tt<<endl;
 }

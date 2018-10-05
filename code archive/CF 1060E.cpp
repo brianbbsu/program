@@ -44,31 +44,46 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
+vector<ll> v[MAXn];
+
+ll tt = 0;
+
+ll s[MAXn][2],ct[MAXn][2];
+
+void dfs(ll now,ll f)
 {
-  ll tt = 0;
-  while(x)
+  ct[now][0] = 1;
+  for(ll k:v[now])if(k!=f)
   {
-    tt += x % 10;
-    x /= 10;
+    dfs(k,now);
+    tt += s[now][0] * ct[k][0] + (s[k][0] + ct[k][0]) * ct[now][0];
+    tt += s[now][0] * ct[k][1] + (s[k][1] + ct[k][1]) * ct[now][0];
+    tt += s[now][1] * ct[k][1] + (s[k][1] + 2 * ct[k][1]) * ct[now][1];
+    tt += s[now][1] * ct[k][0] + (s[k][0] + ct[k][0]) * ct[now][1];
+    s[now][0] += s[k][1] + ct[k][1];
+    ct[now][0] += ct[k][1];
+    s[now][1] += s[k][0];
+    ct[now][1] += ct[k][0];
   }
-  return tt;
+  debug(now,f,s[now][0],s[now][1],ct[now][0],ct[now][1],tt);
 }
 
 int main()
 {
+    IOS();
     ll n;
     cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    REP(i,n-1)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      ll a,b;
+      cin>>a>>b;
+      v[a].pb(b);
+      v[b].pb(a);
     }
-    cout<<mx<<'\n';
-
+    dfs(1,-1);
+    cout<<tt<<endl;
 }

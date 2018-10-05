@@ -46,29 +46,37 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
-
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
+const ll INF=ll(1e17);
 
 int main()
 {
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    IOS();
+    ll n,x,y;
+    cin>>n>>x>>y;
+    string s;
+    cin>>s;
+    ll ct = 0,fg = 0;
+    REP(i,n)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      if(s[i] == '0')fg=1;
+      if(s[i] == '1' && fg)
+      {
+        ct++;
+        fg=0;
+      }
     }
-    cout<<mx<<'\n';
-
+    if(fg)ct++;
+    if(!ct)
+    {
+      cout<<0<<endl;
+      return 0;
+    }
+    ll mn = INF,cur = 0;
+    while(ct)
+    {
+      mn = min(mn,cur + y * ct);
+      ct --;
+      cur += x;
+    }
+    cout<<mn<<endl;
 }

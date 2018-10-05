@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef long long ll;
+typedef int ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,31 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
+int g[2 * MAXn];
+
+int fd(ll x){return g[x] = (g[x] == x ? x : fd(g[x]));}
+void mg(ll a,ll b){
+  a = fd(a),b=fd(b);
+  g[a] = b;
 }
+
+ll n,m;
+#define INV(_x) ((_x) + n)
+ll ans[2 * MAXn];
 
 int main()
 {
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    IOS();
+    cin>>n>>m;
+    REP1(i,n)g[i] = i,g[INV(i)] = INV(i);
+    FILL(ans,-1);
+    REP(i,m)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      ll a,b;
+      cin>>a>>b;
+      mg(a,INV(b));
+      mg(INV(a),b);
+      if(fd(a) == fd(INV(a)) || fd(b) == fd(INV(b)))
+      {
+        cout<<-1<<endl;
+        return 0;
+      }
     }
-    cout<<mx<<'\n';
-
+    REP1(i,n)if(ans[fd(i)] == -1)
+    {
+      ans[fd(i)] = 0;
+      ans[fd(INV(i))] = 1;
+      ans[i] = 0;
+      ans[INV(i)] = 1;
+    }
+    else ans[i] = ans[fd(i)],ans[INV(i)] = ans[fd(INV(i))];
+    ll ct = 0;
+    REP1(i,n)if(ans[i] == 0)ct++;
+    cout<<ct<<" "<<n-ct<<endl;
+    REP1(i,n)if(ans[i] == 0)cout<<i<<" ";
+    cout<<endl;
+    REP1(i,n)if(ans[i] == 1)cout<<i<<" ";
+    cout<<endl;
 }

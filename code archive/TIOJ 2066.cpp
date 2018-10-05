@@ -45,30 +45,57 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MOD=(1LL<<61) - 1;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
+void add(ll &a,ll b)
 {
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
+  a+=b;
+  if(a>=MOD)a-=MOD;
 }
+
+void ins(ll *bit,ll x,ll k){
+  while(x<MAXn)add(bit[x],k),x+=x&-x;
+}
+ll qr(ll *bit,ll x)
+{
+  ll rt = 0;
+  while(x)add(rt,bit[x]),x-=x&-x;
+  return rt;
+}
+
+ll bit[MAXn];
+ll d[MAXn],dt[MAXn];
+vector<ll> uni;
 
 int main()
 {
-    ll n;
-    cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    IOS();
+    ll T;
+    cin>>T;
+    while(T--)
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
-    }
-    cout<<mx<<'\n';
+      ll n,k;
+      cin>>n>>k;
+      //REP1(i,k)memset(bit[i],0,sizeof(ll) * (n+5));
 
+      uni.clear();
+      REP(i,n)cin>>d[i],uni.pb(d[i]);
+      sort(ALL(uni));
+      uni.resize(unique(ALL(uni)) - uni.begin());
+      REP(i,n)d[i] = lower_bound(ALL(uni),d[i]) - uni.begin() + 1;
+      ll tt = 0;
+      REP(i,n)dt[i] = 1,tt++;
+      for(int t = 2;t<=k;t++)
+      {
+        memset(bit,0,sizeof(ll) * (SZ(uni) + 1));
+        REP(i,n)
+        {
+          ins(bit,d[i],dt[i]);
+          dt[i] = qr(bit,d[i] - 1);
+          add(tt,dt[i]);
+        }
+      }
+      cout<<tt<<endl;
+    }
 }

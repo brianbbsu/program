@@ -48,27 +48,21 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
-{
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
-}
+ll d[MAXn],dt[MAXn];
 
 int main()
 {
+    IOS();
     ll n;
     cin>>n;
-    ll mx = 0;
-    for(int i = 0;i * 2 <= n;i++)
+    REP(i,n)cin>>d[i],dt[i] = i;
+    sort(dt,dt+n,[](int a,int b){return d[a] < d[b];});
+    if(n==1 || (n==2 && d[0] == d[1]))
     {
-      ll b = n-i;
-      mx = max(mx,cal(i) + cal(b));
+      cout<<-1<<endl;
+      return 0;
     }
-    cout<<mx<<'\n';
+    cout<<1<<endl;
+    cout<<dt[0] + 1<<endl;
 
 }
