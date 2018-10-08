@@ -1,11 +1,16 @@
-import os
+import random
 
-for i in range(1,10000000):
-    os.system("echo '{}' | ./tmp3.exe > out1".format(i))
-    os.system("echo '{}' | ./tmp2.exe > out2".format(i))
-    if os.system("diff -q out1 out2"):
-        print "ERROR!!!!"
-        exit(1)
-    print i
+W = 12
+N = 50000
+M = 50000
 
-print "OK!!"
+print("{} {} {}".format(W,N,M))
+
+for _ in range(N):
+    x = random.randint(0,2**W - 1)
+    print("{} ".format(x),end="")
+
+print()
+
+for _ in range(M):
+    print("".join(random.choices(["A","O","X","a","o","x"],k=W)))
