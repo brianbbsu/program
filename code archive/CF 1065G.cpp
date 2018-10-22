@@ -44,45 +44,24 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e18);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+ll F[MAXn];
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    F[0] = F[1] = 1;
+    for(int i = 2;i<=200;i++)F[i] = INF;
+    for(int i = 2;i<=200;i++)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
+      F[i] = F[i-1] + F[i-2];
+      if(F[i] > INF)
       {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+        debug(i,F[i]);
+        break;
+      }
     }
 }

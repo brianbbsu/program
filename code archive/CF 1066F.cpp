@@ -44,45 +44,55 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+ll val(ii p)
+{
+  ll k = max(p.X,p.Y);
+  if(p.Y == k)return p.X;
+  else return k + (k-p.Y);
+}
+
+map<ll,ii> mn,mx;
+vector<ii> mnd,mxd;
+ll dp[MAXn][2];
+
+ll dis(ii a,ii b)
+{
+  debug(a,b);
+  return abs(a.X - b.X) + abs(a.Y - b.Y);
+}
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n;
+    cin>>n;
+    REP(i,n)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
+      ll x,y;
+      cin>>x>>y;
+      ll k = max(x,y);
+      ll v = val(ii(x,y));
+      if(mn.count(k))
       {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+        if(v < val(mn[k]))mn[k] = ii(x,y);
+        if(v > val(mx[k]))mx[k] = ii(x,y);
+      }
+      else mn[k] = ii(x,y),mx[k] = ii(x,y);
     }
+    mn[0] = ii(0,0);
+    mx[0] = ii(0,0);
+    dp[0][0] = 0;
+    dp[0][1] = 0;
+    for(auto tmp:mn)mnd.pb(tmp.Y);
+    for(auto tmp:mx)mxd.pb(tmp.Y);
+    REP1(i,SZ(mnd) - 1)
+    {
+      dp[i][0] = min(dp[i-1][0] + dis(mnd[i-1],mxd[i]),dp[i-1][1] + dis(mxd[i-1],mxd[i])) + dis(mnd[i],mxd[i]);
+      dp[i][1] = min(dp[i-1][0] + dis(mnd[i-1],mnd[i]),dp[i-1][1] + dis(mxd[i-1],mnd[i])) + dis(mnd[i],mxd[i]);
+    }
+    cout<<min(dp[SZ(mnd)-1][0],dp[SZ(mnd)-1][1])<<endl;
 }

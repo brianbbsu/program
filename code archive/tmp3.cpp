@@ -48,56 +48,29 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x)
+ii d[MAXn];
+
+inline ll pw(ll x)
 {
-  ll tt = 0;
-  while(x)
-  {
-    tt += x % 10;
-    x /= 10;
-  }
-  return tt;
+  return x * x;
 }
 
-ll nn(ll x)
+ll dis(ii a,ii b)
 {
-    ll res = 0;
-    while(x/10)
-    {
-      res += 9;
-      res *=10;
-      x /= 10;
-    }
-    res /= 10;
-    return res;
+  return pw(a.X - b.X) + pw(a.Y - b.Y);
 }
 
-int dig(ll x)
-{
-  ll ans = 0;
-  while(x > 0)
-  {
-    ans = ans + (x % 10);
-    x /= 10;
-  }
-  return ans;
-}
-
-int n,m,f[MAXn],g[MAXn],a[MAXn];
-char str[MAXn];
 int main()
 {
-  scanf("%s",str + 1);
-  n = strlen(str+1);
-  for(int i = 1;i<=n;i++)a[i] = str[i] - '0';
-  g[n+1] = -100000005;
-  for(int i = n;i>=1;i--)
-  {
-    f[i] = f[i+1] + a[i];
-    if(a[i] != 0)f[i] = max(f[i],g[i+1]+a[i]-1);
-    g[i] = f[i+1] + a[i] + 10;
-    if(a[i] == 0)g[i] = max(g[i],g[i+1]+a[i] + 9);
-    else g[i] = max(g[i],g[i+1]+a[i] +9);
-  }
-  cout<<f[1]<<endl;
+    IOS();
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i].X>>d[i].Y;
+    ll mn = INF;
+    REP(i,n)REP(j,i)
+    {
+      mn = min(mn,dis(d[i],d[j]));
+    }
+    assert(mn != INF);
+    cout<<fixed<<setprecision(3)<<sqrt(mn)<<endl;
 }

@@ -48,41 +48,70 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+struct node{
+  ll l,r;
+  node *lc,*rc;
+  ll tt;
+  node(ll l,ll r,node *lc=0,node *rc=0):l(l),r(r),lc(lc),rc(rc),tt(0){}
+  void ins(ll x,ll p)
+  {
+    if(l == r-1)tt+=p;
+    else
+    {
+      if(x < (l+r)/2)lc->ins(x,p);
+      else rc->ins(x,p);
+      tt = lc->tt + rc->tt;
+    }
+  }
+  ll fd(ll x)
+  {
+    if(l == r-1)return l;
+    if(lc->tt <= x)return rc->fd(x - lc->tt);
+    else return lc->fd(x);
+  }
+};
+
+ll d[MAXn],ans[MAXn];
+vector<ll> v[MAXn];
+
+ll lst[MAXn],nxt[MAXn];
+
+node *build(ll l,ll r)
+{
+  if(l == r-1)return new node(l,r);
+  else return new node(l,r,build(l,(l+r)/2),build((l+r)/2,r));
+}
+node *rt;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n;
+    cin>>n;
+    rt = build(0,n+1);
+    REP(i,n)cin>>d[i];
+    REP1(i,n)v[0].pb(i);
+    FILL(lst,-1);
+    for(int i = n-1;i>=0;i--)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
-      {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+      nxt[i] = lst[d[i]];
+      lst[d[i]] = i;
     }
+    REP1(i,n)if(lst[i] != -1)rt->ins(lst[i],1);
+    REP(i,n)
+    {
+      for(ll k:v[i])
+      {
+        ll tmp = rt->fd(k);
+        debug(k,i,tmp);
+        ans[k]++;
+        v[tmp].pb(k);
+      }
+      v[i].clear();
+      v[i].shrink_to_fit();
+      rt->ins(i,-1);
+      if(nxt[i] != -1)rt->ins(nxt[i],1);
+    }
+    REP1(i,n)cout<<ans[i]<<" ";
+    cout<<endl;
 }

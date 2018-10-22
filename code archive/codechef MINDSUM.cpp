@@ -48,7 +48,36 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+ll sum(ll x)
+{
+  if(x < 10)return x;
+  ll tt = 0;
+  while(x)
+  {
+    tt += x % 10;
+    x /= 10;
+  }
+  return tt;
+}
+
+ii cal(ll a,ll b)
+{
+  ll mn = 10, mnct = 0,ct = 0;
+  REP(i,20)
+  {
+    ll tmp = a,tmpct = 0;
+    while(tmp >= 10)
+    {
+      tmpct ++;
+      tmp = sum(tmp);
+    }
+    //if(tmp == mn)break;
+    if(ii(tmp,ct + tmpct) < ii(mn, mnct))mn = tmp,mnct = ct + tmpct;
+    a += b;
+    ct ++;
+  }
+  return ii(mn,mnct);
+}
 
 int main()
 {
@@ -57,32 +86,17 @@ int main()
     cin>>T;
     while(T--)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
+      ll a,b;
+      cin>>a>>b;
+      ii ans = ii(10,-1);
+      REP(i,20)
       {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+        ii p = cal(a,b);
+        ii q = cal(sum(a),b);
+        ans = min(ans,ii(p.X,p.Y + i));
+        ans = min(ans,ii(q.X,q.Y + i + 1));
+        a += b;
+      }
+      cout<<ans.X<<" "<<ans.Y<<endl;
     }
 }

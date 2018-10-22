@@ -48,41 +48,77 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+const ll K = 1516228;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,l,r,k;
+    cin>>n>>l>>r>>k;
+    ll a = (r - l + n) % n + 1,b = (n - a);
+    debug(a,b);
+    if(k - a<0)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
-      {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+      cout<<-1<<endl;
+      return 0;
     }
+    if(n <= K)
+    {
+      ll mx = -1;
+      REP(i,n+1)
+      {
+        {
+          ll sa = (k-a) % (n+i);
+          if(sa <= i && sa <= a && i - sa <= b)mx = i;
+          debug(i,sa,mx);
+        }
+
+        if(i > 0 && a > 0)
+        {
+          ll sa = (k + 1 - a) % (n+i);
+          if(sa >= 1 && sa <= i && sa <= a && i - sa <= b)mx = i;
+          debug(i,sa,mx);
+        }
+
+      }
+      cout<<mx<<endl;
+
+      return 0;
+    }
+    else{
+      ll ans = -1;
+      for(ll R = 0;R * n <= k - a;R++)
+      {
+        ll C = k - a - n * R;
+        if(R == 0)
+        {
+          if(C <= a)ans = max(ans,C + b);
+          continue;
+        }
+        ll mx = (C + b) / (R + 1);
+        mx = min(mx,n);
+        mx = min(mx,C / R);
+        ll sa = C - mx *  R;
+        if(sa >= 0 && sa <= a && sa <= mx && mx - sa <= b)ans = max(ans,mx);
+      }
+      for(ll R = 0;R * n <= k + 1 - a;R++)
+      {
+        ll C = k + 1 - a - n * R;
+        if(R == 0)
+        {
+          if(C <= a && C >= 1)ans = max(ans,C + b);
+          continue;
+        }
+        ll mx = (C + b) / (R + 1);
+        mx = min(mx,n);
+        if(C == 0)continue;
+        mx = min(mx,(C-1) / R);
+        ll sa = C - mx *  R;
+        if(sa >= 1 && sa <= a && sa <= mx && mx - sa <= b)ans = max(ans,mx);
+      }
+      //
+      cout<<ans<<endl;
+      return 0;
+    }
+
 }

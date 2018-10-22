@@ -48,7 +48,7 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+ll dp[31][31][31][2]; // c a b carry
 
 int main()
 {
@@ -57,32 +57,31 @@ int main()
     cin>>T;
     while(T--)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
+      ll a,b,c;
+      cin>>a>>b>>c;
+      ll cta = 0,ctb = 0;
+      for(ll i = 1;i <= a;i<<=1)if(a & i)cta++;
+      for(ll i = 1;i <= b;i<<=1)if(b & i)ctb++;
+      debug(cta,ctb,bitset<10>(a),bitset<10>(b));
+      FILL(dp,0);
+      int i = 0;
+      dp[0][0][0][0] = 1;
+      for(int I = 1;I <= c;I <<= 1,i++)REP(x,cta+1)REP(y,ctb+1)
       {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
+        if(c & I)
         {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
+          dp[i+1][x+1][y][0] += dp[i][x][y][0];
+          dp[i+1][x][y+1][0] += dp[i][x][y][0];
+          dp[i+1][x+1][y+1][1] += dp[i][x][y][1];
+          dp[i+1][x][y][0] += dp[i][x][y][1];
         }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+        else{
+          dp[i+1][x+1][y][1] += dp[i][x][y][1];
+          dp[i+1][x][y+1][1] += dp[i][x][y][1];
+          dp[i+1][x+1][y+1][1] += dp[i][x][y][0];
+          dp[i+1][x][y][0] += dp[i][x][y][0];
+        }
+      }
+      cout<<dp[i][cta][ctb][0]<<endl;
     }
 }

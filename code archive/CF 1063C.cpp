@@ -38,7 +38,7 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #else
 #define debug(...)
 #define pary(...)
-#define endl '\n'
+//#define endl '\n'
 #define IOS() ios_base::sync_with_stdio(0);cin.tie(0);
 #endif // brian
 //}
@@ -48,41 +48,41 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+//vector<ll> blk,whi;
+
+bool ask(ll x,ll y)
+{
+  cout<<x<<" "<<y<<endl;
+  string s;
+  cin>>s;
+  if(s=="black")return 0;
+  else return 1;
+}
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n;
+    cin>>n;
+
+    bool fg;
+    ll l = 0,r = 1000000000;
+    fg = ask(0,0);
+
+
+    REP(i,n-1)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
-      {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+      debug(i);
+      ll h = (l+r)/2;
+      ll tmp = ask(h,0);
+      if(tmp == fg)l = h;
+      else r = h;
+      //assert(l != r-1);
     }
+    debug(l,r);
+    if(l!=r-1)
+    {
+      cout<<l+1<<" "<<0<<" "<<l+1<<" "<<1<<endl;
+    }
+    else cout<<r<<" "<<1<<" "<<r+1<<" "<<3<<endl;
 }

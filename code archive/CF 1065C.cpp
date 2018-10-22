@@ -48,41 +48,44 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+vector<ii> stk;
+vector<ll> d;
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n,k;
+    cin>>n>>k;
+    REP(i,n)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
-      {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+      ll x;
+      cin>>x;
+      d.pb(x);
     }
+    sort(ALL(d));
+    for(ll x:d)
+    {
+      if(!SZ(stk) || x != stk.back().X)stk.pb({x,1});
+      else stk.back().Y ++;
+    }
+    ll tt = 0,it = stk.back().X,cnt = 0,tmp = 0;
+    while(1)
+    {
+      if(tmp + cnt > k)
+      {
+        tmp = 0;
+        tt ++;
+      }
+      tmp += cnt;
+      if(it == stk.back().X)
+      {
+        cnt += stk.back().Y;
+        stk.pop_back();
+      }
+      if(!SZ(stk))break;
+      it--;
+    }
+    if(tmp)tt++;
+    cout<<tt<<endl;
+
 }

@@ -44,45 +44,80 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=7e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+ll d[2][MAXn],ct[2][MAXn],ans[2][MAXn];
+// 0 lose 1 win 2 loop  -1 unknown
+
+queue<ii> q;
+ll k[2];
+
+
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    ll n;
+    cin>>n;
+    cin>>k[0];
+    REP(i,k[0])cin>>d[0][i];
+    cin>>k[1];
+    REP(i,k[1])cin>>d[1][i];
+    FILL(ans,-1);
+
+    REP(t,2)REP(i,k[t])
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
-      {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+      ll p = (n - d[t][i]) % n;
+      ans[t][p] = 1;
+      q.push(ii(t,p));
     }
+
+    while(SZ(q))
+    {
+      ll t = q.front().X,p = q.front().Y;q.pop();
+      if(ans[t][p] == 0)
+      {
+        REP(i,k[!t])
+        {
+          ll tmp = (p - d[!t][i] + n)%n;
+          if(ans[!t][tmp] == -1)
+          {
+            ans[!t][tmp] = 1;
+            q.push({!t,tmp});
+          }
+        }
+      }
+      else{
+        REP(i,k[!t])
+        {
+          ll tmp = (p - d[!t][i] + n)%n;
+          if(ans[!t][tmp] == -1)
+          {
+            ct[!t][tmp] ++;
+            if(ct[!t][tmp] == k[!t])
+            {
+              ans[!t][tmp] = 0;
+              q.push({!t,tmp});
+            }
+          }
+        }
+      }
+    }
+    REP1(i,n-1)
+    {
+      if(ans[0][i] == 0)cout<<"Lose"<<" ";
+      else if(ans[0][i] == 1)cout<<"Win"<<" ";
+      else cout<<"Loop"<<" ";
+    }
+    cout<<endl;
+    REP1(i,n-1)
+    {
+      if(ans[1][i] == 0)cout<<"Lose"<<" ";
+      else if(ans[1][i] == 1)cout<<"Win"<<" ";
+      else cout<<"Loop"<<" ";
+    }
+    cout<<endl;
+
 }

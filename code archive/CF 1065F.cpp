@@ -44,45 +44,75 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn],pre[3][MAXn],ans[MAXn];
+vector<ll> v[MAXn],v2[MAXn];
+ll p[MAXn],up[MAXn],islf[MAXn],dph[MAXn],g[MAXn],gtt[MAXn];
+vector<ll> stk,stk2;
+ll n,k,git = 0;
+
+ll dfs(ll now)
+{
+  stk.pb(now);
+  stk2.pb(now);
+  ll mn = dph[now];
+  if(now != 1 && SZ(v[now]) == 0)
+  {
+    islf[now] = 1;
+    up[now] = stk[max(0LL,dph[now] - k)];
+    mn = dph[up[now]];
+  }
+  for(ll t:v[now])
+  {
+    dph[t] = dph[now] + 1;
+    mn = min(dfs(t),mn);
+  }
+  stk.pop_back();
+  if(mn == dph[now])
+  {
+    git++;
+    while(1)
+    {
+      g[stk2.back()] = git;
+      if(stk2.back() == now)
+      {
+        stk2.pop_back();
+        break;
+      }
+      else stk2.pop_back();
+    }
+  }
+  return mn;
+}
+
+
+ll dp(ll now)
+{
+  ll mx = 0;
+  for(ll t:v2[now])
+  {
+    mx = max(mx,dp(t));
+  }
+  mx += gtt[now];
+  return mx;
+}
 
 int main()
 {
     IOS();
-    ll T;
-    cin>>T;
-    while(T--)
+    cin>>n>>k;
+    for(int i = 2;i<=n;i++)
     {
-      ll n;
-      cin>>n;
-      REP1(i,n)cin>>d[i];
-      REP1(i,n+2)REP(j,3)pre[j][i] = 0;
-      REP1(i,n)if(d[i] < 0)pre[0][i] += d[i],pre[1][i] += i * d[i],pre[2][i] += (n-i) * d[i];
-      REP1(i,n)REP(j,3)pre[j][i] += pre[j][i-1];
-      REP1(i,n)if(d[i]>0)
-      {
-        ll l = 0,r = 10000000;
-        while(l != r-1)
-        {
-          ll h = (l+r)/2;
-          ll efl = max(1LL,i - h),efr = min(n, i + h);
-          ll tmp = (pre[0][efr] - pre[0][efl - 1]) * h;
-          tmp -= (pre[2][i] - pre[2][efl - 1] - (n-(i-1)) * (pre[0][i] - pre[0][efl-1]));
-          tmp -= (pre[1][efr] - pre[1][i] - (i+1) * (pre[0][efr] - pre[0][i]));
-          if(tmp + d[i] > 0)l = h;
-          else r = h;
-        }
-        ans[i] = l;
-      }else ans[i] = -1;
-      ll mx = 0,ct = 0;
-      REP1(i,n)mx = max(mx,ans[i]);
-      REP1(i,n)if(mx == ans[i])ct++;
-      cout<<ct;
-      REP1(i,n)if(mx == ans[i])cout<<" "<<i;
-      cout<<endl;
+      cin>>p[i];
+      v[p[i]].pb(i);
     }
+    dfs(1);
+    REP1(i,n){
+      gtt[g[i]] += islf[i];
+      if(g[p[i]] != g[i])v2[g[p[i]]].pb(g[i]);
+    }
+    cout<<dp(g[1])<<endl;
+    REP1(i,n)debug(i,islf[i],g[i],gtt[g[i]]);
 }
