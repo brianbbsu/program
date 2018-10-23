@@ -51,8 +51,70 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    ll a,b;
-    cin>>a>>b;
-    if((a*b)&1)cout<<"Yes"<<endl;
-    else cout<<"No"<<endl;
+    ll Q;
+    cin>>Q;
+    while(Q--)
+    {
+      ll n,m,l,r;
+      cin>>n>>m>>l>>r;
+      ll k = (max(n,m)-1) / (min(n,m) + 1) + 1;
+      debug(k);
+      //ll mx = 0;
+      // ki +  j + p = n
+      //  i + kj + q = m
+      ll bl = 0, br = min((n-1) / k + 1,m+1);
+      while(bl != br - 1)
+      {
+        ll i = (bl+br)/2;
+        ll j = (m - i) / k;
+        ll p = n - k * i - j;
+        ll q = m - i - k * j;
+        if(p >= 0 && q >= 0)bl = i;
+        else br = i;
+      }
+      ll i = bl;
+      ll j = (m - i) / k;
+      ll p = n - k * i - j;
+      ll q = m - i - k * j;
+      if(p == -1)
+      {
+        p = 0;
+        q += k;
+        j--;
+      }
+
+      string s = "";
+      for(int x = l;x <= r;x ++)
+      {
+        if(x <= (k+1) * i)
+        {
+          if((x-1) % (k+1) == k)s.pb('B');
+          else s.pb('A');
+        }
+        else if(x <= (k+1) * i + p)s.pb('A');
+        else if(x <= (k+1) * i + p + q)s.pb('B');
+        else
+        {
+          ll tmpx = x - ( (k+1) * i + p + q );
+          if((tmpx - 1) % (k+1) == 0)s.pb('A');
+          else s.pb('B');
+        }
+      }
+      cout<<s<<endl;
+      //debug(mx,i,j,p,q);
+      /*REP(x,i)
+      {
+        REP(y,k)s.pb('A');
+        s.pb('B');
+      }
+      REP(x,p)s.pb('A');
+      REP(x,q)s.pb('B');
+      REP(x,j)
+      {
+        s.pb('A');
+        REP(y,k)s.pb('B');
+      }
+      debug(s);
+      cout<<s.substr(l-1,r-l+1)<<endl;*/
+    }
 }

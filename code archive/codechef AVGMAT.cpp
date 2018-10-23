@@ -44,15 +44,49 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+
+ll ct[MAXn][MAXn][MAXn],d[MAXn][MAXn],tt[2*MAXn],tmp[2][3 * MAXn];
 
 int main()
 {
     IOS();
-    ll a,b;
-    cin>>a>>b;
-    if((a*b)&1)cout<<"Yes"<<endl;
-    else cout<<"No"<<endl;
+    ll T;
+    cin>>T;
+    while(T--)
+    {
+      FILL(tt,0);
+      ll n,m;
+      cin>>n>>m;
+      REP1(i,n)
+      {
+        string s;
+        cin>>s;
+        REP1(j,m)d[i][j] = (s[j-1] - '0' == 1);
+      }
+      FILL(ct,0);
+      REP1(i,n)REP1(j,m)
+      {
+        if(d[i][j])REP1(k,m)ct[i][k][abs(j-k)] ++;
+      }
+      REP1(j,m)
+      {
+        FILL(tmp,0);
+        REP1(i,n)REP(k,m)tmp[0][i + k] += ct[i][j][k];
+        REP1(i,n)
+        {
+          if(d[i][j])REP(k,n + m - 1)
+          {
+            debug(i,j,k,tmp[0][i+k],tmp[1][i-k+m]);
+            tt[k] += tmp[0][i + k];
+            tt[k] += tmp[1][i - k + n + m];
+          }
+          REP(k,m)tmp[0][i + k] -= ct[i][j][k],tmp[1][i - k + n + m] += ct[i][j][k];
+        }
+      }
+      REP1(i,n+m-2)cout<<tt[i]/2<<" ";
+      cout<<endl;
+    }
 }

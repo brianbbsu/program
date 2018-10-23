@@ -48,11 +48,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+
+ll d[MAXn];
+bitset<4000000> dp;
+
 int main()
 {
     IOS();
-    ll a,b;
-    cin>>a>>b;
-    if((a*b)&1)cout<<"Yes"<<endl;
-    else cout<<"No"<<endl;
+    ll n;
+    cin>>n;
+    REP(i,n)cin>>d[i];
+    dp.reset();
+    dp[0] = 1;
+    ll tt = 0;
+    REP(i,n)
+    {
+      tt += d[i];
+      dp |= (dp<<d[i]);
+    }
+    tt = (tt + 1)/2;
+    for(int i = tt;;i++)
+    {
+      debug(i);
+      if(dp[i])
+      {
+        cout<<i<<endl;
+        return 0;
+      }
+    }
 }

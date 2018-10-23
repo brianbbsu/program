@@ -51,8 +51,7 @@ const ll INF=ll(1e15);
 int main()
 {
     IOS();
-    ll a,b;
-    cin>>a>>b;
-    if((a*b)&1)cout<<"Yes"<<endl;
-    else cout<<"No"<<endl;
+    ll A,B;
+    cin>>A>>B;
+    cout<<A * B - A - B + 1<<endl;
 }
