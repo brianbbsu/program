@@ -1,16 +1,5 @@
 //{
-#include<iostream>
-#include<iomanip>
-#include<cstdio>
-#include<cstring>
-#include<string>
-#include<set>
-#include<map>
-#include<vector>
-#include<algorithm>
-#include<sstream>
-#include<cmath>
-
+#include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 typedef double lf;
@@ -60,14 +49,33 @@ const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
 
-ll d[MAXn];
+ll fac[MAXn];
 
 int main()
 {
     IOS();
+    fac[0] = 1;
+    REP1(i,20)fac[i] = i * fac[i-1];
+    
+    ll C = 10;
+    for(int i = C;i <= 20;i++)
+    {
+        debug(i,fac[i] / fac[C] / fac[i - C]);
+    }
+
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    sort(d,d+n);
-    cout<<d[n-2]-d[1]<<endl;
+    for(int i = 20;i >= 10;i--)
+    {
+        ll tmp = fac[i] / fac[C] / fac[i - C];
+        while(tmp <= n)
+        {
+            cout<<"a";
+            n -= tmp;
+        }
+        cout<<"b";
+    }
+    REP(i,9)cout<<"b";
+    cout<<"  abbbbbbbbbb"<<endl;
+
 }

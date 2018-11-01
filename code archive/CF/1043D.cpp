@@ -44,81 +44,49 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e3+5,MAXq=4e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct tg{
-  ll id,a,b,k;
-};
+ll d[15][MAXn];
+ll p[15][MAXn];
+ll it[15];
 
-vector<ll> v[MAXn],stk;
-vector<tg> qrs;
-vector<ii> qr[MAXn]; 
-ll ans[412345],vis[MAXn],instk[MAXn],dph[MAXn],fg;
-
-void dfs(ll now)
-{
-  instk[now] = 1;
-  stk.pb(now);
-  vis[now] = 1;
-  debug(now,stk,qr[now],fg);
-  if(fg == -1)
-  {
-    for(ii tmp:qr[now])
-    {
-      if(tmp.X <= SZ(stk))ans[tmp.Y] = stk[tmp.X - 1];
-    }
-  }
-  for(ll k:v[now])
-  {
-    if(vis[k] && !instk[k])continue;
-    if(vis[k])
-    {
-      if(fg == -1 || dph[k] < dph[fg])fg = k;
-      continue;
-    }
-    dph[k] = dph[now] + 1;
-    dfs(k);
-  }
-  instk[now] = 0;
-  stk.pop_back();
-  if(fg == now)fg = -1;
-}
+ll vis[MAXn];
 
 int main()
 {
     IOS();
-    ll n,m,q;
-    cin>>n>>m>>q;
-    REP(i,m)
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)REP(j,n)cin>>d[i][j],p[i][d[i][j]] = j;
+    ll tt = 0;
+    REP(x,n)if(!vis[d[0][x]])
     {
-      ll a,b;
-      cin>>a>>b;
-      v[a].pb(b);
+        ll t = d[0][x];
+        REP(i,m)it[i] = p[i][t];
+        ll ct = 1;
+        vis[t] = 1;
+        while(1)
+        {
+            bool ok = 1;
+            REP(i,m)
+            {
+                if(it[i] + 1 >= n || d[i][it[i] + 1] != d[0][it[0] + 1])ok = 0;
+            }
+            if(ok)
+            {
+                vis[d[0][it[0]+1]] = 1;
+                REP(i,m)it[i]++;
+                ct++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        tt += (ct + 1) * ct / 2;
+        debug(t,ct);
     }
-    REP1(i,n)sort(ALL(v[i]));
-    FILL(ans,-1);
-    REP(i,q)
-    {
-      ll a,b,k;
-      cin>>a>>b>>k;
-      qrs.pb({i,a,b,k});
-    }
-    sort(ALL(qrs),[](tg &a,tg &b){return a.a < b.a;});
-    ll qit = 0;
-    REP1(i,n)
-    {
-      REP1(i,n)qr[i].clear();
-      while(qit != SZ(qrs) && qrs[qit].a == i)
-      {
-        qr[qrs[qit].b].pb(ii(qrs[qit].k,qrs[qit].id));
-        qit++;
-      }
-      FILL(vis,0);
-      fg = -1;
-      dph[i] = 1;
-      dfs(i);
-    }
-    REP(i,q)cout<<ans[i]<<endl;
+    cout<<tt<<endl;
 }

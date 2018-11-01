@@ -44,81 +44,29 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e3+5,MAXq=4e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
-
-struct tg{
-  ll id,a,b,k;
-};
-
-vector<ll> v[MAXn],stk;
-vector<tg> qrs;
-vector<ii> qr[MAXn]; 
-ll ans[412345],vis[MAXn],instk[MAXn],dph[MAXn],fg;
-
-void dfs(ll now)
-{
-  instk[now] = 1;
-  stk.pb(now);
-  vis[now] = 1;
-  debug(now,stk,qr[now],fg);
-  if(fg == -1)
-  {
-    for(ii tmp:qr[now])
-    {
-      if(tmp.X <= SZ(stk))ans[tmp.Y] = stk[tmp.X - 1];
-    }
-  }
-  for(ll k:v[now])
-  {
-    if(vis[k] && !instk[k])continue;
-    if(vis[k])
-    {
-      if(fg == -1 || dph[k] < dph[fg])fg = k;
-      continue;
-    }
-    dph[k] = dph[now] + 1;
-    dfs(k);
-  }
-  instk[now] = 0;
-  stk.pop_back();
-  if(fg == now)fg = -1;
-}
 
 int main()
 {
     IOS();
-    ll n,m,q;
-    cin>>n>>m>>q;
-    REP(i,m)
+    ll n;
+    cin>>n;
+    ll tt = 0,mx = 0;
+    REP(i,n)
     {
-      ll a,b;
-      cin>>a>>b;
-      v[a].pb(b);
+        ll x;
+        cin>>x;
+        tt += x;
+        mx = max(mx,x);
     }
-    REP1(i,n)sort(ALL(v[i]));
-    FILL(ans,-1);
-    REP(i,q)
+    for(int i = mx;;i++)
     {
-      ll a,b,k;
-      cin>>a>>b>>k;
-      qrs.pb({i,a,b,k});
+        if(i * n - tt > tt)
+        {
+            cout<<i<<endl;
+            return 0;
+        }
     }
-    sort(ALL(qrs),[](tg &a,tg &b){return a.a < b.a;});
-    ll qit = 0;
-    REP1(i,n)
-    {
-      REP1(i,n)qr[i].clear();
-      while(qit != SZ(qrs) && qrs[qit].a == i)
-      {
-        qr[qrs[qit].b].pb(ii(qrs[qit].k,qrs[qit].id));
-        qit++;
-      }
-      FILL(vis,0);
-      fg = -1;
-      dph[i] = 1;
-      dfs(i);
-    }
-    REP(i,q)cout<<ans[i]<<endl;
 }

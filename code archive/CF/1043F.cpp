@@ -44,81 +44,66 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e3+5,MAXq=4e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct tg{
-  ll id,a,b,k;
-};
-
-vector<ll> v[MAXn],stk;
-vector<tg> qrs;
-vector<ii> qr[MAXn]; 
-ll ans[412345],vis[MAXn],instk[MAXn],dph[MAXn],fg;
-
-void dfs(ll now)
+ll pw(ll x,ll k)
 {
-  instk[now] = 1;
-  stk.pb(now);
-  vis[now] = 1;
-  debug(now,stk,qr[now],fg);
-  if(fg == -1)
-  {
-    for(ii tmp:qr[now])
-    {
-      if(tmp.X <= SZ(stk))ans[tmp.Y] = stk[tmp.X - 1];
-    }
-  }
-  for(ll k:v[now])
-  {
-    if(vis[k] && !instk[k])continue;
-    if(vis[k])
-    {
-      if(fg == -1 || dph[k] < dph[fg])fg = k;
-      continue;
-    }
-    dph[k] = dph[now] + 1;
-    dfs(k);
-  }
-  instk[now] = 0;
-  stk.pop_back();
-  if(fg == now)fg = -1;
+    if(!k)return 1;
+    ll a = pw(x,k/2);
+    a = a * a % MOD;
+    if(k&1)return a * x % MOD;
+    else return a;
+}
+
+
+ll d[MAXn],ct[MAXn],fac[MAXn],inv[MAXn];
+ll dp[MAXn];
+
+ll c(ll a,ll b)
+{
+    if(b > a)return 0;
+    return fac[a] * inv[b] % MOD * inv[a-b] % MOD;
 }
 
 int main()
 {
     IOS();
-    ll n,m,q;
-    cin>>n>>m>>q;
-    REP(i,m)
+    fac[0] = 1;
+    REP1(i,MAXn-1)fac[i] = fac[i-1] * i % MOD;
+    REP(i,MAXn)inv[i] = pw(fac[i],MOD-2);
+
+    ll n;
+    cin>>n;
+    ll gc = 0;
+    REP(i,n)
     {
-      ll a,b;
-      cin>>a>>b;
-      v[a].pb(b);
+        ll x;
+        cin>>x;
+        d[x] = 1;
     }
-    REP1(i,n)sort(ALL(v[i]));
-    FILL(ans,-1);
-    REP(i,q)
+    REP1(i,MAXn-1)
     {
-      ll a,b,k;
-      cin>>a>>b>>k;
-      qrs.pb({i,a,b,k});
+        for(ll k = 1;k * i < MAXn;k++)ct[i] += d[k * i];
     }
-    sort(ALL(qrs),[](tg &a,tg &b){return a.a < b.a;});
-    ll qit = 0;
-    REP1(i,n)
+    REP1(t,10)
     {
-      REP1(i,n)qr[i].clear();
-      while(qit != SZ(qrs) && qrs[qit].a == i)
-      {
-        qr[qrs[qit].b].pb(ii(qrs[qit].k,qrs[qit].id));
-        qit++;
-      }
-      FILL(vis,0);
-      fg = -1;
-      dph[i] = 1;
-      dfs(i);
+        FILL(dp,0);
+        for(int i = MAXn-1;i>=1;i--)
+        {
+            dp[i] = c(ct[i],t);
+            for(int k = 2;k * i < MAXn;k++)
+            {
+                dp[i] = dp[i] - dp[i * k];
+                if(dp[i] < 0)dp[i] += MOD;
+            }
+        }
+        if(dp[1] != 0)
+        {
+            cout<<t<<endl;
+            return 0;
+        }
     }
-    REP(i,q)cout<<ans[i]<<endl;
+    cout<<-1<<endl;
 }

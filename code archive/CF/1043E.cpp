@@ -44,81 +44,42 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=3e3+5,MAXq=4e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct tg{
-  ll id,a,b,k;
-};
+ll ans[MAXn];
 
-vector<ll> v[MAXn],stk;
-vector<tg> qrs;
-vector<ii> qr[MAXn]; 
-ll ans[412345],vis[MAXn],instk[MAXn],dph[MAXn],fg;
-
-void dfs(ll now)
-{
-  instk[now] = 1;
-  stk.pb(now);
-  vis[now] = 1;
-  debug(now,stk,qr[now],fg);
-  if(fg == -1)
-  {
-    for(ii tmp:qr[now])
-    {
-      if(tmp.X <= SZ(stk))ans[tmp.Y] = stk[tmp.X - 1];
-    }
-  }
-  for(ll k:v[now])
-  {
-    if(vis[k] && !instk[k])continue;
-    if(vis[k])
-    {
-      if(fg == -1 || dph[k] < dph[fg])fg = k;
-      continue;
-    }
-    dph[k] = dph[now] + 1;
-    dfs(k);
-  }
-  instk[now] = 0;
-  stk.pop_back();
-  if(fg == now)fg = -1;
-}
+ll x[MAXn],y[MAXn];
+vector<ll> dt;
 
 int main()
 {
     IOS();
-    ll n,m,q;
-    cin>>n>>m>>q;
+    ll n,m;
+    cin>>n>>m;
+    ll ttx = 0,tty = 0;
+    REP1(i,n)cin>>x[i]>>y[i],dt.pb(i),ttx += x[i],tty += y[i];
+    sort(ALL(dt),[](int a,int b){return (x[a] - x[b]) > (y[a] - y[b]);});
+    ll sx = 0,sy = 0,ct = 0;
+    for(ll t:dt)
+    {
+        debug(t,sx,sy,ct);
+        ans[t] = (x[t] * ct + sy) + (y[t] * (n - ct - 1) + (ttx - sx - x[t]));
+        sx += x[t];
+        sy += y[t];
+        ct++;
+    }
+    //REP1(i,n)ans[i] 2;
+    REP1(i,n)debug(i,ans[i]);
     REP(i,m)
     {
-      ll a,b;
-      cin>>a>>b;
-      v[a].pb(b);
+        ll a,b;
+        cin>>a>>b;
+        ll tmp = min(x[a] + y[b],y[a] + x[b]);
+        ans[a] -= tmp;
+        ans[b] -= tmp;
     }
-    REP1(i,n)sort(ALL(v[i]));
-    FILL(ans,-1);
-    REP(i,q)
-    {
-      ll a,b,k;
-      cin>>a>>b>>k;
-      qrs.pb({i,a,b,k});
-    }
-    sort(ALL(qrs),[](tg &a,tg &b){return a.a < b.a;});
-    ll qit = 0;
-    REP1(i,n)
-    {
-      REP1(i,n)qr[i].clear();
-      while(qit != SZ(qrs) && qrs[qit].a == i)
-      {
-        qr[qrs[qit].b].pb(ii(qrs[qit].k,qrs[qit].id));
-        qit++;
-      }
-      FILL(vis,0);
-      fg = -1;
-      dph[i] = 1;
-      dfs(i);
-    }
-    REP(i,q)cout<<ans[i]<<endl;
+    REP1(i,n)cout<<ans[i]<<" ";
+
 }

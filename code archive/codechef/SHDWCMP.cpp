@@ -48,229 +48,143 @@ const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-struct node;
-
-ll gd(node *a,ll t);
-
 
 struct node{
-  int l,r;
+  ll l,r;
   node *lc,*rc;
-  ll d[2],tg[2],h;
-  node(int li,int ri,node *lci=0,node *rci=0):l(li),r(ri),lc(lci),rc(rci){d[0]=d[1]=tg[0]=tg[1]=0;h=(l+r)/2;}
-  void ins(int li,int ri,int k,int t)
+  ll tg;
+  node(ll l,ll r):l(l),r(r),lc(0),rc(0),tg(0){}
+  void ins(ll li,ll ri,ll k)
   {
-    if(li>=r||ri<=l)return;
-    if(li<=l&&ri>=r)tg[t]+=k;
-    else
+    if(li >= r || ri <= l)return;
+    if(li <= l && ri >= r)tg += k;
+    else 
     {
-      if(t==0)
-      {
-        if(li<h)
-        {
-          if(!lc)lc=new node(l,h);
-          lc->ins(li,ri,k,t);
-        }
-        else
-        {
-          if(!rc)rc=new node(h,r);
-          rc->ins(li,ri,k,t);
-        }
-        d[0]=gd(lc,0)+gd(rc,0);
-        d[1]=gd(lc,1)+gd(rc,1);
+      ll h = (l+r)/2;
+      if(li < h){
+        if(!lc)lc = new node(l,h);
+        lc->ins(li,ri,k);
       }
-      else
-      {
-        if(li<h)
-        {
-          if(!lc)lc=new node(l,h);
-          lc->ins(li,ri,k,t);
-        }
-        if(ri>h)
-        {
-          if(!rc)rc=new node(h,r);
-          rc->ins(li,ri,k,t);
-        }
-
-        d[1]=gd(lc,1)+gd(rc,1);
+      if(ri > h){
+        if(!rc)rc = new node(h,r);
+        rc->ins(li,ri,k); 
       }
-
-
-
     }
   }
-  ii qr(int li,int ri)
+  ll qr(ll x)
   {
-    debug(this,l,r,d[0],d[1],tg[0],tg[1]);
-    if(li>=r||ri<=l)return ii(0,0);
-    if(li<=l&&ri>=r)return ii(d[0]+tg[0],d[1]+(d[0]+tg[0])*tg[1]);
-    else
-    {
-
-      ii a,b;
-      a=lc?lc->qr(li,ri):ii(0,0);
-      b=rc?rc->qr(li,ri):ii(0,0);
-
-      return ii(a.X+b.X,(a.X+b.X)*tg[1]+a.Y+b.Y);
-    }
+    if(l == r-1)return tg;
+    else if(x < (l+r)/2 && lc)return tg + lc->qr(x);
+    else if(x >= (l+r)/2 && rc)return tg + rc->qr(x);
+    else return tg;
   }
-  int qr2(int li,int ri)
+  void clr()
   {
-    //debug(this,l,r,d[0],d[1],tg[0],tg[1]);
-    if(li>=r||ri<=l)return 0;
-    if(li<=l&&ri>=r)return d[0]+tg[0];
-    else
+    tg = 0;
+    if(lc)
     {
-
-      int a,b;
-      a=lc?lc->qr2(li,ri):0;
-      b=rc?rc->qr2(li,ri):0;
-
-      return a+b;
+      lc->clr();
+      lc = 0;
+    }
+    if(rc)
+    {
+      rc->clr();
+      rc = 0;
     }
   }
 };
-ll gd(node *a,ll t)
+
+vector<ll> v[MAXn];
+ll l[MAXn],r[MAXn],tit,c[MAXn],p[MAXn];
+
+void predfs(ll now)
 {
-  if(t==0)return a?(a->tg[t]+a->d[t]):0;
-  else return a?(a->d[t]+(a->d[0]+a->tg[0])*a->tg[t]):0;
+  l[now] = tit++;
+  for(ll k:v[now])predfs(k);
+  r[now] = tit;
 }
+
 node *rt[MAXn];
+vector<ll> dt[MAXn],pre[MAXn];
 
-vector<int> v[MAXn];
-ll d[MAXn];
-ll ans=0;
+ll tt = 0;
 
-int sz[MAXn],mx[MAXn],p[MAXn],cp[MAXn],tl[MAXn],tr[MAXn];
-ll tit=-1;
-
-void szdfs(int now)
+ll cal(ll x,ll k)
 {
-  sz[now]=1;
-  mx[now]=-1;
-  for(int k:v[now])
-  {
-    szdfs(k);
-    sz[now]+=sz[k];
-    if(mx[now]==-1||sz[k]>sz[mx[now]])mx[now]=k;
-  }
-}
-void decomp(int now)
-{
-  tl[now]=++tit;
-  if(mx[now]!=-1)
-  {
-    cp[mx[now]]=cp[now];
-    decomp(mx[now]);
-  }
-  for(int k:v[now])
-  {
-    if(k==mx[now])continue;
-    cp[k]=k;
-    decomp(k);
-  }
-  tr[now]=tit;
+  ll tp = rt[k]->qr(l[x]);
+  int itl = upper_bound(ALL(dt[k]),l[x]) - dt[k].begin();
+  int itr = lower_bound(ALL(dt[k]),r[x]) - dt[k].begin();
+  ll b1 = itr - itl;
+  
+  ll b2 = pre[k][itr - 1] - pre[k][itl - 1];
+  ll ret = 0;
+  ret += tp * (tp-1) / 2;
+  ret += tp * b1;
+  ret += b2;
+  return ret;
 }
 
-ll add(int x,int k)//node x, color k
-{
-  //rt[k]->ins(tl[x],tl[x]+1,1,0);
-  int now=p[x];
-  while(now!=-1)
-  {
-    //rt[k]->ins(tl[cp[now]],tl[now]+1,1,1);
-    now=p[cp[now]];
-  }
-  ll r=0,s=0;
-  now=p[x];
-  while(now!=-1)
-  {
-    s+=rt[k]->qr2(tl[cp[now]],tl[now]+1);
-    now=p[cp[now]];
-  }
-  debug(x,k,s);
-  r=s*(s-1)/2;
-  ii tmp=rt[k]->qr(tl[x]+1,tr[x]+1);
-  r+=s*tmp.X;
-  r+=tmp.Y;
-  debug(x,k,r);
-  return r;
-}
-
-ll rm(int x,int k)
-{
-  //rt[k]->ins(tl[x],tl[x]+1,-1,0);
-  int now=p[x];
-  while(now!=-1)
-  {
-    //rt[k]->ins(tl[cp[now]],tl[now]+1,-1,1);
-    now=p[cp[now]];
-  }
-  ll r=0,s=0;
-  now=p[x];
-  while(now!=-1)
-  {
-    s+=rt[k]->qr2(tl[cp[now]],tl[now]+1);
-    now=p[cp[now]];
-  }
-  debug(x,k,s);
-  r=s*(s-1)/2;
-  ii tmp=rt[k]->qr(tl[x]+1,tr[x]+1);
-  r+=s*tmp.X;
-  r+=tmp.Y;
-  debug(x,k,r,tmp);
-  return -r;
-}
 
 int main()
 {
-    IOS();
-    ll n,q;
-    cin>>n>>q;
+  IOS();
+  ll n,q;
+  cin>>n>>q;
+  REP1(i,n-1)
+  {
+    ll x;
+    cin>>x;
+    v[x].pb(i);
+  }
+  predfs(0);
+  REP(i,n)p[l[i]] = i;
+  REP(i,n)cin>>c[i];
+  
+  REP(i,n)rt[i] = new node(0,n);
 
-    REP1(i,n-1)
+  REP(i,n)
+  {
+    ll tmp = rt[c[i]]->qr(l[i]);
+    tt += tmp * (tmp-1) / 2;
+    rt[c[i]]->ins(l[i] + 1,r[i],1);
+  }
+  ll lst = tt;
+  cout<<tt<<endl;
+  REP(K,q)
+  {
+    ll x,k;
+    cin>>k;
+    x = K % n;
+    if(x == 0)
     {
-      ll t;
-      cin>>t;
-      v[t].pb(i);
-      p[i]=t;
-    }
-    p[0]=-1;
-
-    REP(i,n)cin>>d[i];
-
-    szdfs(0);
-    decomp(0);
-    pary(tl,tl+n);
-    pary(tr,tr+n);
-
-    REP(i,n)rt[i]=new node(0,n);
-
-    REP(i,n)
-    {
-      ans+=add(i,d[i]);
-      debug(i,ans);
-    }
-
-    cout<<ans<<endl;
-
-
-    REP1(i,q)
-    {
-      ll x;
-      cin>>x;
-      x=(x+ans)%n;
-      ll t=(i-1)%n;
-      debug("Q:",t,x);
-      if(d[t]!=x)
+      REP(i,n)rt[i]->clr(),dt[i].clear(),pre[i].clear();
+      tt = 0;
+      REP(i,n)
       {
-        ans+=rm(t,d[t]);
-        ans+=add(t,x);
-        d[t]=x;
+        ll tmp = rt[c[i]]->qr(l[i]);
+        tt += tmp * (tmp-1) / 2;
+        rt[c[i]]->ins(l[i] + 1,r[i],1);
+        dt[c[i]].pb(l[i]);
       }
-
-      cout<<ans<<endl;
+      REP(i,n)
+      {
+        dt[i].pb(-1);
+        pre[i].pb(0);
+        sort(ALL(dt[i]));
+        REP1(j,SZ(dt[i]) - 1)
+        {
+          ll tmp = (lower_bound(ALL(dt[i]),r[p[dt[i][j]]]) - dt[i].begin()) - j - 1;
+          pre[i].pb(pre[i].back() + tmp);
+        }
+      }
     }
-
-
+    k = (k+lst)%n;
+    tt -= cal(x,c[x]);
+    tt += cal(x,k);
+    rt[c[x]]->ins(l[x] + 1,r[x],-1);
+    rt[k]->ins(l[x] + 1,r[x],1);
+    c[x] = k;
+    cout<<tt<<endl;
+    lst = tt;
+  }
 }
