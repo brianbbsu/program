@@ -1,16 +1,32 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
+#include<queue>
+#include<stack>
+
 using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
+#define MEM(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
 #define SZ(_a) (int)_a.size()
 #define ALL(_a) _a.begin(),_a.end()
 #define pb push_back
+#define eb emplace_back
 #ifdef brian
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
@@ -42,30 +58,33 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+#define MAXN MAXn
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
+vector<ii> v[MAXn],edg = {{0,1},{0,6},{0,5},{6,2},{1,7},{5,2},{6,4},{5,4},{1,3},{7,2},{7,3},{4,3}};
+
+ll dis[MAXn][MAXn];
 
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll n = 8;
+    REP(i,8)REP(j,n)dis[i][j] = (i==j?0:INF);
+    for(ii tmp:edg)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        ll c;
+        cin>>c;
+        dis[tmp.X][tmp.Y] = c;
+        dis[tmp.Y][tmp.X] = c;
     }
-    cout<<l + 1<<endl;
+    REP(k,n)REP(i,n)REP(j,n)
+    {
+        dis[i][j] = min(dis[i][j],dis[i][k] + dis[k][j]);    
+    }
+    REP1(i,n-1)cout<<dis[0][i]<<" ";
+
 
 }

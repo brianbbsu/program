@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -47,25 +48,23 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
-
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll T;
+    cin>>T;
+    while(T--)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        ll n,m;
+        cin>>n>>m;
+        vector<ll> a,b;
+        a.resize(n),b.resize(m);
+        REP(i,n)cin>>a[i];
+        REP(i,m)cin>>b[i];
+        ll tta = 0,ttb = 0;
+        for(ll x:a)tta += x;
+        for(ll x:b)ttb += x;
+        if(tta == ttb)cout<<"Bob"<<endl;
+        else cout<<"Alice"<<endl;
     }
-    cout<<l + 1<<endl;
-
 }

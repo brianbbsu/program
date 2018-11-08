@@ -1,16 +1,32 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
+#include<queue>
+#include<stack>
+
 using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
+#define MEM(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
 #define SZ(_a) (int)_a.size()
 #define ALL(_a) _a.begin(),_a.end()
 #define pb push_back
+#define eb emplace_back
 #ifdef brian
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
@@ -42,30 +58,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+#define MAXN MAXn
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
-
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll n,m;
+    ii a,b;
+    cin>>n>>m;
+    cin>>a.X>>a.Y;
+    ll n1,e1,n2,e2;
+    ll f1,f2;
+    cin>>e1>>n1>>f1>>b.X>>b.Y>>e2>>n2>>f2;
+    ll st1 = 0,st2 = 1,ct1 = 0,ct2 = 0;
+    ll ct = 0;
+    while((f1 || f2) && a != b)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        debug(a,b);
+        ct ++;
+        if(f1)
+        {
+            ct1++;
+            if(st1 % 2 == 0)
+            {
+                a.X ++;
+                if(a.X == n)a.X = 0;
+                if(ct1 == e1)ct1 = 0,st1 ++;
+            }
+            else
+            {
+                a.Y ++;
+                if(a.Y == m)a.Y = 0;
+                if(ct1 == n1)ct1 = 0,st1 ++;
+            }
+            f1 --;
+        }
+        if(f2)
+        {
+            ct2++;
+            if(st2 % 2 == 1)
+            {
+                b.X ++;
+                if(b.X == n)b.X = 0;
+                if(ct2 == e2)ct2 = 0,st2 ++;
+            }
+            else
+            {
+                b.Y ++;
+                if(b.Y == m)b.Y = 0;
+                if(ct2 == n2)ct2 = 0,st2 ++;
+            }
+            f2 --;
+        }
+        debug(a,b);
     }
-    cout<<l + 1<<endl;
-
+    if(a == b)cout<<ct<<endl;
+    else cout<<-1<<endl;
 }

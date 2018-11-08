@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -43,29 +44,42 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e2+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
+ll dp[105][10];
+
+void add(ll &a,ll b)
 {
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
+    a += b;
+    if(a >= MOD)a -= MOD;
 }
 
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll h,w,k;
+    dp[0][0] = 1;
+    cin>>h>>w>>k;
+    REP1(i,h)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        REP(j,w)//last
+        {
+            REP(I,(1<<(w-1)))//bitmask
+            {
+                bool chk = 1;
+                REP(t,w-2)if((I & (1<<t)) && (I & (1<<(t+1))))
+                {
+                    chk = 0;
+                    break;
+                }
+                if(!chk)continue;
+                if(j != 0 && (I & (1<<(j-1))))add(dp[i][j-1],dp[i-1][j]);
+                else if(j != w-1 && (I & (1<<j)))add(dp[i][j+1],dp[i-1][j]);
+                else add(dp[i][j],dp[i-1][j]);
+            }
+        }
     }
-    cout<<l + 1<<endl;
-
+    cout<<dp[h][k-1]<<endl;
 }

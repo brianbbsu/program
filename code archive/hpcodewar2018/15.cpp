@@ -1,16 +1,32 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
+#include<queue>
+#include<stack>
+
 using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
+#define MEM(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
 #define SZ(_a) (int)_a.size()
 #define ALL(_a) _a.begin(),_a.end()
 #define pb push_back
+#define eb emplace_back
 #ifdef brian
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
@@ -42,30 +58,59 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+#define MAXN MAXn
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1e18);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
+ll dis[MAXn],p[MAXn];
+
+vector<ii> v[MAXn];
+priority_queue<ii,vector<ii>, greater<ii> > pq;
 
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll n,m,a,b,c;
+    cin>>n>>m>>a>>b>>c;
+    REP(i,m)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        ll x,y,aa,bb,cc;
+        cin>>x>>y>>aa>>bb>>cc;
+        ll tmp = aa * a + bb * b + cc * c;
+        v[x].pb(ii(y,tmp));
+        v[y].pb(ii(x,tmp));
     }
-    cout<<l + 1<<endl;
-
+    REP1(i,n)dis[i] = INF;
+    dis[1] = 0;
+    pq.push(ii(0,1));
+    while(SZ(pq))
+    {
+        ll x = pq.top().Y,y = pq.top().X;
+        pq.pop();
+        if(dis[x] != y)continue;
+        for(ii tmp:v[x])
+        {
+            if(dis[tmp.X] > dis[x] + tmp.Y)
+            {
+                p[tmp.X] = x;
+                dis[tmp.X] = dis[x] + tmp.Y;
+                pq.push({dis[tmp.X],tmp.X});
+            }
+        }
+    }
+    vector<ll> stk;
+    ll now = n;
+    while(now != 1)
+    {
+        stk.pb(now);
+        now = p[now];
+    }
+    stk.pb(1);
+    while(SZ(stk))
+    {
+        cout<<stk.back()<<" ";
+        stk.pop_back();
+    }
 }

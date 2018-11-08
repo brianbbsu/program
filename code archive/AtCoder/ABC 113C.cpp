@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -47,25 +48,37 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
+map<ll,vector<ii> > mp;
+string ans[MAXn];
 
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        ll p,y;
+        cin>>p>>y;
+        mp[p].pb(ii(y,i));
     }
-    cout<<l + 1<<endl;
-
+    for(auto tmp:mp)
+    {
+        sort(ALL(tmp.Y));
+        stringstream ss1;
+        ss1<<setw(6)<<setfill('0')<<tmp.X;
+        string a;
+        ss1>>a;
+        ll it = 0;
+        for(ii p:tmp.Y)
+        {
+            it ++;
+            stringstream ss2;
+            ss2<<setw(6)<<setfill('0')<<it;
+            string b;
+            ss2>>b;
+            ans[p.Y] = a + b;
+        }
+    }
+    REP(i,m)cout<<ans[i]<<endl;
 }

@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -43,29 +44,32 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
+ll d[MAXn],lst[MAXn];
 
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll n;
+    cin>>n;
+    REP(i,n)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        ll t;
+        cin>>t;
+        d[t] = 1;
     }
-    cout<<l + 1<<endl;
-
+    REP1(i,MAXn-1)
+    {
+        if(d[i])lst[i] = i;
+        else lst[i] = lst[i-1];
+    }
+    ll mx = 0;
+    REP1(i,MAXn-1)if(d[i])
+    {
+        for(int j = 1;(j+1) * i < MAXn;j++)mx = max(mx,lst[(j+1) * i - 1] - j * i);
+    }
+    cout<<mx<<endl;
 }

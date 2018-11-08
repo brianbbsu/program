@@ -1,16 +1,32 @@
 //{
-#include<bits/stdc++.h>
+#include<iostream>
+#include<iomanip>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<set>
+#include<map>
+#include<vector>
+#include<algorithm>
+#include<sstream>
+#include<cmath>
+#include<queue>
+#include<stack>
+
 using namespace std;
 typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
+#define MEM(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
 #define SZ(_a) (int)_a.size()
 #define ALL(_a) _a.begin(),_a.end()
 #define pb push_back
+#define eb emplace_back
 #ifdef brian
 #define debug(...) do{\
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
@@ -42,30 +58,60 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+#define MAXN MAXn
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
+ll mat[6][6] = {
+    {-2,1,-2,3,2,1},
+    {-5,-2,5,2,5,-4},
+    {-5,-5,0,5,-1,-1},
+    {-3,-2,-5,0,1,2},
+    {5,-3,-2,-1,-3,1},
+    {-5,-4,-5,2,4,-1}
+};
+
+const ll N = 6;
+
+set<ii> st[MAXn];
 
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll n,m;
+    cin>>n>>m;
+    st[0].insert(ii(n,m));
+    queue<pair<ll,ii> > q;
+    q.push({0,{n,m}});
+    while(SZ(q))
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
-    }
-    cout<<l + 1<<endl;
+        ll ite = q.front().X;
+        ll tp = q.front().Y.X;
+        ll p = q.front().Y.Y;
+        q.pop();
+        ite ++;
 
+        REP(i,N)
+        {
+            ll np = p + mat[tp][i];
+            if(ite % 2 == 0)
+            {
+                np -= abs(np % 10) + ite;
+            }
+            if(np < 0)np += ite * ite % 30;
+            if(np < 0)continue;
+            else if(np == 0)
+            {
+                cout<<ite<<endl;
+                return 0;
+            }
+            else if(!st[ite].count(ii(i,np)))
+            {
+                st[ite].insert(ii(i,np));
+                q.push({ite,{i,np}});
+            }
+        }
+    }
 }

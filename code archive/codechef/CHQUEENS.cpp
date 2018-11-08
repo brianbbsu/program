@@ -5,6 +5,7 @@ typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -47,25 +48,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll cal(ll x,ll p)
-{
-    if(x >= p)return (x + (x-p+1)) * p / 2;
-    else return (1 + x) * x / 2;
-}
-
 int main()
 {
     IOS();
-    ll n,m,k;
-    cin>>n>>m>>k;
-    m -= n;
-    ll l = 0,r = 1000000005;
-    while(l != r-1)
+    ll T;
+    cin>>T;
+    while(T--)
     {
-        ll h = (l+r)/2;
-        if(cal(h,k) + cal(h-1,n - k) <= m)l = h;
-        else r = h;
+        ll n,m,x,y;
+        cin>>n>>m>>x>>y;
+        //ll tt = (n * m - 1) * (n * m - 2);
+        ll tt = 0;
+        REP1(i,n)REP1(j,m)if(i != x || j != y)
+        {
+            ll tmp = n - 1 + m - 1 + min(i-1,j-1) + min(n - i,m - j) + min(i-1,m-j) + min(n - i,j-1);
+            debug(i,j,tmp);
+            if(i == x || j == y || i + j == x + y || i - j == x - y)tt += n * m - 1 - tmp;
+            else tt += n * m - 1 - tmp - 1;
+        }
+        //tt += n-1 + m-1;
+        //tt += min(x-1,y-1) + min(n - x,m - y);
+        //tt += min(x-1,m-y) + min(n - x,y-1);
+        debug(tt);
+        //tt /= 2;
+        tt += 2 * ((x - 1) * (n - x) + (y - 1) * (m - y));
+        tt += 2 * min(x - 1,y - 1) * min(n - x,m - y);
+        tt += 2 * min(x - 1,m - y) * min(n - x,y - 1);
+        cout<<tt<<endl;
     }
-    cout<<l + 1<<endl;
-
 }
