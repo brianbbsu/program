@@ -2,6 +2,7 @@
     "C_Cpp.dimInactiveRegions": false,
     "files.associations": {
         "*.latex": "tex",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "iostream": "cpp"
     }
 }
