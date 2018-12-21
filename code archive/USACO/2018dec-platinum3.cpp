@@ -43,31 +43,82 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+string _taskname;
+void _init()
+{
+  #ifndef brian
+      freopen((_taskname+".in").c_str(), "r", stdin);
+      freopen((_taskname+".out").c_str(),"w",stdout);
+  #endif
+}
+void _end()
+{
+  #ifndef brian
+      fclose( stdin);
+      fclose(stdout);
+  #endif
+}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
+
+vector<ll> v[MAXn], bef[MAXn], aft[MAXn], his;
+ll tg[MAXn],  vis[MAXn], dph[MAXn], ans[MAXn], ins[MAXn];
+
+void dfs(ll now,ll f)
 {
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
+    his.pb(now);
+    vis[now] = 1;
+    ins[now] = 1;
+    for(ll k:aft[now])if(vis[k])tg[now]++;
+    for(ll k:bef[now])if(vis[k] && ins[k])tg[1]++, tg[his[dph[k] + 1]]--;
+    for(ll k:bef[now])if(vis[k] && !ins[k])tg[k]++;
+    for(ll k:v[now])if(k != f)
+    {
+        dph[k] = dph[now] + 1;
+        dfs(k, now);
+    }
+    ins[now] = 0;
+    his.pop_back();
 }
 
-ll d[MAXn], inv[MAXn];
 
+void dfs2(ll now,ll f, ll s)
+{
+    s += tg[now];
+    assert(s >= 0);
+    if(!s)ans[now] = 1;
+    else ans[now] = 0;
+    for(ll k:v[now])if(k != f)dfs2(k,now, s);
+}
 
 int main()
 {
-    IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    //IOS();
+    _taskname = "gathering";
+    _init();
+
+    ll n,m;
+    cin>>n>>m;
+    REP(i,n-1)
+    {
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+    }
+    REP(i,m)
+    {
+        ll a,b;
+        cin>>a>>b;
+        bef[b].pb(a);
+        aft[a].pb(b);
+    }
+    dph[1] = 0;
+    dfs(1,-1);
+    dfs2(1,-1, 0);
+    REP1(i,n)cout<<ans[i]<<endl;
+    _end();
 }

@@ -44,30 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
+ll n, d[MAXn];
+
+bool chk(ll k)
 {
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
+    vector<ii> stk;
+    REP1(i,n-1)
+    {
+        if(d[i] > d[i-1])continue;
+        if(k == 1)return 0;
+        while(SZ(stk) && stk.back().X > d[i])stk.pop_back();
+        ll it = d[i];
+        while(1)
+        {
+            if(it == 0)return 0;
+            if(SZ(stk) && stk.back().X == it)
+            {
+                if(stk.back().Y == k-1)
+                {
+                    it--;
+                    stk.pop_back();
+                    continue;
+                }
+                else stk.back().Y++;
+            }
+            else stk.pb(ii(it, 1));
+            break;
+        }
+        //debug(i, stk);
+    }
+    return 1;
 }
-
-ll d[MAXn], inv[MAXn];
-
 
 int main()
 {
     IOS();
-    ll n;
     cin>>n;
     REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    ll l = 0, r = n;
+    while(l != r-1)
+    {
+        ll h = (l+r)/2;
+        if(chk(h))r = h;
+        else l = h;
+    }
+    cout<<r<<endl;
 }

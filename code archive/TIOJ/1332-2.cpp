@@ -44,30 +44,25 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
-
-ll d[MAXn], inv[MAXn];
-
+int stk[MAXn], t[MAXn], p[MAXn], it;
 
 int main()
 {
     IOS();
-    ll n;
+    int n, x;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    for(int i = 1;i <= n;i ++)cin>>x, t[x] = i;
+    for(int i = 1;i <= n;i ++)
+    {
+        x = 0;
+        while(it && t[stk[it-1]] > t[i])x = stk[--it];
+        if(x) p[x] = i;
+        if(it) p[i] = stk[it - 1];
+        stk[it++] = i;
+    }
+    for(int i = 1;i <= n;i ++)cout<<p[i]<<endl;
 }

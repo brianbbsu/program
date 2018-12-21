@@ -43,31 +43,59 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+string _taskname;
+void _init()
+{
+  #ifndef brian
+      freopen((_taskname+".in").c_str(), "r", stdin);
+      freopen((_taskname+".out").c_str(),"w",stdout);
+  #endif
+}
+void _end()
+{
+  #ifndef brian
+      fclose( stdin);
+      fclose(stdout);
+  #endif
+}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
 
-ll d[MAXn], inv[MAXn];
+ll d[MAXn], u[MAXn], nxt[MAXn];
+vector<ll> v;
 
 
 int main()
 {
-    IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    _taskname = "itout";
+    _init();
+    
+    ll n,k;
+    cin>>n>>k;
+    REP1(i,n)cin>>d[i];
+    d[0] = 0;
+    v.pb(n+1);
+    for(int i = n;i >= 0;i --)
+    {
+        if(d[i] < v.back())nxt[d[i]] = v.back(), v.pb(d[i]);
+        else 
+        {
+            auto it = lower_bound(ALL(v), d[i], greater<ll>());
+            *it = d[i];
+            nxt[d[i]] = *(--it);
+        }
+    }
+    ll now = 0;
+    while(now != n+1)
+    {
+        u[nxt[now]] = 1;
+        now = nxt[now];
+    }
+    cout<<n - (SZ(v) - 2)<<endl;
+    REP1(i,n)if(!u[i])cout<<i<<endl;
+
+    _end();
 }

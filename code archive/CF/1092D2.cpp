@@ -44,30 +44,34 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
-
-ll d[MAXn], inv[MAXn];
-
+vector<ll> stk;
 
 int main()
 {
     IOS();
-    ll n;
+    ll n, mx = 0;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    REP(i,n)
+    {
+        ll x;
+        cin>>x;
+        mx = max(mx, x);
+        if(SZ(stk))
+        {
+           if(x > stk.back())
+           {
+               cout<<"NO"<<endl;
+               return 0;
+           }
+           else if(x == stk.back())stk.pop_back();
+           else stk.pb(x);
+        }
+        else stk.pb(x);
+    }
+    if(!SZ(stk) || stk.back() == mx)cout<<"YES"<<endl;
+    else cout<<"NO"<<endl;
 }

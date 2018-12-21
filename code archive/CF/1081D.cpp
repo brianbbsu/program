@@ -48,26 +48,48 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
+ll n,m,k;
+
+ll g[MAXn], sz[MAXn];
+ll f(ll a){return g[a] = (g[a] == a?a:f(g[a]));}
+bool mg(ll a,ll b)
 {
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
+    a = f(a), b = f(b);
+    if(a==b)return 0;
+    g[a] = b;
+    sz[b] += sz[a];
+    return sz[b] == k;
 }
 
-ll d[MAXn], inv[MAXn];
-
+struct edge{
+    ll a,b,c;
+};
+vector<edge> e;
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    cin>>n>>m>>k;
+    REP(i,k)
+    {
+        ll x;
+        cin>>x;
+        sz[x] = 1;
+    }
+    REP(i,m)
+    {
+        ll a,b,c;
+        cin>>a>>b>>c;
+        e.pb({a,b,c});
+    }
+    sort(ALL(e), [](auto a, auto b){return a.c < b.c;});
+    REP1(i,n)g[i] = i;
+    for(auto &p:e)
+    {
+        if(mg(p.a,p.b))
+        {
+            REP(i,k)cout<<p.c<<" ";
+            return 0;
+        }
+    }
 }

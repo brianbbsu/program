@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 import os
+import sys
 import subprocess
 
 def clr(s):

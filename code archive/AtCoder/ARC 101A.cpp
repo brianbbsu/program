@@ -48,26 +48,20 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
-
-ll d[MAXn], inv[MAXn];
-
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
+    ll n,k;
+    cin>>n>>k;
     REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    ll mn = INF;
+    for(int i = 0; i + k <= n;i ++)
+    {
+        if(d[i+k-1] <= 0)mn = min(mn, abs(d[i]));
+        else if(d[i] >= 0)mn = min(mn, d[i+k-1]);
+        else mn = min(mn, min(abs(d[i]), d[i+k-1]) + d[i+k-1] - d[i]);
+    }
+    cout<<mn<<endl;
 }

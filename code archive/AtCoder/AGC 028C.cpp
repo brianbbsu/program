@@ -48,26 +48,49 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
-
-ll d[MAXn], inv[MAXn];
-
+ll d[2][MAXn], p[2][MAXn];
+vector<pair<ll,ii> > dt;
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    REP(i,n)REP(j,2)cin>>d[j][i];
+    ll mn = INF;
+    {
+        ll tt = 0;
+        REP(i,n)tt += d[0][i];
+        mn = min(tt, mn);
+    }
+    {
+        ll tt = 0;
+        REP(i,n)tt += d[1][i];
+        mn = min(tt, mn);
+    }
+    REP(i,n)REP(j,2)dt.pb({d[j][i],{j,i}});
+    sort(ALL(dt));
+    ll tmp = 0;
+    REP(i,n)tmp += dt[i].X;
+    REP(i,SZ(dt))p[dt[i].Y.X][dt[i].Y.Y] = i;
+    REP(i,n)REP(j,2)debug(i,j,d[j][i],p[j][i]);
+    debug(mn);
+    REP(i,n)
+    {
+        debug(i, mn);
+        if((p[0][i] >= n && p[1][i] >= n) || (p[0][i] < n && p[1][i] < n))mn = min(mn, tmp);
+        else if(p[0][i] < n)
+        {
+            debug(i, "a");
+            if(p[0][i] != n-1)mn = min(mn, tmp - dt[n-1].X + d[1][i]);
+            else mn = min(mn, tmp - dt[n-2].X + d[1][i]);
+        }
+        else
+        {
+            debug(i, "b");
+            if(p[1][i] != n-1)mn = min(mn, tmp - dt[n-1].X + d[0][i]);
+            else mn = min(mn, tmp - dt[n-2].X + d[0][i]);
+        }
+    }
+    cout<<mn<<endl;
 }

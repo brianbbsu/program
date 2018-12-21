@@ -44,30 +44,64 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
+vector<ll> v[MAXn];
+vector<ii> e;
+
+ll g[MAXn], sz[MAXn];
+ll f(ll a){return g[a] = (g[a] == a?a:f(g[a]));}
+void mg(ll a,ll b)
 {
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
+    a = f(a), b = f(b);
+    if(a == b)return;
+    sz[b] += sz[a];
+    g[a] = b;
 }
 
-ll d[MAXn], inv[MAXn];
-
+ll ans[MAXn], ok[MAXn];
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    REP(i,n-1)
+    {
+        ll a,b;
+        cin>>a>>b;
+        if(a > b)swap(a,b);
+        v[a].pb(b);
+        v[b].pb(a);
+        if(a != 1)e.pb(ii(a,b));
+    }
+    REP1(i,n)g[i] = i, sz[i] = 1;
+    sz[1] = 0;
+    REP1(i,n)sort(ALL(v[i]));
+    ok[1] = 1;
+    REP1(k, n)
+    {
+        for(ii p:e)if(p.Y <= k)mg(p.X, p.Y);
+        for(ll x:v[1])ok[f(x)]=1;
+        for(int i = 2;i <= n;i ++)if(!ans[i])
+        {
+            debug(k, i);
+            if(i <= k && ok[f(i)])ans[i] = sz[f(i)];
+            else if(i > k)
+            {
+                ll tmp = 0, fg = 0;
+                for(ll x:v[i])
+                {
+                    if(x > k)break;
+                    if(ok[f(x)])fg = 1;
+                    tmp += sz[f(x)];
+                }
+                if(fg)ans[i] = tmp + 1;
+            }
+        }
+        for(ll x:v[1])ok[f(x)]=0;
+    }
+    for(int i = 2;i <= n;i ++)cout<<ans[i]<<" ";
 }

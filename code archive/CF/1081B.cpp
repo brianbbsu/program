@@ -48,26 +48,28 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
-
-ll d[MAXn], inv[MAXn];
-
+ll d[MAXn], ans[MAXn], dt[MAXn];
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    REP(i,n)cin>>d[i], dt[i] = i;
+    sort(dt,dt+n,[](int a,int b){return d[a] < d[b];});
+    ll it = 0, ct = 0;
+    while(it < n)
+    {
+        ll c = n - d[dt[it]];
+        if(it + c - 1 >= n || d[dt[it+c-1]] != d[dt[it]])
+        {
+            cout<<"Impossible"<<endl;
+            return 0;
+        }
+        ct++;
+        REP(i,c)ans[dt[it+i]] = ct;
+        it += c;
+    }
+    cout<<"Possible"<<endl;
+    REP(i,n)cout<<ans[i]<<" ";
 }

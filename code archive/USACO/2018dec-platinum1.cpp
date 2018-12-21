@@ -43,31 +43,47 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 #endif // brian
 //}
 
+string _taskname;
+void _init()
+{
+  #ifndef brian
+      freopen((_taskname+".in").c_str(), "r", stdin);
+      freopen((_taskname+".out").c_str(),"w",stdout);
+  #endif
+}
+void _end()
+{
+  #ifndef brian
+      fclose( stdin);
+      fclose(stdout);
+  #endif
+}
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
-{
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
-}
+lf d[MAXn];
 
-ll d[MAXn], inv[MAXn];
-
+lf mx[MAXn];
 
 int main()
 {
-    IOS();
+    //IOS();
+    _taskname = "balance";
+    _init();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    REP1(i,n)cin>>d[i];
+    REP1(i,n)mx[i] = d[i];
+    REP1(i,n)
+    {
+        for(int j = 0;j < i;j ++)for(int k = n+1;k > i;k --)
+        {
+            ll l = i - j, r = k - i;
+            mx[i] = max(mx[i], (d[j] * r + d[k] * l)/(l+r)); 
+        }
+    }
+    REP1(i,n)cout<<(ll)(mx[i] * 100000 + 1e-6)<<endl;
+    
 }

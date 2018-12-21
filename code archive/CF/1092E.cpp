@@ -48,26 +48,65 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
+vector<ll> v[MAXn], his;
+vector<ii> dt;
+ll h[MAXn][2], vis[MAXn], far[MAXn];
+
+void dfs1(ll now,ll f)
 {
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
-    return ret;
+    h[now][0] = h[now][1] = 0;
+    vis[now] = 1;
+    his.pb(now);
+    for(ll k:v[now])if(k!=f)
+    {
+        dfs1(k,now);
+        if(h[k][0] + 1 >= h[now][0])h[now][1] = h[now][0], h[now][0] = h[k][0] + 1;
+        else if(h[k][0] + 1 >= h[now][1])h[now][1] = h[k][0] + 1;
+    }
 }
-
-ll d[MAXn], inv[MAXn];
-
+void dfs2(ll now,ll f,ll tp)
+{
+    far[now] = max(tp,h[now][0]);
+    for(ll k:v[now])if(k!=f)
+    {
+        if(h[k][0] + 1 == h[now][0])dfs2(k,now, max(tp,h[now][1]) + 1);
+        else dfs2(k, now, max(tp, h[now][0] + 1));
+    }
+}
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
+    {
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+    }
+    ll ans = 0;
+    REP1(i,n)vis[i] = 0;
+    dt.clear();
+    REP1(i,n)if(!vis[i])
+    {
+        his.clear();
+        dfs1(i,-1);
+        dfs2(i,-1,0);
+        ll mn = INF, mnid = -1;
+        for(ll x:his)
+        {
+            if(far[x] < mn)mn = far[x], mnid = x;
+            ans = max(ans, far[x]);
+        }
+        dt.pb({far[mnid], mnid});
+    }
+    pary(far+1,far+1+n);
+    sort(ALL(dt),greater<ii>());
+    debug(dt,ans);
+    if(SZ(dt) > 1)ans = max(ans, dt[0].X + dt[1].X + 1);
+    if(SZ(dt) > 2)ans = max(ans, dt[1].X + 2 + dt[2].X);
+    cout<<ans<<endl;
+    REP1(i,SZ(dt) - 1)cout<<dt[0].Y<<" "<<dt[i].Y<<endl;
 }

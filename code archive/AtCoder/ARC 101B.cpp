@@ -48,14 +48,19 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll pw(ll x,ll k)
+ll d[MAXn], s[MAXn], bit[MAXn];
+ii dt[MAXn];
+vector<ll> uni;
+void ins(ll x, ll k)
 {
-    ll ret = 1;
-    for(ll i = 0, bs = x;(1LL<<i) <= k;i++,bs = bs * bs % MOD)if((1LL<<i) & k)ret = (ret * bs) % MOD;
+    while(x < MAXn)bit[x] += k, x += x & -x;
+}
+ll qr(ll x)
+{
+    ll ret = 0;
+    while(x)ret += bit[x], x -= x & -x;
     return ret;
 }
-
-ll d[MAXn], inv[MAXn];
 
 
 int main()
@@ -64,10 +69,27 @@ int main()
     ll n;
     cin>>n;
     REP(i,n)cin>>d[i];
-    REP1(i,n)inv[i] = pw(i, MOD-2);
-    REP1(i,n)inv[i] = (inv[i-1] + inv[i]) % MOD;
-    ll tt = 0;
-    REP(i,n)tt = (tt + d[i] * (inv[i+1] + inv[n-i] - 1)) % MOD;
-    REP1(i,n)tt = tt * i % MOD;
-    cout<<tt<<endl;
+    REP(i,n)dt[i] = ii(d[i], i);
+    sort(dt,dt+n);
+    ll l = -1, r = n-1, targ = ((n + 1) * n / 2) / 2 + 1;
+    debug(targ);
+    while(l != r-1)
+    {
+        ll h = (l+r)/2;
+        FILL(bit, 0);
+        uni.clear();
+        REP(i,n)s[i] = (ii(d[i], i) <= dt[h]?-1:1);
+        for(int i = n-1;i >= 0;i--)s[i] += s[i+1];
+        pary(s, s + n);
+        REP(i,n+1)uni.pb(s[i]);
+        sort(ALL(uni));
+        uni.resize(unique(ALL(uni)) - uni.begin());
+        REP(i,n+1)s[i] = lower_bound(ALL(uni), s[i]) - uni.begin() + 1;
+        ll tt = 0;
+        REP(i,n+1)tt += qr(s[i] - 1), ins(s[i], 1);
+        debug(h, dt[h], tt);
+        if(tt >= targ)r = h;
+        else l = h;      
+    }
+    cout<<dt[r].X<<endl;
 }
