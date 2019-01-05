@@ -48,36 +48,35 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+class MagicNumbersAgain{
+public:
+    vector<ll> dt;
+    int count(long long A, long long B){
+        for(ll i = 1;i * i <= 10000000000LL;i ++)
+        {
+            string s = to_string(i * i);
+            bool fg = 1;
+            REP(j, SZ(s) - 1)
+            {
+                if(j&1)
+                {
+                    if(s[j] <= s[j+1])fg=0;
+                }
+                else
+                {
+                    if(s[j] >= s[j+1])fg=0;
+                }
+            }
+            if(fg)dt.pb(i * i);
+        }
+        return upper_bound(ALL(dt), B) - lower_bound(ALL(dt), A);
+    }
+};
 
-ll d[MAXn];
-ll dp[2][MAXn];
-
+#ifdef brian
 int main()
 {
     IOS();
-    int n;
-    cin>>n;
-    REP1(i,n)cin>>d[i];
-    ll q;
-    cin>>q;
 
-    dp[0][1]=max(0LL,d[1]);
-    for(int i=2;i<=n;i++)dp[0][i]=max(dp[0][i-2]+d[i],dp[0][i-1]);
-    dp[1][n]=max(0LL,d[n]);
-    for(int i=n-1;i>0;i--)dp[1][i]=max(dp[1][i+2]+d[i],dp[1][i+1]);
-
-    ll mx=*max_element(d+1,d+n+1);
-    if(mx>=0)cout<<dp[0][n]<<endl;
-    else cout<<mx<<endl;
-
-
-    REP(i,q)
-    {
-      ll a;
-      cin>>a;
-      ll t=0;
-      if(a>1)t+=dp[0][a-2];
-      if(a<n-1)t+=dp[1][a+2];
-      cout<<t+d[a]<<endl;
-    }
 }
+#endif

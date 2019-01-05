@@ -45,68 +45,22 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 
 
 const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MOD=998244353;
 const ll INF=ll(1e15);
+
+vector<ll> d;
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    ll d[m+3];
-    REP(i,m)cin>>d[i];
-    #ifndef brian
-    if(n>1000000&&m>1)
-    #endif
+    ll n;
+    ll tt = 1, s = 1;
+    cin>>n;
+    for(ll i = n;i > 0;i --)
     {
-      ll mxm=0;
-      REP(i,m)mxm=max(mxm,d[i]);
-      ll mat[2][205][205];
-      FILL(mat,0);
-      ll dt[205][205];
-      FILL(dt,0);
-      REP(i,m)dt[0][d[i]-1]=1;
-      REP1(i,mxm-1)dt[i][i-1]=1;
-
-      ll lg=0;
-      while((1LL<<(lg+1))<=n)lg++;
-
-      bool fg=0;
-      REP(i,mxm)mat[fg][i][i]=1;
-
-      while(lg>=0)
-      {
-        REP(i,mxm)REP(j,mxm)
-        {
-          mat[!fg][i][j]=0;
-          REP(k,mxm)mat[!fg][i][j]=(mat[!fg][i][j]+mat[fg][i][k]*mat[fg][k][j])%MOD;
-        }
-        fg=!fg;
-        if((1LL<<lg)&n)
-        {
-          REP(i,mxm)REP(j,mxm)
-          {
-            mat[!fg][i][j]=0;
-            REP(k,mxm)mat[!fg][i][j]+=mat[fg][i][k]*dt[k][j];
-            mat[!fg][i][j]%=MOD;
-          }
-          fg=!fg;
-        }
-        lg--;
-      }
-
-      cout<<mat[fg][0][0]<<endl;
-      return 0;
+        ll tmp = s * i % MOD;
+        tt = (tt + (tmp - s) * (n - i + 1)) % MOD;
+        s = tmp;
     }
-    if(m==1)
-    {
-      cout<<(n%d[0]==0)<<endl;
-      return 0;
-    }
-    ll dp[n+5];
-    FILL(dp,0);
-    dp[0]=1;
-    REP1(i,n)REP(j,m)if(d[j]<=i)dp[i]=(dp[i-d[j]]+dp[i])%MOD;
-    cout<<dp[n]<<endl;
-    pary(dp,dp+n+1);
+    cout<<(tt + MOD) % MOD<<endl;
 }

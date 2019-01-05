@@ -48,37 +48,48 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll d[MAXn];
 
-ll bit[MAXn];
-void ins(ll x,ll k)
-{
-  ll t=x;
-  while(x<MAXn)bit[x]+=k-d[t],x+=x&-x;
-  d[t]=k;
-}
-ll qr(ll x)
-{
-  ll rt=0;
-  while(x>0)rt+=bit[x],x-=x&-x;
-  return rt;
-}
+map<ll,ll> mp;
 
 int main()
 {
     IOS();
-    ll n,q;
-    cin>>n>>q;
-    REP1(i,n){
-      ll t;
-      cin>>t;
-      ins(i,max(t,0LL));
-    }
-    REP(i,q)
+    ll n;
+    cin>>n;
+    REP(i,n)
     {
-      ll t,a,b;
-      cin>>t>>a>>b;
-      if(t==1)ins(a,max(b,0LL));
-      else cout<<qr(b)-qr(a-1)<<endl;
+        string s;
+        cin>>s;
+        {
+            bool fg = 1;
+            ll t = 0;
+            for(char c:s)
+            {
+                if(c == '(')t ++;
+                else t--;
+                if(t < 0)fg = 0;
+            }
+            if(fg)mp[t]++;
+        }
+        {
+            bool fg = 1;
+            ll t = 0;
+            reverse(ALL(s));
+            for(char c:s)
+            {
+                if(c == '(')t ++;
+                else t--;
+                if(t > 0)fg = 0;
+            }
+            if(fg)mp[t]++;
+        }
     }
+    debug(mp);
+    ll tt = 0;
+    for(auto tmp:mp)if(tmp.X < 0)
+    {
+        tt += min(tmp.Y, mp[-tmp.X]);
+    }
+    tt += mp[0] / 4;
+    cout<<tt<<endl;
 }

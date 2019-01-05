@@ -44,28 +44,37 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll ct[100];
 
-ll clr[MAXn];
+void ok(){
+    cout<<"YES"<<endl;
+    REP(i,100)REP(j,ct[i])cout<<(1<<i)<<" ";
+    exit(0);
+}
 
 int main()
 {
     IOS();
-    ll n,m;
-    cin>>n>>m;
-    REP1(i,n)cin>>clr[i];
-    for(int i=1;i<m;i++)
+    ll n,k;
+    cin>>n>>k;
+    ll tt = 0;
+    for(int i = 0;(1<<i) <= n;i++)if(n & (1<<i))ct[i] ++, tt++;
+    if(tt > k)cout<<"NO"<<endl;
+    else if(tt == k)ok();
+    else
     {
-      ll a,b;
-      cin>>a>>b;
-      if(clr[a]==clr[b])
-      {
-        cout<<"No"<<endl;
-        return 0;
-      }
+        for(int i = 99;i>0;i--)
+        {
+            ll t = ct[i];
+            ct[i] -= min(t, k - tt);
+            ct[i-1] += 2 * min(t, k - tt);
+            tt += min(t, k - tt);
+            if(tt == k)ok();
+        }
+        cout<<"NO"<<endl;
     }
-    cout<<"Yes"<<endl;
 }

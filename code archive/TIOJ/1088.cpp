@@ -48,39 +48,25 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-
-
-ll cal(ll l,ll r)
-{
-    ll s=0,f;
-    ll tl=l,tr=r;
-    for(ll i=0,I=1;I<=r;i++,I*=10)
-    {
-      ll tmp=0;
-      tmp=(r/I-l/I)/10*I;
-      ll lc=tl%10,rc=tr%10;
-      if(rc<lc)rc+=10;
-      if(lc<=7&&rc>7)tmp+=I;
-      if(tl%10==7)tmp-=l%I;
-      if(tr%10==7)tmp+=r%I+1;
-      tl/=10;
-      tr/=10;
-      if(i==0)f=tmp;
-      s+=tmp;
-      debug(tmp);
-    }
-    return f*100/s;
-}
+#ifndef brian
+#include "lib1088.h"
+#else
+void Initialize(int *a,int *b,int *c){}
+void Take_Stone(int pile_no, int num, int *com_pile, int *com_num){}
+#endif
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    ll l,r;
-    REP(i,n)
-    {
-      cin>>l>>r;
-      cout<<cal(l,r)<<endl;
+    int a,b,c;
+    Initialize(&a, &b, &c);
+    while(1){
+        int comp, comn;
+        if((b ^ c) < a)wTake_Stone(1, a - (b ^ c), &comp, &comn), a = (b ^ c);
+        else if((b ^ a) < c)Take_Stone(3, c - (b ^ a), &comp, &comn), c = (b ^ a);
+        else Take_Stone(2, b - (c ^ a), &comp, &comn), b = (c ^ a);
+        if(comp == 1)a -= comn;
+        else if(comp == 2)b -= comn;
+        else c -= comn;
     }
 }

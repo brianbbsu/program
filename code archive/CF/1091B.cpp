@@ -48,27 +48,32 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+vector<ii> d, tmp;
+ii v[MAXn];
 
 int main()
 {
     IOS();
-    ll n,x,y;
-    cin>>n>>x>>y;
-    REP(T,n)
+    ll n;
+    cin>>n;
+    REP(i,n)
     {
-      ll ct;
-      cin>>ct;
-      ll l=0,r=1e18+5;
-      while(l!=r-1)
-      {
-        ll h=(l+r)/2;
-        if(h/x+h/y>=ct)r=h;
-        else l=h;
-      }
-      bool a=(r%x==0),b=(r%y==0);
-      if(a&&b)cout<<"Both ";
-      else if(a)cout<<"Left ";
-      else cout<<"Right ";
-      cout<<r<<endl;
+        ll a,b;
+        cin>>a>>b;
+        d.pb({a,b});
+    }
+    sort(ALL(d));
+    REP(i,n)cin>>v[i].X>>v[i].Y;
+    REP(i, n)
+    {
+        ll x = d[0].X + v[i].X, y = d[0].Y + v[i].Y;
+        tmp.clear();
+        REP(j,n)tmp.pb({x - v[j].X, y - v[j].Y});
+        sort(ALL(tmp));
+        if(tmp == d)
+        {
+            cout<<x<<" "<<y<<endl;
+            return 0;
+        }
     }
 }

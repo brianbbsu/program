@@ -65,7 +65,7 @@ const ll INF=ll(1e15);
 
 
 vector<ll> v[MAXn], bef[MAXn], aft[MAXn], his;
-ll tg[MAXn],  vis[MAXn], dph[MAXn], ans[MAXn], ins[MAXn];
+ll tg[MAXn],  vis[MAXn], dph[MAXn], ans[MAXn], ins[MAXn], dg[MAXn], ct[MAXn];
 
 void dfs(ll now,ll f)
 {
@@ -119,6 +119,24 @@ int main()
     dph[1] = 0;
     dfs(1,-1);
     dfs2(1,-1, 0);
+    ll ttct = 0;
+    queue<ll> q;
+    REP1(i,n)if(SZ(v[i]) == 1 && SZ(bef[i]) == 0)q.push(i);
+    while(SZ(q))
+    {
+        ll t = q.front();q.pop();ttct++;
+        for(ll k:v[t])
+        {
+            dg[k]++;
+            if(SZ(bef[k]) == ct[k] && dg[k] == SZ(v[k]) - 1)q.push(k);
+        }
+        for(ll k:aft[t])
+        {
+            ct[k]++;
+            if(SZ(bef[k]) == ct[k] && dg[k] == SZ(v[k]) - 1)q.push(k);
+        }
+    }
+    if(ttct != n)REP1(i,n)ans[i] = 0;
     REP1(i,n)cout<<ans[i]<<endl;
     _end();
 }

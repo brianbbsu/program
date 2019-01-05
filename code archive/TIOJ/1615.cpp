@@ -44,19 +44,51 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll INF=ll(1e15);
 
-ii d[MAXn];
+vector<ll> pm;
+int lspm[MAXn];
 
+
+ll big(ll x, ll a)
+{
+    ll tt = 0;
+    for(ll t:pm)
+    {
+        if(x == 1)break;
+        if(x % t == 0)
+        {
+            if(t > a)tt++;
+            while(x % t == 0)x /= t;
+        }
+    }
+    if(x > 1)tt++;
+    return tt;
+}
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+    for(int i = 2;i < MAXn;i ++)
+    {
+        if(!lspm[i])lspm[i] = i, pm.pb(i);
+        for(int j = 0;pm[j] * i < MAXn;j ++)
+        {
+            lspm[pm[j] * i] = pm[j];
+            if(i % pm[j] == 0)break;
+        }
+    }
+    ll a,b;
+    while(cin>>a>>b)
+    {
+        if(a > b)swap(a,b);
+        ll tt = upper_bound(ALL(pm), a) - pm.begin(); 
+        ll tmp = 1;
+        for(ll i = a + 1;i <= b;i ++)tmp *= i;
+        tmp += 1;
+        tt += big(tmp, a);
+        cout<<tt<<endl;
+    }
 }

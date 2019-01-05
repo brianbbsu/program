@@ -44,19 +44,35 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll INF=ll(1e15);
 
-ii d[MAXn];
+class UniformingMatrix{
+public:
+    string isPossible(vector <string> M)
+    {
+        ll n = SZ(M);
+        ll m = SZ(M[0]);
+        bool fg = 0;
+        REP(i,n)REP(j,m)
+        {
+            if((M[i][j] == M[0][j]) != (M[i][0] == M[0][0]))fg = 1;
+        }
+        if(fg)return "impossible";
+        ll ctr = 0, ctc = 0;
+        REP(i,n)if(M[i][0] == '0')ctr++;
+        REP(j,m)if(M[0][j] != M[0][0])ctc++;
+        if(ctr % 2 == ctc % 2)return "possible";
+        else if((n - ctr) % 2 == (m - ctc) % 2)return "possible";
+        else return "impossible";
+    }
+};
 
-
+#ifdef brian
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+
 }
+#endif

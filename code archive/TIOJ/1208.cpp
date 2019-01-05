@@ -44,19 +44,59 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e4+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll INF=ll(1e15);
 
-ii d[MAXn];
-
+int bit[MAXn];
+void ins(ll x,ll k)
+{
+    while(x < MAXn)
+    {
+        bit[x] += k, x += x & -x;
+    }
+}
+ll qr(ll x)
+{
+    ll ret = 0;
+    while(x)
+    {
+        ret += bit[x], x -= x & -x;
+    }
+    return ret;
+}
+vector<ll> uni;
+ll d[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+    ll n,k;
+    while(cin>>n>>k && (n || k))
+    {
+        REP1(i,n)cin>>d[i];
+        REP1(i,n)d[i] += d[i-1];
+        uni.clear();
+        REP(i,n+1)uni.pb(d[i]);
+        sort(ALL(uni));
+        uni.resize(unique(ALL(uni)) - uni.begin());
+        debug(uni);
+        REP(i,n+1)d[i] = lower_bound(ALL(uni), d[i]) - uni.begin();
+        ll l = -300000001, r = 300000000;
+        pary(d,d+n+1);
+        while(l != r-1)
+        {
+            FILL(bit,0);
+            ll h = (l+r)/2, tt = 0;
+            REP1(i,n)
+            {
+                ins(d[i-1] + 1, 1);
+                tt += qr(lower_bound(ALL(uni), uni[d[i]] - h) - uni.begin());
+            }
+            debug(h, tt);
+            if(tt < k)r = h;
+            else l = h;
+        }
+        cout<<r<<endl;
+    }
 }

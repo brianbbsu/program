@@ -44,19 +44,60 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=5e3+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll INF=ll(1e15);
 
-ii d[MAXn];
 
+ll g[MAXn], sz[MAXn];
+ll f(ll x){return g[x] = (g[x] == x?x:f(g[x]));}
+void mg(ll a,ll b)
+{
+    a = f(a), b = f(b);
+    if(a == b)return;
+    g[a] = b;
+    sz[b] += sz[a];
+}
+
+vector<ll> v[MAXn], dt;
+ll ans[MAXn], vis[MAXn], dg[MAXn];
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+    ll n,m;
+    cin>>n>>m;
+    REP(i,m)
+    {
+        ll a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+        dg[a] ++;
+        dg[b] ++;
+    }
+    REP(T,n)
+    {
+        ll mn = INF, mnid = -1;
+        REP1(i,n)if(!vis[i] && dg[i] < mn)mn = dg[i], mnid = i;
+        ll t = mnid;
+        ans[t] = mn;
+        vis[t] = 1;
+        for(ll k:v[t])if(!vis[k])dg[k]--;
+        dt.pb(t);
+    }
+    REP1(i,n)vis[i] = 0;
+    reverse(ALL(dt));
+    debug(dt);
+    pary(ans+1,ans + 1 + n);
+    REP1(i,n)g[i] = i, sz[i] = 1;
+    ll mx = 0;
+    for(ll x:dt)
+    {
+        vis[x] = 1;
+        for(ll k:v[x])if(vis[k])mg(k, x);
+        debug(x, sz[f(x)]);
+        mx = max(mx,ans[x] * sz[f(x)]);
+    }
+    cout<<mx<<endl;
 }

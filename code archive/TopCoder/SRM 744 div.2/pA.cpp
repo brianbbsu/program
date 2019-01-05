@@ -44,56 +44,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-bitset<MAXn> s,ed,d[20];
+class ThreePartSplit{
+public:
+    vector <int> split(int a, int d){
+        int n = d - a;
+        vector<int> ret;
+        ret.pb(a + n/3);
+        ret.pb(a + n/3 * 2);
+        return ret;
+    }
+};
 
-ll ans=INF;
-ll n,m;
 
-void dfs(ll now,ll tt)
-{
-  if(now==m)
-  {
-    if(s==ed)ans=min(ans,tt);
-    return;
-  }
-  dfs(now+1,tt);
-  s^=d[now];
-  dfs(now+1,tt+1);
-  s^=d[now];
-}
 
+#ifdef brian
 int main()
 {
     IOS();
-    cin>>m>>n;
-    REP(i,n)
-    {
-      ll t;
-      cin>>t;
-      s[i]=t;
-    }
-    REP(i,n)
-    {
-      ll t;
-      cin>>t;
-      ed[i]=t;
-    }
-    REP(i,m)
-    {
-      ll k;
-      cin>>k;
-      REP(j,k)
-      {
-        ll t;
-        cin>>t;
-        d[i][t-1]=1;
-      }
-    }
-    dfs(0,0);
-    debug(ans);
-    cout<<ans<<endl;
+
 }
+#endif

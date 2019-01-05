@@ -44,19 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll INF=ll(1e15);
 
-ii d[MAXn];
+class ModularQuadrant{
+public:
+    ll cnt(int tp, int p)
+    {
+        return p / 3 + (p % 3 >= tp);
+    }
+    ll cal(int x,int y)
+    {
+        if(x < 0 || y < 0)return 0;
+        ll tt = 0, t = min(x,y);
+        REP(i,3)
+        {
+            ll l = cnt(i,t);
+            tt += i * (2 * (i+1) + (l - 1) * 3) * l/ 2;
+            tt += i * (2 * i + (l - 1) * 3) * l/ 2;
+        }
+        if(x > y)
+        {
+            REP(i,3)
+            {
+                ll l = cnt(i, x) - cnt(i, t);
+                tt += l * (y + 1) * i;
+            }
+        }
+        else if(y > x)
+        {
+            REP(i,3)
+            {
+                ll l = cnt(i, y) - cnt(i, t);
+                tt += l * (x + 1) * i;
+            }
+        }
+        return tt;
+    }
+    long long sum(int r1, int r2, int c1, int c2){
+        return cal(r2,c2) - cal(r2,c1-1) - cal(r1-1,c2) + cal(r1-1,c1-1);
+    }
+};
 
-
+#ifdef brian
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+
 }
+#endif

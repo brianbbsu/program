@@ -44,19 +44,55 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll INF=ll(1e15);
 
-ii d[MAXn];
+vector<ii> v[MAXn];
+ll u[MAXn], d[MAXn];
+
+priority_queue<ii, vector<ii>, greater<ii>> pqp, pqe;
 
 
 int main()
 {
     IOS();
-    ll n;
-    cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+    ll n,m;
+    cin>>n>>m;
+    REP1(i,n)cin>>d[i];
+    REP1(i,m)
+    {
+        ll a,b, c;
+        cin>>a>>b>>c;
+        v[a].pb(ii(b,c));
+        v[b].pb(ii(a,c));
+    }
+    REP1(i,n)pqp.push(ii(d[i], i));
+    ll tt = 0, mn = pqp.top().X;
+    ll mnid = pqp.top().Y;pqp.pop();
+    u[mnid] = 1;
+    for(ii k:v[mnid])pqe.push(ii(k.Y, k.X));
+    while(1)
+    {
+        while(SZ(pqp) && u[pqp.top().Y])pqp.pop();
+        while(SZ(pqe) && u[pqe.top().Y])pqe.pop();
+        if(!SZ(pqp))break;
+        if(SZ(pqe) && pqe.top().X < pqp.top().X + mn)
+        {
+            ll t = pqe.top().Y;
+            tt += pqe.top().X;
+            pqe.pop();
+            u[t] = 1;
+            for(ii k:v[t])if(!u[k.X])pqe.push(ii(k.Y, k.X));
+        }
+        else 
+        {
+            ll t = pqp.top().Y;pqp.pop();
+            tt += d[t] + mn;
+            u[t] = 1;
+            for(ii k:v[t])if(!u[k.X])pqe.push(ii(k.Y, k.X));
+        }
+    }
+    cout<<tt<<endl;
+
 }

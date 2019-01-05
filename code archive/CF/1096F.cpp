@@ -44,19 +44,69 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
-const ll INF=ll(2e9);
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=998244353;
+const ll INF=ll(1e15);
 
-ii d[MAXn];
+ll pw(ll x,ll k)
+{
+    if(!k)return 1;
+    ll a = pw(x, k>>1);
+    a = a * a % MOD;
+    if(k & 1)return a * x % MOD;
+    else return a;
+}
 
+ll d[MAXn], bit[MAXn], p[MAXn];
+
+void ins(ll x,ll k)
+{
+    while(x < MAXn)bit[x] += k, x += x & -x;
+}
+
+ll qr(ll x)
+{
+    ll ret = 0;
+    while(x)ret += bit[x], x -= x & -x;
+    return ret;
+}
+
+ii operator + (const ii a, const ii b){
+    return ii((a.X * b.Y + a.Y * b.X) % MOD, a.Y * b.Y % MOD);
+}
+
+ii operator * (const ii a,const ii b)
+{
+    return ii(a.X * b.X % MOD, a.Y * b.Y % MOD);
+}
 
 int main()
 {
     IOS();
     ll n;
     cin>>n;
-    REP(i,n)cin>>d[i].X>>d[i].Y;
-    sort(d, d+n);
-    REP(i,n)debug(d[i]);
+    ii ans = ii(0, 1);
+    ll ct = 0, oans = 0;
+    REP(i,n)cin>>d[i];
+    REP(i,n)if(d[i] == -1)ct++;
+    ans = ans + ii(ct * (ct - 1) / 2 % MOD, 2);
+    for(int i = n-1;i >= 0;i --)if(d[i] != -1)
+    {
+        oans += qr(d[i]);
+        ins(d[i], 1);
+    }
+    debug(oans);
+    ans = ans + ii(oans % MOD, 1);
+    debug(ans);
+    REP(i,n)if(d[i] != -1)p[d[i]] = 1;
+    for(int i = n;i > 0;i --)p[i] = p[i+1] + !p[i];
+    ll tct = 0;
+    if(ct)REP(i,n)if(d[i] != -1)
+    {
+        debug(i, ii(tct * p[d[i]] % MOD, ct));
+        ans = ans + ii(tct * p[d[i]] % MOD, ct);
+        ans = ans + ii((ct - tct) * (ct - p[d[i]]) % MOD, ct);
+    }else tct++;
+    debug(ans);
+    cout<<ans.X * pw(ans.Y, MOD-2)%MOD<<endl;
 }
