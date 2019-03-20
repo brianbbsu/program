@@ -3,9 +3,9 @@
 using namespace std;
 typedef long long ll;
 typedef double lf;
-typedef pair<int,int> ii;
-#define REP(i,n) for(int i=0;i<n;i++)
-#define REP1(i,n) for(int i=1;i<=n;i++)
+typedef pair<ll,ll> ii;
+#define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -44,38 +44,66 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=4e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-inline int getint(){
-	char c;
-	while((c=getchar())<'0'||c>'9'); return c-'0';
-}
+namespace bit{
+    const ll N = (1<<20);
+    ll bit[N], s[N];
+    void ins(ll x,ll k)
+    {
+        ll t = x;
+        x++;
+        while(x < N)bit[x] += k, s[x] += t * k, x += x & -x;
+    }
+    ii qr(ll x)
+    {
+        ll ret = 0, rets = 0;
+        x++;
+        while(x)ret += bit[x], rets += s[x], x -= x & -x;
+        return ii(ret, rets);
+    }
+    ll f(ll x)
+    {
+        ll l = 0, len = (N>>1);
+        while(len)
+        {
+            if(bit[l + len] < x)x -= bit[l + len], l += len;
+            len >>= 1;
+        }
+        return l;
+    }
+};
 
-int c[MAXn][MAXn], d[MAXn][MAXn];
-ll dp[805][MAXn];
-int pi[805][MAXn];
+ll d[MAXn];
 
 int main()
 {
-    int n, k;
-    scanf("%d%d", &n, &k);
-    REP1(i,n)REP1(j,n)d[i][j] = getint();
-    REP1(i,n)REP1(j,n)d[i][j] += d[i][j-1];
-    REP1(i,n)for(int j = i;j <= n;j ++)c[i][j] = c[i][j-1] + d[j][j-1] - d[j][i-1];
-    REP1(i,n)dp[0][i] = INF;
-    REP1(i, n)pi[0][i] = 1;
-    REP1(i, k)pi[i][n+1] = n;
-    REP1(i, k)for(int j = n;j >= 1;j --)
+    IOS();
+    ll n, k;
+    cin>>n>>k;
+    REP1(i,n)cin>>d[i];
+    ll mn = INF, mni = -1, mnt = -1;
+    REP1(i,n)
     {
-        ll mn = INF;
-        for(int t = pi[i-1][j];t <= pi[i][j+1];t++)
+        bit::ins(d[i], 1);
+        if(i > k)bit::ins(d[i - k], -1);
+        if(i >= k)
         {
-            ll tmp = dp[i-1][t-1] + c[t][j];
-            if(tmp < mn)mn = tmp, pi[i][j] = t;
+            ll t = bit::f((k+1)/2);
+            ii a = bit::qr(t), b = bit::qr(bit::N-5);
+            ll tt = a.X * t - a.Y + (b.Y - a.Y) - (b.X - a.X) * t;
+            debug(i, tt);
+            if(tt < mn)
+            {
+                mn = tt;
+                mni = i - k + 1;
+                mnt = t;
+            }
         }
-        dp[i][j] = mn;
     }
-    printf("%I64d\n", dp[k][n]);
+    cout<<mn<<endl;
+    REP(i, k)d[mni + i] = mnt;
+    REP1(i,n)cout<<d[i]<<endl;
 }

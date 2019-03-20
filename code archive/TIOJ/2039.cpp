@@ -3,9 +3,9 @@
 using namespace std;
 typedef long long ll;
 typedef double lf;
-typedef pair<int,int> ii;
-#define REP(i,n) for(int i=0;i<n;i++)
-#define REP1(i,n) for(int i=1;i<=n;i++)
+typedef pair<ll,ll> ii;
+#define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -44,38 +44,48 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=4e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=2e6+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
-const ll INF=ll(1e15);
+const ll INF=ll(1.8e9);
 
-inline int getint(){
-	char c;
-	while((c=getchar())<'0'||c>'9'); return c-'0';
+int n, k;
+int d[MAXn];
+
+ii cal(int a)
+{
+    ii mx = ii(0, 0), pmx = ii(-INF, -1);
+    for(int i = 0;i < n;i ++)
+    {
+        ii t = ii(pmx.X + d[i], pmx.Y);
+        pmx = max(pmx, ii(mx.X - d[i] - a, mx.Y - 1));
+        mx = max(mx, t);
+    }
+    mx.Y = -mx.Y;
+    debug(a, mx);
+    return mx;
 }
-
-int c[MAXn][MAXn], d[MAXn][MAXn];
-ll dp[805][MAXn];
-int pi[805][MAXn];
 
 int main()
 {
-    int n, k;
-    scanf("%d%d", &n, &k);
-    REP1(i,n)REP1(j,n)d[i][j] = getint();
-    REP1(i,n)REP1(j,n)d[i][j] += d[i][j-1];
-    REP1(i,n)for(int j = i;j <= n;j ++)c[i][j] = c[i][j-1] + d[j][j-1] - d[j][i-1];
-    REP1(i,n)dp[0][i] = INF;
-    REP1(i, n)pi[0][i] = 1;
-    REP1(i, k)pi[i][n+1] = n;
-    REP1(i, k)for(int j = n;j >= 1;j --)
-    {
-        ll mn = INF;
-        for(int t = pi[i-1][j];t <= pi[i][j+1];t++)
-        {
-            ll tmp = dp[i-1][t-1] + c[t][j];
-            if(tmp < mn)mn = tmp, pi[i][j] = t;
-        }
-        dp[i][j] = mn;
+    IOS();
+    cin>>n>>k;
+    REP(i,n)cin>>d[i];
+    ii z = cal(0);
+    if(z.Y <= k){
+        cout<<z.X<<endl;
+        return 0;
     }
-    printf("%I64d\n", dp[k][n]);
+    int l = 0, r = 10000000 + 5;
+    while(l != r-1)
+    {
+        int h = (l+r)/2;
+        ii tmp = cal(h);
+        if(tmp.Y > k)l = h;
+        else r = h;
+    }
+    ii in = cal(r), out = cal(r-1);
+    in.X += in.Y * r;
+    out.X += out.Y * (r-1);
+    debug(r, in, r-1, out);
+    cout<<in.X + (out.X - in.X) / (out.Y - in.Y) * (k - in.Y)<<endl;
 }

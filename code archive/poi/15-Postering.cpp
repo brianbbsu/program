@@ -3,9 +3,9 @@
 using namespace std;
 typedef long long ll;
 typedef double lf;
-typedef pair<int,int> ii;
-#define REP(i,n) for(int i=0;i<n;i++)
-#define REP1(i,n) for(int i=1;i<=n;i++)
+typedef pair<ll,ll> ii;
+#define REP(i,n) for(ll i=0;i<n;i++)
+#define REP1(i,n) for(ll i=1;i<=n;i++)
 #define FILL(i,n) memset(i,n,sizeof i)
 #define X first
 #define Y second
@@ -44,38 +44,27 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=4e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-inline int getint(){
-	char c;
-	while((c=getchar())<'0'||c>'9'); return c-'0';
-}
-
-int c[MAXn][MAXn], d[MAXn][MAXn];
-ll dp[805][MAXn];
-int pi[805][MAXn];
+ll d[MAXn];
 
 int main()
 {
-    int n, k;
-    scanf("%d%d", &n, &k);
-    REP1(i,n)REP1(j,n)d[i][j] = getint();
-    REP1(i,n)REP1(j,n)d[i][j] += d[i][j-1];
-    REP1(i,n)for(int j = i;j <= n;j ++)c[i][j] = c[i][j-1] + d[j][j-1] - d[j][i-1];
-    REP1(i,n)dp[0][i] = INF;
-    REP1(i, n)pi[0][i] = 1;
-    REP1(i, k)pi[i][n+1] = n;
-    REP1(i, k)for(int j = n;j >= 1;j --)
+    IOS();
+    ll n;
+    cin>>n;
+    ll _;
+    REP(i,n)cin>>_>>d[i];
+    vector<ll> stk;
+    ll tt = 0;
+    REP(i,n)
     {
-        ll mn = INF;
-        for(int t = pi[i-1][j];t <= pi[i][j+1];t++)
-        {
-            ll tmp = dp[i-1][t-1] + c[t][j];
-            if(tmp < mn)mn = tmp, pi[i][j] = t;
-        }
-        dp[i][j] = mn;
+        while(SZ(stk) && stk.back() > d[i])stk.pop_back(), tt++;
+        if(!SZ(stk) || stk.back() != d[i])stk.pb(d[i]);
+        debug(i, tt, stk);
     }
-    printf("%I64d\n", dp[k][n]);
+    tt += SZ(stk);
+    cout<<tt<<endl;
 }
