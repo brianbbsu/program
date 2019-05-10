@@ -44,12 +44,45 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
+
+#define MIN 0
+#define MAX 1
+
+ll p[MAXn];
+vector<ll> v[MAXn];
+ll d[MAXn];
+
+ll a[MAXn], sz[MAXn];
+
+void dfs(ll now)
+{
+    for(ll x:v[now])dfs(x), sz[now] += sz[x];
+    if(SZ(v[now]) == 0)a[now] = 1, sz[now] = 1;
+    else {
+        if(d[now] == MAX){
+            for(ll x:v[now])
+            {
+                a[now] = max(a[now], sz[now] - sz[x] + a[x]);
+            }
+        }
+        else{ // MIN
+            a[now] = 1;
+            for(ll x:v[now])a[now] += a[x] - 1;            
+        }
+    }
+}
 
 int main()
 {
     IOS();
-
+    ll n;
+    cin>>n;
+    REP1(i,n)cin>>d[i];
+    for(int i = 2;i <= n;i ++)cin>>p[i], v[p[i]].pb(i);
+    dfs(1);
+    cout<<a[1]<<endl;
+    REP1(i,n)debug(i, a[i]);
 }
