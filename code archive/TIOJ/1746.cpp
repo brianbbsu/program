@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef int ll;
+typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,83 +44,63 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn], vr[MAXn], v3[MAXn], dt;
-ll d[MAXn], s[MAXn], dp[MAXn], b[MAXn], dpb[MAXn], vis[MAXn], g[MAXn];
+ll h[MAXn][3];
+vector<ll> v[MAXn];
 
-void dfs1(ll now)
-{
-    vis[now] = 1;
-    for(ll k:vr[now])if(!vis[k])dfs1(k);
-    dt.pb(now);
-}
+ll mx = 0;
 
-void dfs2(ll now, ll gi)
+void predfs(ll now,ll f)
 {
-    g[now] = gi, vis[now] = 1;
-    for(ll k:v[now])if(!vis[k])dfs2(k, gi);
-}
-
-void dfs3(ll now)
-{
-    dp[now] = 0;
-    for(ll k:v3[now])
+    for(ll k:v[now])if(k != f)
     {
-        if(dp[k] == -1)dfs3(k);
-        dpb[now] |= dpb[k];
+        predfs(k, now);
+        ll t = h[k][0] + 1;
+        if(t >= h[now][0])h[now][2] = h[now][1], h[now][1] = h[now][0], h[now][0] = t;
+        else if(t >= h[now][1])h[now][2] = h[now][1], h[now][1]= t;
+        else if(t > h[now][2])h[now][2] = t;
     }
-    if(!dpb[now])return;
-    for(ll k:v3[now])dp[now] = max(dp[now], dp[k]);
-    dp[now] += s[now];
+}
+
+void dfs1(ll now,ll f,ll tp)
+{
+    mx = max({mx, h[now][0] + h[now][1], h[now][0] + tp});
+    for(ll k:v[now])if(k != f)
+    {
+        if(h[k][0] + 1 == h[now][0])dfs1(k, now, max(tp, h[now][1]) + 1);
+        else dfs1(k, now, max(tp, h[now][0]) + 1);
+    }
+}
+
+ll dp[MAXn];
+
+void dfs2(ll now,ll f,ll tp)
+{
+    dp[now] = h[now][0] + h[now][1];
+    
 }
 
 int main()
 {
     IOS();
-    ll n, m;
-    cin>>n>>m;
-    REP(i,m)
+    ll n, k;
+    cin>>n>>k;
+    REP(i, n-1)
     {
         ll a, b;
         cin>>a>>b;
         v[a].pb(b);
-        vr[b].pb(a);
+        v[b].pb(a);
     }
-    REP1(i,n)cin>>d[i];
-    ll st, p;
-    cin>>st>>p;
-    REP(i,p)
+    predfs(1, -1);
+    dfs1(1, -1, 0);
+    ll ans = (n-1) * 2 - mx + 1;
+    if(k == 1)
     {
-        ll t;
-        cin>>t;
-        b[t] = 1;
+        cout<<ans<<endl;
+        return 0;
     }
-
-    FILL(vis, 0);
-    REP1(i,n)if(!vis[i])dfs1(i);
-
-    ll git = 0;
-
-    reverse(ALL(dt));
-    FILL(vis, 0);
-    for(ll x:dt)if(!vis[x])
-    {
-        dfs2(x, ++git);
-    }
-
-    REP1(i,n)
-    {
-        for(ll x:v[i])if(g[i] != g[x])v3[g[i]].pb(g[x]);
-        s[g[i]] += d[i];
-        dpb[g[i]] |= b[i];
-    }
-
-    FILL(dp, -1);
-
-    REP1(i, git)if(dp[i] == -1)dfs3(i);
-
-    cout<<dp[g[st]]<<endl;
 }

@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef int ll;
+typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,83 +44,42 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=2e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=998244353;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn], vr[MAXn], v3[MAXn], dt;
-ll d[MAXn], s[MAXn], dp[MAXn], b[MAXn], dpb[MAXn], vis[MAXn], g[MAXn];
+vector<ll> v[MAXn];
 
-void dfs1(ll now)
-{
-    vis[now] = 1;
-    for(ll k:vr[now])if(!vis[k])dfs1(k);
-    dt.pb(now);
-}
+ll dp[MAXn], fac[MAXn];
 
-void dfs2(ll now, ll gi)
+void dfs(ll now,ll f)
 {
-    g[now] = gi, vis[now] = 1;
-    for(ll k:v[now])if(!vis[k])dfs2(k, gi);
-}
-
-void dfs3(ll now)
-{
-    dp[now] = 0;
-    for(ll k:v3[now])
+    ll tt = 1, ct = 1;
+    for(ll k:v[now])if(k != f)
     {
-        if(dp[k] == -1)dfs3(k);
-        dpb[now] |= dpb[k];
+        ct ++;
+        dfs(k, now);
+        tt = tt * dp[k] % MOD;
     }
-    if(!dpb[now])return;
-    for(ll k:v3[now])dp[now] = max(dp[now], dp[k]);
-    dp[now] += s[now];
+    if(now != 1)tt = tt * fac[ct] % MOD;
+    else tt = tt * fac[ct - 1] % MOD;
+    dp[now] = tt;
 }
 
 int main()
 {
     IOS();
-    ll n, m;
-    cin>>n>>m;
-    REP(i,m)
+    fac[0] = 1;
+    for(int i = 1;i < MAXn;i ++)fac[i] = fac[i-1] * i % MOD;
+    ll n;
+    cin>>n;
+    REP1(i, n-1)
     {
         ll a, b;
         cin>>a>>b;
         v[a].pb(b);
-        vr[b].pb(a);
+        v[b].pb(a);
     }
-    REP1(i,n)cin>>d[i];
-    ll st, p;
-    cin>>st>>p;
-    REP(i,p)
-    {
-        ll t;
-        cin>>t;
-        b[t] = 1;
-    }
-
-    FILL(vis, 0);
-    REP1(i,n)if(!vis[i])dfs1(i);
-
-    ll git = 0;
-
-    reverse(ALL(dt));
-    FILL(vis, 0);
-    for(ll x:dt)if(!vis[x])
-    {
-        dfs2(x, ++git);
-    }
-
-    REP1(i,n)
-    {
-        for(ll x:v[i])if(g[i] != g[x])v3[g[i]].pb(g[x]);
-        s[g[i]] += d[i];
-        dpb[g[i]] |= b[i];
-    }
-
-    FILL(dp, -1);
-
-    REP1(i, git)if(dp[i] == -1)dfs3(i);
-
-    cout<<dp[g[st]]<<endl;
+    dfs(1, -1);
+    cout<<dp[1] * n % MOD<<endl;
 }

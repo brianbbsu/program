@@ -1,7 +1,7 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef int ll;
+typedef long long ll;
 typedef double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
@@ -44,83 +44,69 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn], vr[MAXn], v3[MAXn], dt;
-ll d[MAXn], s[MAXn], dp[MAXn], b[MAXn], dpb[MAXn], vis[MAXn], g[MAXn];
+struct tg{
+    int a, b, c;
+};
 
-void dfs1(ll now)
-{
-    vis[now] = 1;
-    for(ll k:vr[now])if(!vis[k])dfs1(k);
-    dt.pb(now);
-}
 
-void dfs2(ll now, ll gi)
-{
-    g[now] = gi, vis[now] = 1;
-    for(ll k:v[now])if(!vis[k])dfs2(k, gi);
-}
+int s[MAXn], t[MAXn], d[MAXn], dt[MAXn], p[MAXn];
 
-void dfs3(ll now)
+set<ii> pos, neg;
+
+void put(int x)
 {
-    dp[now] = 0;
-    for(ll k:v3[now])
-    {
-        if(dp[k] == -1)dfs3(k);
-        dpb[now] |= dpb[k];
-    }
-    if(!dpb[now])return;
-    for(ll k:v3[now])dp[now] = max(dp[now], dp[k]);
-    dp[now] += s[now];
+    if(d[x] < 0)neg.insert(ii(s[x], x));
+    else if(d[x] > 0)pos.insert(ii(s[x], x));
 }
 
 int main()
 {
     IOS();
-    ll n, m;
-    cin>>n>>m;
-    REP(i,m)
-    {
-        ll a, b;
-        cin>>a>>b;
-        v[a].pb(b);
-        vr[b].pb(a);
-    }
-    REP1(i,n)cin>>d[i];
-    ll st, p;
-    cin>>st>>p;
-    REP(i,p)
-    {
-        ll t;
-        cin>>t;
-        b[t] = 1;
-    }
-
-    FILL(vis, 0);
-    REP1(i,n)if(!vis[i])dfs1(i);
-
-    ll git = 0;
-
-    reverse(ALL(dt));
-    FILL(vis, 0);
-    for(ll x:dt)if(!vis[x])
-    {
-        dfs2(x, ++git);
-    }
-
+    int n;
+    cin>>n;
+    REP1(i,n)cin>>s[i], dt[i] = i;
+    REP1(i,n)cin>>t[i];
+    sort(dt + 1, dt + 1 + n, [](int a,int b){return s[a] < s[b];});
+    sort(t + 1, t + 1 + n);
+    REP1(i,n)d[dt[i]] = t[i] - s[dt[i]];
+    pary(d + 1, d + 1 + n);
+    ll tt = 0;
     REP1(i,n)
     {
-        for(ll x:v[i])if(g[i] != g[x])v3[g[i]].pb(g[x]);
-        s[g[i]] += d[i];
-        dpb[g[i]] |= b[i];
+        tt += d[dt[i]];
+        if(tt < 0){
+            cout<<"NO"<<endl;
+            return 0;
+        }
     }
+    if(tt != 0)
+    {
+        cout<<"NO"<<endl;
+        return 0;
+    }
+    vector<tg> v;
 
-    FILL(dp, -1);
+    REP1(i,n)put(i);
+    
+    while(SZ(neg))
+    {
+        ii x = *pos.begin();
+        pos.erase(pos.begin());
+        ii y = *neg.upper_bound(ii(x.X + 1, -1));
+        neg.erase(neg.upper_bound(ii(x.X + 1, -1)));
+        ll t = min(abs(d[x.Y]), abs(d[y.Y]));
+        v.pb({x.Y, y.Y, t});
+        d[x.Y] -= t;
+        d[y.Y] += t;
+        put(x.Y);
+        put(y.Y);
+    }
+    cout<<"YES"<<endl;
+    cout<<SZ(v)<<endl;
+    for(auto &p:v)cout<<p.a<<" "<<p.b<<" "<<p.c<<endl;
 
-    REP1(i, git)if(dp[i] == -1)dfs3(i);
-
-    cout<<dp[g[st]]<<endl;
 }

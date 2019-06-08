@@ -44,83 +44,88 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
+#ifdef brian
+int getNumQuestions(){
+    ll q;
+    cin>>q;
+    return q;
+}
+void getQuestion(int &A, int &B)
+{
+    cin>>A>>B;
+}
+void answer(int ans)
+{
+    printf("Answer: %d\n", ans);
+}
+#else
+#include "lib1739.h"
+#endif
+
+
+const ll MAXn=3e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn], vr[MAXn], v3[MAXn], dt;
-ll d[MAXn], s[MAXn], dp[MAXn], b[MAXn], dpb[MAXn], vis[MAXn], g[MAXn];
+vector<ii> _v[2 * MAXn];
+int vid[MAXn][MAXlg], vit = 0;
 
-void dfs1(ll now)
+inline vector<ii> &v(int i,int j)
 {
-    vis[now] = 1;
-    for(ll k:vr[now])if(!vis[k])dfs1(k);
-    dt.pb(now);
+    if(vid[i][j] == 0)return _v[vid[i][j] = ++vit];
+    else return _v[vid[i][j]];
 }
 
-void dfs2(ll now, ll gi)
+ll mp(int i, int j, int x)
 {
-    g[now] = gi, vis[now] = 1;
-    for(ll k:v[now])if(!vis[k])dfs2(k, gi);
+    ll t = lower_bound(ALL(v(i,j)), ii(x, -1)) - v(i,j).begin();
+    if(t == SZ(v(i,j)) || v(i,j)[t].X != x)return x;
+    else return v(i,j)[t].Y;
 }
 
-void dfs3(ll now)
-{
-    dp[now] = 0;
-    for(ll k:v3[now])
-    {
-        if(dp[k] == -1)dfs3(k);
-        dpb[now] |= dpb[k];
-    }
-    if(!dpb[now])return;
-    for(ll k:v3[now])dp[now] = max(dp[now], dp[k]);
-    dp[now] += s[now];
-}
+
+
+int d[MAXn], u[MAXn];
 
 int main()
 {
-    IOS();
-    ll n, m;
-    cin>>n>>m;
-    REP(i,m)
+    debug(MAXn * MAXlg);
+    int n, m;
+    scanf("%d%d", &n, &m);
+    REP1(i, m)scanf("%d", d + i);
+    
+    REP(i, m)
     {
-        ll a, b;
-        cin>>a>>b;
-        v[a].pb(b);
-        vr[b].pb(a);
+        v(i, 0).pb(ii(d[i+1], d[i+1] + 1));
+        v(i, 0).pb(ii(d[i+1] + 1, d[i+1]));
     }
-    REP1(i,n)cin>>d[i];
-    ll st, p;
-    cin>>st>>p;
-    REP(i,p)
+    for(int j = 1;(1<<j) <= m;j++)
     {
-        ll t;
-        cin>>t;
-        b[t] = 1;
-    }
-
-    FILL(vis, 0);
-    REP1(i,n)if(!vis[i])dfs1(i);
-
-    ll git = 0;
-
-    reverse(ALL(dt));
-    FILL(vis, 0);
-    for(ll x:dt)if(!vis[x])
-    {
-        dfs2(x, ++git);
+        for(int i = 0;i + (1<<j) <= m;i += (1<<j))
+        {
+            ll t = i + (1<<(j-1));
+            for(auto &p:v(i, j-1))
+            {
+                v(i,j).pb(ii(p.X, mp(t, j-1, p.Y)));
+                u[p.X] = 1;
+            }
+            for(auto &p:v(t, j-1))if(!u[p.X])v(i,j).pb(p);
+            for(auto &p:v(i,j))u[p.X] = 0;
+            sort(ALL(v(i,j)));
+        }
     }
 
-    REP1(i,n)
+    /*ll q = getNumQuestions();
+    while(q--)
     {
-        for(ll x:v[i])if(g[i] != g[x])v3[g[i]].pb(g[x]);
-        s[g[i]] += d[i];
-        dpb[g[i]] |= b[i];
-    }
-
-    FILL(dp, -1);
-
-    REP1(i, git)if(dp[i] == -1)dfs3(i);
-
-    cout<<dp[g[st]]<<endl;
+        int a, b;
+        getQuestion(a, b);
+        int now = 0;
+        for(int j = MAXlg - 1;j >= 0;j --)if(b&(1<<j))
+        {
+            a = mp(now, j, a);
+            now += (1<<j);
+        }
+        answer(a);
+    }*/
 }

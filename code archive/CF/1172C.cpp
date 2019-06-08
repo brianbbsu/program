@@ -1,8 +1,8 @@
 //{
 #include<bits/stdc++.h>
 using namespace std;
-typedef int ll;
-typedef double lf;
+typedef long long ll;
+typedef long double lf;
 typedef pair<ll,ll> ii;
 #define REP(i,n) for(ll i=0;i<n;i++)
 #define REP1(i,n) for(ll i=1;i<=n;i++)
@@ -44,83 +44,61 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=5e5+5,MAXlg=__lg(MAXn)+2;
-const ll MOD=1000000007;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
+const ll MOD=998244353;
 const ll INF=ll(1e15);
 
-vector<ll> v[MAXn], vr[MAXn], v3[MAXn], dt;
-ll d[MAXn], s[MAXn], dp[MAXn], b[MAXn], dpb[MAXn], vis[MAXn], g[MAXn];
-
-void dfs1(ll now)
+ll pw(ll x,ll k)
 {
-    vis[now] = 1;
-    for(ll k:vr[now])if(!vis[k])dfs1(k);
-    dt.pb(now);
+    if(!k)return 1;
+    ll a = pw(x, k / 2);
+    a = a * a % MOD;
+    if(k & 1)return a * x % MOD;
+    else return a;
 }
 
-void dfs2(ll now, ll gi)
-{
-    g[now] = gi, vis[now] = 1;
-    for(ll k:v[now])if(!vis[k])dfs2(k, gi);
-}
+ii operator + (ii a, ii b){return ii((a.X * b.Y + b.X * a.Y), a.Y * b.Y);}
+ii operator - (ii a, ii b){return ii(((a.X * b.Y - b.X * a.Y)), a.Y * b.Y);}
+ii operator * (ii a, ii b){return ii((a.X * b.X), a.Y * b.Y);}
+ii operator / (ii a, ii b){return ii((a.X * b.Y), a.Y * b.X);}
 
-void dfs3(ll now)
-{
-    dp[now] = 0;
-    for(ll k:v3[now])
-    {
-        if(dp[k] == -1)dfs3(k);
-        dpb[now] |= dpb[k];
-    }
-    if(!dpb[now])return;
-    for(ll k:v3[now])dp[now] = max(dp[now], dp[k]);
-    dp[now] += s[now];
-}
+
+ll tp[MAXn], v[MAXn];
+ii w[MAXn];
+lf wf[MAXn];
 
 int main()
 {
     IOS();
     ll n, m;
     cin>>n>>m;
-    REP(i,m)
+    REP1(i,n)cin>>tp[i];
+    REP1(i,n)cin>>w[i].X, w[i].Y = 1, v[i] = 1, wf[i] = w[i].X;
+
+    if(n == 1)
     {
-        ll a, b;
-        cin>>a>>b;
-        v[a].pb(b);
-        vr[b].pb(a);
-    }
-    REP1(i,n)cin>>d[i];
-    ll st, p;
-    cin>>st>>p;
-    REP(i,p)
-    {
-        ll t;
-        cin>>t;
-        b[t] = 1;
+        if(tp[1] == 1)cout<<w[1].X + m<<endl;
+        else cout<<max(0LL, w[1].X - m)<<endl;
+        return 0;
     }
 
-    FILL(vis, 0);
-    REP1(i,n)if(!vis[i])dfs1(i);
-
-    ll git = 0;
-
-    reverse(ALL(dt));
-    FILL(vis, 0);
-    for(ll x:dt)if(!vis[x])
+    while(m--)
     {
-        dfs2(x, ++git);
+        ii tt = ii(0, 1);
+        lf ttf = 0;
+        REP1(i,n)if(v[i])tt = tt + w[i], ttf = ttf + wf[i];
+        debug(tt);
+        REP1(i,n)if(v[i])
+        {
+            if(tp[i] == 1)wf[i] += wf[i] / ttf, w[i] = w[i] + w[i] / tt;
+            else
+            {
+                wf[i] -= wf[i] / ttf;
+                if(wf[i] < -1e-12)wf[i] = 0, v[i] = 0, w[i] = ii(0, 1);
+                else w[i] = w[i] - w[i] / tt;
+            }
+        }
+        REP1(i,n)debug(w[i], wf[i]);
     }
-
-    REP1(i,n)
-    {
-        for(ll x:v[i])if(g[i] != g[x])v3[g[i]].pb(g[x]);
-        s[g[i]] += d[i];
-        dpb[g[i]] |= b[i];
-    }
-
-    FILL(dp, -1);
-
-    REP1(i, git)if(dp[i] == -1)dfs3(i);
-
-    cout<<dp[g[st]]<<endl;
+    REP1(i,n)cout<<w[i].X * pw(w[i].Y, MOD - 2) % MOD<<endl;
 }
