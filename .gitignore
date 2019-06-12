@@ -41,5 +41,6 @@ out2
 
 tmp*
 
-.vscode/*
+**/.vscode/*
 
+**/Q#/
