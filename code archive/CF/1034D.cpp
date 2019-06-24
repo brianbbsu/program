@@ -52,7 +52,6 @@ const ll INF=ll(1e15);
 ii d[MAXn];
 
 set<pair<ii,ll> > st;
-//vector<ll> v[MAXn];
 ll v[MAXn];
 vector<ii> op[MAXn];
 ll n,k;
@@ -70,27 +69,22 @@ void pre()
       else if(it -> X.X >= d[i].X && it -> X.Y >= d[i].Y){
         ii tmp = {d[i].Y,it->X.Y};
         op[i].pb(ii(it->Y,-(d[i].Y - it->X.X)));
-        //rt->ins(1,it -> Y + 1,-(d[i].Y - it->X.X));
         if(tmp.X != tmp.Y)st.insert({tmp,it->Y});
       }else if(it -> X.X <= d[i].X && it -> X.Y <= d[i].Y){
         ii tmp = {it->X.X,d[i].X};
-        //rt->ins(1,it -> Y + 1,-(it->X.Y - d[i].X));
         op[i].pb(ii(it->Y,-(it->X.Y - d[i].X)));
         if(tmp.X != tmp.Y)st.insert({tmp,it->Y});
       }else if(it -> X.X <= d[i].X && it -> X.Y >= d[i].Y){
         ii tmp1 = {d[i].Y,it->X.Y};
         ii tmp2 = {it->X.X,d[i].X};
-        //rt->ins(1,it -> Y+ 1,-(d[i].Y - d[i].X));
         op[i].pb(ii(it->Y,-(d[i].Y - d[i].X)));
         if(tmp1.X != tmp1.Y)st.insert({tmp1,it->Y});
         if(tmp2.X != tmp2.Y)st.insert({tmp2,it->Y});
       }else {
-        //rt->ins(1,it -> Y+1,-(it->X.Y - it->X.X));
         op[i].pb(ii(it->Y,-(it->X.Y - it->X.X)));
       }
       st.erase(it);
     }
-    //rt->ins(1,i+1,d[i].Y - d[i].X);
     op[i].pb(ii(i,d[i].Y - d[i].X));
     st.insert({d[i],i});
   }
@@ -103,10 +97,6 @@ int main()
     cin>>n>>k;
     REP1(i,n)cin>>d[i].X>>d[i].Y;
     pre();
-    //head[0] = build(0,n+5);
-    //rt = build(1,n+5);
-
-
     ll l = 0,r = 0;
     REP1(i,n)r = max(r,d[i].Y);
     r+=1;
@@ -114,7 +104,6 @@ int main()
     {
       ll h = (l+r)/2;
       ll it = 0,tt = 0,now = 0,sum = 0,ctsum = 0;
-
       REP(i,n+1)v[i]=0;
       REP1(i,n)
       {
@@ -133,19 +122,10 @@ int main()
         sum += tt;
         ctsum += it;
       }
-
-
-      //tt = 0;
-      //ll ct = cal(h);
-      //debug(l,r,h,ct,tt);
       if(ctsum < k)r = h;
       else l = h;
     }
-
-
-
     ll it = 0,tt = 0,now = 0,sum = 0,ctsum = 0;
-
     REP(i,n+1)v[i]=0;
     REP1(i,n)
     {
@@ -164,8 +144,6 @@ int main()
       sum += tt;
       ctsum += it;
     }
-
-    //ll ct = cal(l);
     cout<< sum - (ctsum - k) * l <<endl;
 
 }
