@@ -44,24 +44,53 @@ template<typename _t> void pary(_t _a,_t _b){_OUTC(cerr,_a,_b);cerr<<endl;}
 //}
 
 
-const ll MAXn=1e3+5,MAXlg=__lg(MAXn)+2;
+const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
-ll ct[MAXn];
+string s[55];
+int l[55], r[55];
 
 int main()
 {
     IOS();
     ll T;
-    cin>>T;
-    while(T--)
-    {   
-        FILL(ct, 0);
-        int n, b, f;
-        cin>>n>>b>>f;
-        {
-            
+    cin >> T;
+    for(int kz = 1;kz <= T;kz ++){
+        cout << "Case #" << kz << ":\n";
+        ll n, nn;
+        cin >> n;
+        nn = max(0LL, n - 29);
+        ll tt = 0, x = 0, y = 1, ct = 0;
+        while((1<<x) <= nn){
+            if(y == 1)x ++;
+            else x++, y++;
+            ct ++, tt++;
+            cout << x << " " << y << "\n";
+            if(nn & (1<<(x - 1))){
+                if(y == 1)
+                    while(1){
+                        if(y == x)break;
+                        y++;
+                        cout << x << " " << y << "\n";
+                        ct ++;
+                    }
+                else
+                    while(1){
+                        if(y == 1)break;
+                        y--;
+                        cout << x << " " << y << "\n";
+                        ct ++;
+                    }
+                tt += (1<<(x - 1)) - 1;
+            }
         }
+        while(tt < n){
+            if(y == 1)x ++;
+            else x++, y++;
+            ct ++, tt++;
+            cout << x << " " << y << "\n"; 
+        }
+        assert(tt == n && ct <= 500);
     }
 }

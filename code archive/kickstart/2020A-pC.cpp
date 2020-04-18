@@ -48,19 +48,29 @@ const ll MAXn=1e5+5,MAXlg=__lg(MAXn)+2;
 const ll MOD=1000000007;
 const ll INF=ll(1e15);
 
+ll d[MAXn];
+
 int main()
 {
     IOS();
-    ll kz = 0;
     ll T;
-    cin>>T;
-    while(T--)
-    {
-        kz ++;
-        ll n;
-        string s;
-        cin>>n>>s;
-        for(char &c:s)c = (c == 'E'?'S':'E');
-        cout<<"Case #"<<kz<<": "<<s<<endl;
+    cin >> T;
+    for(int kz = 1;kz <= T;kz ++){
+        ll n, k;
+        cin >> n >> k;
+        for(int i = 1;i <= n;i ++)
+            cin >> d[i];
+        ll l = 0, r = 1000000000 + 5;
+        while(l != r - 1){
+            ll h = (l + r) / 2;
+            ll ct = 0;
+            for(int i = 1;i < n;i ++){
+                ct += (d[i + 1] - d[i] - 1) / h;
+            }
+            if(ct > k)l = h;
+            else r = h;
+        }
+
+        cout << "Case #" << kz << ": " << r << endl;
     }
 }
